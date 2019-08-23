@@ -1,0 +1,33 @@
+import {
+  Button,
+  CellGroup,
+  Field,
+  Search,
+  Tab,
+  Tabs,
+  NoticeBar,
+  Area,
+  Popup,
+  Uploader,
+  Checkbox,
+  Picker,
+  Toast,
+  Icon,
+} from 'vant'
+
+export default [
+  Button,
+  CellGroup,
+  Field,
+  Search,
+  Tab,
+  Tabs,
+  NoticeBar,
+  Area,
+  Popup,
+  Uploader,
+  Checkbox,
+  Picker,
+  Toast,
+  Icon,
+]
