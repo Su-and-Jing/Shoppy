@@ -13,7 +13,20 @@ import {
   Picker,
   Toast,
   Icon,
+  RadioGroup,
+  Radio,
+  Collapse,
+  CollapseItem,
+  Switch,
+  DropdownMenu, 
+  DropdownItem,
+  SwitchCell,
+  DatetimePicker,
+  CheckboxGroup,
+  Divider,
+  Cell,
 } from 'vant'
+
 
 export default [
   Button,
@@ -30,4 +43,16 @@ export default [
   Picker,
   Toast,
   Icon,
+  RadioGroup,
+  Radio,
+  Collapse,
+  CollapseItem,
+  Switch,
+  DropdownMenu, 
+  DropdownItem,
+  SwitchCell,
+  DatetimePicker,
+  CheckboxGroup,
+  Divider,
+  Cell
 ]

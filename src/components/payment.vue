@@ -1,0 +1,94 @@
+<template>
+  <div class="containt-pay">
+    <Head></Head>
+    <div class="main">
+      <p class="mount-wrap">应付金额： <span class="mount">2000.99</span>元</p>
+      <img class="img" src="../assets/qr.jpg" alt="">
+      <p class="instr">当地为支付实名制地区，请使用投保人本人账户支付</p>
+      <div class="method">
+        <div class="types">
+          <span class="wx"></span>
+          <span class="zfb"></span>
+        </div>
+        <p class="text">支持微信/支付宝扫码付款</p>
+      </div>
+      <div class="confirm">确认支付</div>
+    </div>
+  </div>
+</template>
+<script>
+import Head from './module/head';
+export default {
+  components: {
+    Head,
+  },
+  data() {
+    return {
+
+    }
+  }
+}
+</script>
+<style lang="scss" scope>
+  .containt-pay{
+    background: #fff;
+    min-height: 100vh;
+    .main{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .mount-wrap{
+        font-size: 18px;
+        color: #464646;
+        .mount{
+          color: #F68900;
+        }
+      }
+      .img{
+        width: 136px;
+        height: 136px;
+        margin: 18px 0;
+      }
+      .instr{
+        font-size: 13px;
+        line-height: 20px;
+        color:#464646;
+      }
+      .method{
+        margin-top: 24px;
+        .types{
+          display: flex;
+          justify-content: space-around;
+          .wx{
+            width: 36px;
+            height: 36px;
+            background: url(../assets/wx.png) no-repeat;
+            background-size: 100%;
+          }
+          .zfb{
+            width: 36px;
+            height: 36px;
+            background: url(../assets/zfb.png) no-repeat;
+            background-size: 100%;
+          }
+        }
+        .text{
+          font-size: 16px;
+          color: #464646;
+          margin-top: 20px;
+        }
+      }
+      .confirm{
+        width: 89%;
+        margin: 34px 0 20px;
+        border-radius: 5px;
+        background: #568EFC;
+        font-size: 17px;
+        color: #fff;
+        line-height: 45px;
+        text-align: center;
+      }
+    }
+  }
+</style>

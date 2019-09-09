@@ -5,6 +5,15 @@ import OrderList from '@/components/orderList'
 import UploadImg from '@/components/uploadImg'
 import InfoPlatform from '@/components/infoPlatform'
 import OfferPage from '@/components/offer'
+import PaySuccess from '@/components/paySuccess'
+import Payment from '@/components/payment'
+import OrderDetails from '@/components/orderDetails'
+import GetInvoice from '@/components/getInvoice'
+import GetElecInvoice from '@/components/getElecInvoice'
+import ConfirmInsured from '@/components/confirmInsured'
+import UploadScreenage from '@/components/uploadScreenage'
+import Price from '@/components/price'
+import IndexPc from '@/components/indexPc'
 
 Vue.use(Router)
 
@@ -12,6 +21,22 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'index',
+      component: Index,
+      meta: {
+        title: '首页'
+      }
+    },
+    {
+      path: '/indexPc',
+      name: 'indexPc',
+      component: IndexPc,
+      meta: {
+        title: 'pc首页'
+      }
+    },
+    {
+      path: '/index',
       name: 'index',
       component: Index,
       meta: {
@@ -50,5 +75,70 @@ export default new Router({
         title: '车险报价页'
       }
     },
+    {
+      path: '/paySuccess',
+      name: 'paySuccess',
+      component: PaySuccess,
+      meta: {
+        title: '支付成功页'
+      }
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: Payment,
+      meta: {
+        title: '华农统一收费'
+      }
+    },
+    {
+      path: '/orderDetails',
+      name: 'orderDetails',
+      component: OrderDetails,
+      meta: {
+        title: '订单详情'
+      }
+    },
+    {
+      path: '/getInvoice',
+      name: 'getInvoice',
+      component: GetInvoice,
+      meta: {
+        title: '发票获取'
+      }
+    },
+    {
+      path: '/ConfirmInsured',
+      name: 'ConfirmInsured',
+      component: ConfirmInsured,
+      meta: {
+        title: '确认投保'
+      }
+    },
+    {
+      path: '/getElecInvoice',
+      name: 'getElecInvoice',
+      component: GetElecInvoice,
+      meta: {
+        title: '发票电子保单'
+      }
+    },
+    {
+      path: '/price',
+      name: 'price',
+      component: Price,
+      meta: {
+        title: '确认报价'
+      }
+    },
+    {
+      path: '/uploadScreenage',
+      name: 'uploadScreenage',
+      component: UploadScreenage,
+      meta: {
+        title: '影像上传'
+      }
+    },
+
   ]
 })

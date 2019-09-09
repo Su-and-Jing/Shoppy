@@ -16,7 +16,7 @@
       title-active-color="#568EFC"
       title-inactive-color="#464646"
       line-height="2px">
-      <van-tab v-for="(item,index) in tabList" :key="index" :title="item">
+      <van-tab v-for="(item,index) in tabList" :key="index" :title="item.title" :name="item.name">
         <div class="list van-hairline--top">
           <div class="item">
             <div class="sign">
@@ -59,8 +59,21 @@
 export default {
   data() {
     return{
+      active: 1,
       search: '',
-      tabList: ['暂存单', '待处理', '待支付', '已完成']
+      tabList: [{
+          title: '暂存单',
+          name: 1,
+        },{
+          title: '待处理',
+          name: 2,
+        },{
+          title: '待支付',
+          name: 3,
+        },{
+          title: '已完成',
+          name: 4,
+      }]
     }
   },
   methods: {

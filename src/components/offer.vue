@@ -1,6 +1,6 @@
 <template>
   <div class="containt">
-    <div class="head">报价单</div>
+    <Header :message="headMsg"></Header>
     <div class="content">
       <div class="item">
         <label class="label">车牌号：</label>
@@ -91,44 +91,74 @@
       <span class="copy" @click="copyUrl">复制报价单链接</span>
     </div>
     <input type="text" :value="copycode" id="copy">
+    <div class="remind">
+      友情提示：此报价单生成时间为 xx年x月x日xx时xx分，正式投保时的报价结果可能会根据车辆、车主和保险方案的情况产生变化，试算结果仅供参考。
+    </div>
+    <!-- 复制链接 -->
+    <van-popup
+      v-model="showShare"
+      class="popup-wrap"
+      :close-on-click-overlay="false">
+      <div class="share-link">
+        <div class="main">
+          <p class="title">您的报价单链接已生成</p>
+          <p class="instr">张三的爱车京A23452报价单已经生成，赶快去分享吧~</p>
+          <span class="paste" @click="copyUrl">去粘贴</span>
+        </div>
+      </div>
+    </van-popup>
+    <!-- 报价单已失效 -->
+    <van-popup
+      v-model="showFailure"
+      class="popup-wrap"
+      :close-on-click-overlay="false">
+      <div class="order-failure">
+        <div class="main">
+          <p class="title">您的报价单已失效</p>
+          <span class="paste"
+            @click="showFailure = false">
+            关闭</span>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 <script>
+import Header from './module/header';
 export default {
   data() {
     return {
+      showShare: false,
+      showFailure: true,
+      headMsg: '报价单',
       copycode: '',
       from: '',
     }
+  },
+  components: {
+    Header,
   },
   created() {
     this.from = this.$route.query.from;
   },
   methods: {
+    // 复制报价单链接
     copyUrl() {
       this.copycode = window.location + '?from=copy';
       document.execCommand("Copy");
       let copy=document.getElementById("copy");
 	    copy.select();
       document.execCommand("Copy");
+      this.showShare = !this.showShare;
     }
   }
 }
 </script>
 <style lang="scss" scope>
-@import '/style/index.scss';
+@import '/style/share.scss';
   .containt{
     background: #fff;
-    .head{
-      width: 100%;
-      height: 45px;
-      line-height: 45px;
-      text-align: center;
-      background:#5189FB;
-      font-size: 17px;
-      color: #fff;
-      border-bottom: 5px solid #F0F2F4;
-    }
+    min-height: 100vh;
     .content{
       padding: 0 16px;
       .item{
@@ -158,7 +188,7 @@ export default {
     }
     .business-risks{
       .title{
-          
+
         font-size: 17px;
         line-height: 45px;
         color: #4a4a4a;
@@ -261,11 +291,73 @@ export default {
         }
       }
     }
+    .remind{
+      margin: 32px 16px 42px;
+      font-size: 12px;
+      color: #568EFC;
+      line-height: 21px;
+    }
     #copy{
       opacity: 0;
       z-index: -1;
       position: absolute;
       top:0;
+    }
+    .popup-wrap{
+      width: 100%;
+      background: transparent;
+      .share-link,
+      .order-failure{
+        width: 72%;
+        height: 0;
+        padding-top:  62%;
+        position: relative;
+        margin-left: 14%;
+        background: url('../assets/share.png') no-repeat top center;
+        background-size: 100%;
+        &.order-failure{
+          padding-top: 56%;
+          background: url('../assets/failure.png') no-repeat top center;
+          background-size: 100%;
+          .main{
+            top: 43%;
+            .paste{
+              margin-top: 12%;
+            }
+          }
+        }
+        .main{
+          position: absolute;
+          top:32%;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          .title{
+            text-align: center;
+            font-size: 15px;
+            line-height: 24px;
+            color:#464646;
+            font-weight: 600;
+          }
+          .instr{
+            font-size: 13px;
+            color: #666;
+            line-height: 24px;
+            margin: 12px 20px;
+          }
+          .paste{
+            margin: 0 32px;
+            height: 38px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color:#fff;
+            background: #568EFC;
+          }
+        }
+      }
     }
   }
 </style>
