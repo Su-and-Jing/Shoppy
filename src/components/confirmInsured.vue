@@ -1,187 +1,369 @@
 <template>
   <div class="containt-insured">
-    <van-collapse
-      v-model="activeNames">
-      <van-collapse-item
-        class="group"
-        title="人员信息"
-        name="owner">
-        <div slot="right-icon" class="right-text" v-text="activeNames.indexOf('owner') > -1 ? '收起' : '展开'"></div>
+    <van-collapse v-model="activeNames">
+      <van-collapse-item class="group" title="人员信息">
+        <div
+          slot="right-icon"
+          class="right-text"
+          v-text="activeNames.indexOf('owner') > -1 ? '收起' : '展开'"
+        ></div>
+        <!-- 车主--个人 -->
         <van-cell-group class="item">
+          <van-field v-model="one.name" label="车主姓名" placeholder="请输入车主姓名" />
           <van-field
-            v-model="owner.name"
-            label="车主姓名"
-            placeholder="请输入车主姓名"/>
-          <van-field
-            v-model="owner.IDType"
+            v-model="dentify"
             readonly
             label="证件类型"
-            right-icon="arrow-down"/>
+            right-icon="arrow-down"
+            @click="checkPicker('dentify',dentifyList)"
+          />
+          <van-field v-model="one.identifyNumber" label="身份证号" placeholder="请输入身份证号" />
           <van-field
-            v-model="owner.ID"
-            label="身份证号"
-            placeholder="请输入身份证号"/>
+            right-icon="notes-o"
+            readonly
+            v-model="one.cervalidDate"
+            label="证件有效期"
+            @click="showPopupDate"
+          >
+            <van-icon name="notes-o" class="btn-left" />
+          </van-field>
+          <!-- <van-popup v-model="show" position="bottom">
+            <van-datetime-picker v-model="currentDate" type="date" />
+          </van-popup>-->
+          <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+          <Area :current-area="one.addess" @checkedArea="checkedArea" label="地址" />
           <van-field
-            v-model="owner.phone"
-            label="手机号码"
-            maxlength="11"
-            placeholder="请输入手机号码"/>
-          <van-field
+            label
             type="textarea"
+            v-model="one.addr"
             rows="1"
             autosize
-            v-model="owner.address"
-            label="地址"
-            maxlength="11"
-            placeholder="请输入地址"/>
+            placeholder="请填写具体路名、门牌地址"
+          />
+          <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
           <van-field
-            v-model="owner.email"
-            label="邮箱地址"
-            maxlength="11"
-            placeholder="请输入邮箱地址"/>
+            v-model="occupation"
+            readonly
+            label="职业"
+            right-icon="arrow-down"
+            @click="checkPicker('occupation',occupationList)"
+          />
         </van-cell-group>
+        <!--车主-- 机构 -->
+        <van-cell-group class="item">
+          <van-field v-model="one.name" label="客户名称" placeholder="华农财产" />
+          <van-field
+            v-model="one.identifyType"
+            readonly
+            label="证件类型"
+            right-icon="arrow-down"
+            @click="checkPicker('dentify',dentifyList)"
+          />
+          <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
+          <van-field v-model="one.identifyNumber" label="证件号码" placeholder="请输入身份证号" />
+          <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+          <Area :current-area="addressProps" @checkedArea="checkedArea" label="地址" />
+          <van-field
+            label
+            type="textarea"
+            v-model="owner.addr"
+            rows="1"
+            autosize
+            placeholder="请填写具体路名、门牌地址"
+          />
+          <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+
+          <van-field v-model="one.chargeName" label="经办人姓名" placeholder="请输入" />
+          <van-field
+            v-model="one.chargeNationality"
+            readonly
+            label="经办人国籍"
+            right-icon="arrow-down"
+            @click="checkPicker('chargeNationality',chargeNationalityList)"
+          />
+          <van-field
+            v-model="owner.occupation"
+            readonly
+            label="职业"
+            right-icon="arrow-down"
+            @click="checkPicker('owner.occupation',occupationList)"
+          />
+          <van-field
+            v-model="one.chargeIdentifyType"
+            readonly
+            label="经办人证件类型"
+            right-icon="arrow-down"
+            @click="checkPicker('occupation',owner.dentifyList)"
+          />
+          <van-field v-model="one.chargeIdentifyNo" label="经办人证件号码" placeholder="请输入身份证号" />
+          <van-field v-model="one.chargeIdentifyDate" label="经办人证件有效期" placeholder="请输入身份证号" />
+          <van-field v-model="one.corpIdentifyStartDate" label="营业执照证件有效期" placeholder="请输入" />
+        </van-cell-group>
+
+        <!-- 投保人---个人 -->
         <van-cell-group class="item">
           <div class="check-wrap">
-            <van-field
-              value="同车主"
-              label="投保人"
-              readonly/>
-            <van-switch v-model="insuredOwner" size="24px"/>
+            <van-field value="同车主" label="投保人" readonly />
+            <van-switch v-model="insuredOwner" size="24px" />
+            <div>
+              <span class="every-btn">{{oneEvery}}</span>
+              <van-icon name="arrow-down" @click="checkPicker('oneEvery',oneEveryList)"></van-icon>
+            </div>
           </div>
-          <van-cell-group v-show="!insuredOwner">
+          <van-cell-group v-show="!insuredOwner" class="b1">
+            <van-field v-model="one.name" label="车主姓名" placeholder="请输入车主姓名" />
             <van-field
-              v-model="insured.name"
-              label="车主姓名"
-              placeholder="请输入车主姓名"/>
-            <van-field
-              v-model="insured.IDType"
+              v-model="dentify"
               readonly
               label="证件类型"
-              right-icon="arrow-down"/>
+              right-icon="arrow-down"
+              @click="checkPicker('dentify',dentifyList)"
+            />
+            <van-field v-model="one.identifyNumber" label="身份证号" placeholder="请输入身份证号" />
             <van-field
-              v-model="insured.ID"
-              label="身份证号"
-              placeholder="请输入身份证号"/>
+              right-icon="notes-o"
+              readonly
+              v-model="one.cervalidDate"
+              label="证件有效期"
+              @click="showPopupDate"
+            >
+              <van-icon name="notes-o" class="btn-left" />
+            </van-field>
+            <!-- <van-popup v-model="show" position="bottom">
+            <van-datetime-picker v-model="currentDate" type="date" />
+            </van-popup>-->
+            <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+            <Area :current-area="one.addess" @checkedArea="checkedArea" label="地址" />
             <van-field
-              v-model="insured.phone"
-              label="手机号码"
-              maxlength="11"
-              placeholder="请输入手机号码"/>
-            <van-field
+              label
               type="textarea"
+              v-model="one.addr"
               rows="1"
               autosize
-              v-model="insured.address"
-              label="地址"
-              maxlength="11"
-              placeholder="请输入地址"/>
+              placeholder="请填写具体路名、门牌地址"
+            />
+            <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
             <van-field
-              v-model="insured.email"
-              label="邮箱地址"
-              maxlength="11"
-              placeholder="请输入邮箱地址"/>
+              v-model="occupation"
+              readonly
+              label="职业"
+              right-icon="arrow-down"
+              @click="checkPicker('occupation',occupationList)"
+            />
+          </van-cell-group>
+
+          <!--投保人-- 机构 -->
+          <!-- {{two.type==='2' || this.type == '2'}} -->
+          <van-cell-group
+            class="item b2"
+            v-show="!insuredOwner && this.type === '2' "
+            ref="blockone"
+          >
+            <van-field v-model="one.name" label="客户名称" placeholder="华农财产" />
+            <van-field
+              v-model="one.identifyType"
+              readonly
+              label="证件类型"
+              right-icon="arrow-down"
+              @click="checkPicker('dentify',dentifyList)"
+            />
+            <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
+            <van-field v-model="one.identifyNumber" label="证件号码" placeholder="请输入身份证号" />
+            <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+            <Area :current-area="addressProps" @checkedArea="checkedArea" label="地址" />
+            <van-field
+              label
+              type="textarea"
+              v-model="owner.addr"
+              rows="1"
+              autosize
+              placeholder="请填写具体路名、门牌地址"
+            />
+            <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+            <van-field v-model="one.chargeName" label="经办人姓名" placeholder="请输入" />
+            <van-field
+              v-model="one.chargeNationality"
+              readonly
+              label="经办人国籍"
+              right-icon="arrow-down"
+              @click="checkPicker('chargeNationality',chargeNationalityList)"
+            />
+            <van-field
+              v-model="owner.occupation"
+              readonly
+              label="职业"
+              right-icon="arrow-down"
+              @click="checkPicker('owner.occupation',occupationList)"
+            />
+            <van-field
+              v-model="one.chargeIdentifyType"
+              readonly
+              label="经办人证件类型"
+              right-icon="arrow-down"
+              @click="checkPicker('occupation',owner.dentifyList)"
+            />
+            <van-field v-model="one.chargeIdentifyNo" label="经办人证件号码" placeholder="请输入身份证号" />
+            <van-field v-model="one.chargeIdentifyDate" label="经办人证件有效期" placeholder="请输入身份证号" />
+            <van-field v-model="one.corpIdentifyStartDate" label="营业执照证件有效期" placeholder="请输入" />
           </van-cell-group>
         </van-cell-group>
+        <!-- 被保人---个人 -->
         <van-cell-group class="item">
           <div class="check-wrap">
-            <van-field
-              value="被保险人"
-              label="投保人"
-              readonly/>
-            <van-switch v-model="assuredOwner" size="24px"/>
+            <van-field value="同车主" label="被保人" readonly />
+            <van-switch v-model="assuredOwner" size="24px" />
+            <div>
+              <span class="every-btn">{{oneEvery2}}</span>
+              <van-icon name="arrow-down" @click="checkPicker('oneEvery2',oneEveryList2)"></van-icon>
+            </div>
           </div>
           <van-cell-group v-show="!assuredOwner">
+            <van-field v-model="one.name" label="车主姓名" placeholder="请输入车主姓名" />
             <van-field
-              v-model="assured.name"
-              label="车主姓名"
-              placeholder="请输入车主姓名"/>
-            <van-field
-              v-model="assured.IDType"
+              v-model="dentify"
               readonly
               label="证件类型"
-              right-icon="arrow-down"/>
+              right-icon="arrow-down"
+              @click="checkPicker('dentify',dentifyList)"
+            />
+            <van-field v-model="one.identifyNumber" label="身份证号" placeholder="请输入身份证号" />
             <van-field
-              v-model="assured.ID"
-              label="身份证号"
-              placeholder="请输入身份证号"/>
+              right-icon="notes-o"
+              readonly
+              v-model="one.cervalidDate"
+              label="证件有效期"
+              @click="showPopupDate"
+            >
+              <van-icon name="notes-o" class="btn-left" />
+            </van-field>
+            <!-- <van-popup v-model="show" position="bottom">
+            <van-datetime-picker v-model="currentDate" type="date" />
+            </van-popup>-->
+            <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+            <Area :current-area="one.addess" @checkedArea="checkedArea" label="地址" />
             <van-field
-              v-model="assured.phone"
-              label="手机号码"
-              maxlength="11"
-              placeholder="请输入手机号码"/>
-            <van-field
+              label
               type="textarea"
+              v-model="one.addr"
               rows="1"
               autosize
-              v-model="assured.address"
-              label="地址"
-              maxlength="11"
-              placeholder="请输入地址"/>
+              placeholder="请填写具体路名、门牌地址"
+            />
+            <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
             <van-field
-              v-model="assured.email"
-              label="邮箱地址"
-              maxlength="11"
-              placeholder="请输入邮箱地址"/>
+              v-model="occupation"
+              readonly
+              label="职业"
+              right-icon="arrow-down"
+              @click="checkPicker('occupation',occupationList)"
+            />
+          </van-cell-group>
+          <!-- 机构 -->
+          <van-cell-group class="item">
+            <van-field v-model="one.name" label="客户名称" placeholder="华农财产" />
+            <van-field
+              v-model="one.identifyType"
+              readonly
+              label="证件类型"
+              right-icon="arrow-down"
+              @click="checkPicker('dentify',dentifyList)"
+            />
+            <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
+            <van-field v-model="one.identifyNumber" label="证件号码" placeholder="请输入身份证号" />
+            <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+            <Area :current-area="addressProps" @checkedArea="checkedArea" label="地址" />
+            <van-field
+              label
+              type="textarea"
+              v-model="owner.addr"
+              rows="1"
+              autosize
+              placeholder="请填写具体路名、门牌地址"
+            />
+            <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+
+            <van-field v-model="one.chargeName" label="经办人姓名" placeholder="请输入" />
+            <van-field
+              v-model="one.chargeNationality"
+              readonly
+              label="经办人国籍"
+              right-icon="arrow-down"
+              @click="checkPicker('chargeNationality',chargeNationalityList)"
+            />
+            <van-field
+              v-model="owner.occupation"
+              readonly
+              label="职业"
+              right-icon="arrow-down"
+              @click="checkPicker('owner.occupation',occupationList)"
+            />
+            <van-field
+              v-model="one.chargeIdentifyType"
+              readonly
+              label="经办人证件类型"
+              right-icon="arrow-down"
+              @click="checkPicker('occupation',owner.dentifyList)"
+            />
+            <van-field v-model="one.chargeIdentifyNo" label="经办人证件号码" placeholder="请输入身份证号" />
+            <van-field v-model="one.chargeIdentifyDate" label="经办人证件有效期" placeholder="请输入身份证号" />
+            <van-field v-model="one.corpIdentifyStartDate" label="营业执照证件有效期" placeholder="请输入" />
           </van-cell-group>
         </van-cell-group>
       </van-collapse-item>
-      <van-collapse-item
-        class="group"
-        title="影像上传"
-        name="upload">
-        <div slot="right-icon" class="right-text" v-text="activeNames.indexOf('upload') > -1 ? '收起' : '展开'">
-        </div>
+      <van-collapse-item class="group" title="影像上传" name="upload">
+        <div
+          slot="right-icon"
+          class="right-text"
+          v-text="activeNames.indexOf('upload') > -1 ? '收起' : '展开'"
+        ></div>
         <Screenage :imgs="imgs" @emitImgList="emitImgs"></Screenage>
       </van-collapse-item>
-      <van-collapse-item
-        class="group"
-        title="保单获取方式"
-        name="access">
-        <div slot="right-icon" class="right-text" v-text="activeNames.indexOf('access') > -1 ? '收起' : '展开'"></div>
-         <van-cell-group class="item">
+      <van-collapse-item class="group" title="保单获取方式" name="access">
+        <div
+          slot="right-icon"
+          class="right-text"
+          v-text="activeNames.indexOf('access') > -1 ? '收起' : '展开'"
+        ></div>
+        <van-cell-group class="item">
           <van-field
             v-model="insurancePolicy"
             label="保单形式"
             readonly
             @click="checkPicker('insurancePolicy', insurancePolicyList)"
-            right-icon="arrow-down"/>
+            right-icon="arrow-down"
+          />
           <van-field
             v-if="insurancePolicy == '纸质'"
             v-model="distribution"
             readonly
             label="配送方式"
             @click="checkPicker('distribution', distributionList)"
-            right-icon="arrow-down"/>
+            right-icon="arrow-down"
+          />
           <van-field
             v-if="insurancePolicy == '电子'"
             v-model="email"
             label="邮箱地址"
-            placeholder="请输入邮箱地址"/>
+            placeholder="请输入邮箱地址"
+          />
           <van-cell-group v-if="insurancePolicy == '纸质' && distribution == '邮寄'">
+            <van-field v-model="mailInfo.name" label="收件人" placeholder="请输入收件人" />
+            <van-field v-model="mailInfo.mobile" label="手机号" placeholder="请输入手机号" />
+            <Area :current-area="mailInfo.cityCode" @checkedArea="checkedArea" />
             <van-field
-              v-model="mailInfo.name"
-              label="收件人"
-              placeholder="请输入收件人"/>
-            <van-field
-              v-model="mailInfo.phone"
-              label="手机号"
-              placeholder="请输入手机号"/>
-            <Area
-              :current-area="mailInfo.cityCode"
-              @checkedArea="checkedArea"/>
-            <van-field
-              label=""
+              label
               type="textarea"
-              v-model="mailInfo.address"
+              v-model="mailInfo.addr"
               rows="1"
               autosize
-              placeholder="请填写具体路名、门牌地址" />
+              placeholder="请填写具体路名、门牌地址"
+            />
           </van-cell-group>
         </van-cell-group>
       </van-collapse-item>
     </van-collapse>
     <div class="btn-group">
-      <span class="confirm">确认投保</span>
+      <span class="confirm" @click="confirmInsure">确认投保</span>
     </div>
     <!-- 选择框统一 -->
     <van-popup position="bottom" v-model="showPopup">
@@ -189,141 +371,670 @@
         show-toolbar
         :columns="columns"
         @cancel="showPopup = false"
-        @confirm="confirmPopup" />
+        @confirm="confirmPopup"
+      />
     </van-popup>
+    <!-- <van-popup v-model="show" class="showPopupPrice">
+      <p>返回报价</p>
+      <van-button plain color="#95c4fe" @click="cannelPrice">取消</van-button>
+      <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
+    </van-popup>-->
   </div>
 </template>
+
 <script>
-  import Area from './module/area';
-  import Screenage from './module/screenage'
-  export default {
-    components: {
-      Area,
-      Screenage,
+import Area from "./module/area";
+import aaaa from "@/common/library/area";
+import Screenage from "./module/screenage";
+import { confirmInsured, priceToConfirm } from "@/common/library/api";
+export default {
+  components: {
+    Area,
+    Screenage
+  },
+  data() {
+    return {
+      one: [],
+      two: [],
+      three: [],
+      customerVoList: [],
+      show: false,
+      currentDate: new Date(),
+      showPopupDate: false,
+      columns: "",
+      // 订单号:''
+      orderNo: "",
+      activeNames: ["owner", "upload", "access"],
+      occupation: "工人",
+      occupationList: [
+        { code: "P0001", text: "文员白领" },
+        { code: "P0002", text: "公务员" },
+        { code: "P0003", text: "农民" },
+        { code: "P0004", text: "个体商户" },
+        { code: "P0005", text: "公共服务" },
+        { code: "P0006", text: "工人" },
+        { code: "P0007", text: "教师" },
+        { code: "P0008", text: "专业技术人员" },
+        { code: "P0009", text: "商业" },
+        { code: "P00010", text: "服务业人员" },
+        { code: "P00011", text: "生产" },
+        { code: "P00012", text: "运输人员" },
+        { code: "P00013", text: "军人" },
+        { code: "P9999", text: "其他从业人员" }
+      ],
+      // 车主
+      dentify: "身份证",
+      dentifyList: [
+        { code: "01", text: "身份证" },
+        { code: "03", text: "护照" },
+        { code: "553", text: "外国人永久拘留身份证" },
+        { code: "10", text: "组织机构证" },
+        { code: "B", text: "统一信用证" }
+      ],
+      chargeNationality: "中国",
+      chargeNationalityList: [
+        { text: "阿富汗", code: "004" },
+        { text: "阿尔巴尼亚", code: "008" },
+        { text: "阿尔及利亚", code: "012" },
+        { text: "美属萨摩亚", code: "016" },
+        { text: "安道尔", code: "020" },
+        { text: "安哥拉", code: "024" },
+        { text: "安圭拉", code: "660" },
+        { text: "南极洲", code: "010" },
+        { text: "安提瓜和巴布达", code: "028" },
+        { text: "阿根廷", code: "032" },
+        { text: "亚美尼亚", code: "051" },
+        { text: "阿鲁巴", code: "533" },
+        { text: "澳大利亚", code: "036" },
+        { text: "奥地利", code: "040" },
+        { text: "阿塞拜疆", code: "031" },
+        { text: "巴哈马", code: "044" },
+        { text: "巴林", code: "048" },
+        { text: "孟加拉国", code: "050" },
+        { text: "巴巴多斯", code: "052" },
+        { text: "白俄罗斯", code: "112" },
+        { text: "比利时", code: "056" },
+        { text: "伯利兹", code: "084" },
+        { text: "贝宁", code: "204" },
+        { text: "百慕大", code: "060" },
+        { text: "不丹", code: "064" },
+        { text: "玻利维亚", code: "068" },
+        { text: "波黑", code: "070" },
+        { text: "博茨瓦纳", code: "072" },
+        { text: "布维岛", code: "074" },
+        { text: "巴西", code: "076" },
+        { text: "英属印度洋领土", code: "086" },
+        { text: "文莱", code: "096" },
+        { text: "保加利亚", code: "100" },
+        { text: "布基纳法索", code: "854" },
+        { text: "布隆迪", code: "108" },
+        { text: "柬埔寨", code: "116" },
+        { text: "喀麦隆", code: "120" },
+        { text: "加拿大", code: "124" },
+        { text: "佛得角", code: "132" },
+        { text: "开曼群岛", code: "136" },
+        { text: "中非", code: "140" },
+        { text: "乍得", code: "148" },
+        { text: "智利", code: "152" },
+        { text: "中国", code: "156" },
+        { text: "香港", code: "344" },
+        { text: "澳门", code: "446" },
+        { text: "台湾", code: "158" },
+        { text: "圣诞岛", code: "162" },
+        { text: "科科斯(基林)群岛", code: "166" },
+        { text: "哥伦比亚", code: "170" },
+        { text: "科摩罗", code: "174" },
+        { text: "刚果（布）", code: "178" },
+        { text: "刚果（金）", code: "180" },
+        { text: "库克群岛", code: "184" },
+        { text: "哥斯达黎加", code: "188" },
+        { text: "科特迪瓦", code: "384" },
+        { text: "克罗地亚", code: "191" },
+        { text: "古巴", code: "192" },
+        { text: "塞浦路斯", code: "196" },
+        { text: "捷克", code: "203" },
+        { text: "丹麦", code: "208" },
+        { text: "吉布提", code: "262" },
+        { text: "多米尼克", code: "212" },
+        { text: "多米尼加共和国", code: "214" },
+        { text: "东帝汶", code: "626" },
+        { text: "厄瓜多尔", code: "218" },
+        { text: "埃及", code: "818" },
+        { text: "萨尔瓦多", code: "222" },
+        { text: "赤道几内亚", code: "226" },
+        { text: "厄立特里亚", code: "232" },
+        { text: "爱沙尼亚", code: "233" },
+        { text: "埃塞俄比亚", code: "231" },
+        { text: "福克兰群岛(马尔维纳斯)", code: "238" },
+        { text: "法罗群岛", code: "234" },
+        { text: "斐济", code: "242" },
+        { text: "芬兰", code: "246" },
+        { text: "法国", code: "250" },
+        { text: "法属圭亚那", code: "254" },
+        { text: "法属波利尼西亚", code: "258" },
+        { text: "法属南部领土", code: "260" },
+        { text: "加蓬", code: "266" },
+        { text: "冈比亚Gambia", code: "270" },
+        { text: "格鲁吉亚", code: "268" },
+        { text: "德国", code: "276" },
+        { text: "加纳", code: "288" },
+        { text: "直布罗陀", code: "292" },
+        { text: "希腊", code: "300" },
+        { text: "格陵兰", code: "304" },
+        { text: "格林纳达", code: "308" },
+        { text: "瓜德罗普", code: "312" },
+        { text: "关岛", code: "316" },
+        { text: "危地马拉", code: "320" },
+        { text: "几内亚", code: "324" },
+        { text: "几内亚比绍", code: "624" },
+        { text: "圭亚那", code: "328" },
+        { text: "海地", code: "332" },
+        { text: "赫德岛和麦克唐纳岛", code: "334" },
+        { text: "洪都拉斯", code: "340" },
+        { text: "匈牙利", code: "348" },
+        { text: "冰岛", code: "352" },
+        { text: "印度", code: "356" },
+        { text: "印度尼西亚", code: "360" },
+        { text: "伊朗", code: "364" },
+        { text: "伊拉克", code: "368" },
+        { text: "爱尔兰", code: "372" },
+        { text: "以色列", code: "376" },
+        { text: "意大利", code: "380" },
+        { text: "牙买加", code: "388" },
+        { text: "日本", code: "392" },
+        { text: "约旦", code: "400" },
+        { text: "哈萨克斯坦", code: "398" },
+        { text: "肯尼亚", code: "404" },
+        { text: "基里巴斯", code: "296" },
+        { text: "朝鲜", code: "408" },
+        { text: "韩国", code: "410" },
+        { text: "科威特", code: "414" },
+        { text: "吉尔吉斯斯坦", code: "417" },
+        { text: "老挝", code: "418" },
+        { text: "拉脱维亚", code: "428" },
+        { text: "黎巴嫩", code: "422" },
+        { text: "莱索托", code: "426" },
+        { text: "利比里亚", code: "430" },
+        { text: "利比亚", code: "434" },
+        { text: "列支敦士登", code: "438" },
+        { text: "立陶宛", code: "440" },
+        { text: "卢森堡", code: "442" },
+        { text: "前南马其顿", code: "807" },
+        { text: "马达加斯加", code: "450" },
+        { text: "马拉维", code: "454" },
+        { text: "马来西亚", code: "458" },
+        { text: "马尔代夫", code: "462" },
+        { text: "马里", code: "466" },
+        { text: "马耳他", code: "470" },
+        { text: "马绍尔群岛", code: "584" },
+        { text: "马提尼克", code: "474" },
+        { text: "毛里塔尼亚", code: "478" },
+        { text: "毛里求斯", code: "480" },
+        { text: "马约特", code: "175" },
+        { text: "墨西哥", code: "484" },
+        { text: "密克罗尼西亚联邦", code: "583" },
+        { text: "摩尔多瓦", code: "498" },
+        { text: "摩纳哥", code: "492" },
+        { text: "蒙古", code: "496" },
+        { text: "蒙特塞拉特", code: "500" },
+        { text: "摩洛哥", code: "504" },
+        { text: "莫桑比克", code: "508" },
+        { text: "缅甸", code: "104" },
+        { text: "纳米比亚", code: "516" },
+        { text: "瑙鲁", code: "520" },
+        { text: "尼泊尔", code: "524" },
+        { text: "荷兰", code: "528" },
+        { text: "荷属安的列斯", code: "530" },
+        { text: "新喀里多尼亚", code: "540" },
+        { text: "新西兰", code: "554" },
+        { text: "尼加拉瓜", code: "558" },
+        { text: "尼日尔", code: "562" },
+        { text: "尼日利亚", code: "566" },
+        { text: "纽埃", code: "570" },
+        { text: "诺福克岛", code: "574" },
+        { text: "北马里亚纳", code: "580" },
+        { text: "挪威", code: "578" },
+        { text: "阿曼", code: "512" },
+        { text: "巴基斯坦", code: "586" },
+        { text: "帕劳", code: "585" },
+        { text: "巴勒斯坦", code: "374" },
+        { text: "巴拿马", code: "591" },
+        { text: "巴布亚新几内亚", code: "598" },
+        { text: "巴拉圭", code: "600" },
+        { text: "秘鲁", code: "604" },
+        { text: "菲律宾", code: "608" },
+        { text: "皮特凯恩群岛", code: "612" },
+        { text: "波兰", code: "616" },
+        { text: "葡萄牙", code: "620" },
+        { text: "波多黎各", code: "630" },
+        { text: "卡塔尔", code: "634" },
+        { text: "留尼汪", code: "638" },
+        { text: "罗马尼亚", code: "642" },
+        { text: "俄罗斯联邦", code: "643" },
+        { text: "卢旺达", code: "646" },
+        { text: "圣赫勒拿", code: "654" },
+        { text: "圣基茨和尼维斯", code: "659" },
+        { text: "圣卢西亚", code: "662" },
+        { text: "圣皮埃尔和密克隆", code: "666" },
+        { text: "圣文森特和格林纳丁斯", code: "670" },
+        { text: "萨摩亚", code: "882" },
+        { text: "圣马力诺", code: "674" },
+        { text: "圣多美和普林西比", code: "678" },
+        { text: "沙特阿拉伯", code: "682" },
+        { text: "塞内加尔", code: "686" },
+        { text: "塞舌尔", code: "690" },
+        { text: "塞拉利昂", code: "694" },
+        { text: "新加坡", code: "702" },
+        { text: "斯洛伐克", code: "703" },
+        { text: "斯洛文尼亚", code: "705" },
+        { text: "所罗门群岛", code: "090" },
+        { text: "索马里", code: "706" },
+        { text: "南非", code: "710" },
+        { text: "南乔治亚岛和南桑德韦奇岛", code: "239" },
+        { text: "西班牙", code: "724" },
+        { text: "斯里兰卡", code: "144" },
+        { text: "苏丹", code: "736" },
+        { text: "苏里南", code: "740" },
+        { text: "斯瓦尔巴群岛", code: "744" },
+        { text: "斯威士兰", code: "748" },
+        { text: "瑞典", code: "752" },
+        { text: "瑞士", code: "756" },
+        { text: "叙利亚", code: "760" },
+        { text: "塔吉克斯坦", code: "762" },
+        { text: "坦桑尼亚", code: "834" },
+        { text: "泰国", code: "764" },
+        { text: "多哥", code: "768" },
+        { text: "托克劳", code: "772" },
+        { text: "汤加", code: "776" },
+        { text: "特立尼达和多巴哥", code: "780" },
+        { text: "突尼斯", code: "788" },
+        { text: "土耳其", code: "792" },
+        { text: "土库曼斯坦", code: "795" },
+        { text: "特克斯科斯群岛", code: "796" },
+        { text: "图瓦卢", code: "798" },
+        { text: "乌干达", code: "800" },
+        { text: "乌克兰", code: "804" },
+        { text: "阿联酋", code: "784" },
+        { text: "英国", code: "826" },
+        { text: "美国", code: "840" },
+        { text: "美国本土外小岛屿", code: "581" },
+        { text: "乌拉圭", code: "858" },
+        { text: "乌兹别克斯坦", code: "860" },
+        { text: "瓦努阿图", code: "548" },
+        { text: "梵蒂冈", code: "336" },
+        { text: "委内瑞拉", code: "862" },
+        { text: "越南", code: "704" },
+        { text: "英属维尔京群岛", code: "092" },
+        { text: "美属维尔京群岛", code: "850" },
+        { text: "瓦利斯和富图纳", code: "876" },
+        { text: "西撒哈拉", code: "732" },
+        { text: "也门", code: "887" },
+        { text: "南斯拉夫", code: "891" },
+        { text: "赞比亚", code: "894" },
+        { text: "津巴布韦", code: "716" },
+        { text: "其他", code: "999" },
+        { text: "法属圣马丁", code: "663" },
+        { text: "荷属圣马丁", code: "534" },
+        { text: "塞尔维亚", code: "688" },
+        { text: "黑山", code: "499" },
+        { text: "盖比群岛", code: "987" },
+        { text: "土阿莫土群岛", code: "988" },
+        { text: "社会群岛", code: "989" },
+        { text: "梅利利亚", code: "990" },
+        { text: "塞卜泰(休达)", code: "991" },
+        { text: "加那利群岛", code: "992" },
+        { text: "萨巴", code: "993" },
+        { text: "博内尔", code: "994" },
+        { text: "库腊索岛", code: "995" },
+        { text: "塞尔维亚和黑山", code: "996" },
+        { text: "诺曼底群岛", code: "997" },
+        { text: "马恩岛", code: "998" },
+        { text: "津巴布韦", code: "ZWE" },
+        { text: "国籍不详", code: "ZZZ" }
+      ],
+      type: "",
+      role: "",
+      owner: {
+        // 证件有效期
+        cervalidDate: "2019-09-19",
+        creendDate: "",
+        cardDate: "",
+        name: "",
+        // 证件类型
+        dentifyType: "01",
+
+        identifyNo: "",
+        mobile: "",
+        addr: "",
+        email: "",
+        // 市code
+        city: "",
+        cityValue: "",
+        // type: "1",
+        // 省code
+        province: "",
+        provinceValue: "",
+        // 区code
+        district: "",
+        districtValue: "",
+        //职业
+        // 职业code
+        job: "",
+
+        //营业执照有效期
+        corpIdentifyStartDate: "",
+        corpIdentifyEndDate: "",
+        //经办人证件有效期
+        chargeIdentifyDate: "",
+        chargeIdentifyEndDate: "",
+        //经办人证件号码
+        chargeIdentifyNo: "",
+        //经办人证件类型
+        chargeIdentifyType: "",
+        //经办人姓名
+        chargeName: "",
+        // 经办人国籍
+        countryCode: "156"
+      },
+      // 投保人
+      insured: {
+        role: "0",
+        // 证件有效期
+        cervalidDate: "2019-09-19",
+        creendDate: "",
+        cardDate: "",
+        name: "",
+        // 证件类型
+        dentifyType: "01",
+
+        identifyNo: "",
+        mobile: "",
+        addr: "",
+        email: "",
+        // 市code
+        city: "",
+        cityValue: "",
+        role: "3",
+        // type: "1",
+        // 省code
+        province: "",
+        provinceValue: "",
+        // 区code
+        district: "",
+        districtValue: "",
+        //职业
+        // 职业code
+        job: "",
+
+        //营业执照有效期
+        corpIdentifyStartDate: "",
+        corpIdentifyEndDate: "",
+        //经办人证件有效期
+        chargeIdentifyDate: "",
+        chargeIdentifyEndDate: "",
+        //经办人证件号码
+        chargeIdentifyNo: "",
+        //经办人证件类型
+        chargeIdentifyType: "",
+        //经办人姓名
+        chargeName: "",
+        // 经办人国籍
+        countryCode: "156"
+      },
+      // 被保险人
+      assured: {
+        role: "1",
+        name: "",
+        dentifyType: "01",
+        identifyNo: "",
+        mobile: "",
+        addr: "",
+        email: "",
+        // 市code
+        city: "",
+        cityValue: "",
+        role: "3",
+        // type: "1",
+
+        // 省code
+        province: "",
+        provinceValue: "",
+        // 区code
+        district: "",
+        districtValue: ""
+      },
+      // 影像上传
+      imgs: {
+        idFront: "",
+        idReverse: "",
+        vehicleLicenseFront: "",
+        vehicleLicenseReverse: "",
+        carImgs: [],
+        otherImgs: []
+      },
+      //车主性质
+      oneEvery: "个人",
+      type: "",
+      oneEveryList: [{ code: 1, text: "个人" }, { code: 2, text: "机构" }],
+      oneEvery2: "个人",
+      type2: "",
+      oneEveryList2: [{ code: 1, text: "个人" }, { code: 2, text: "机构" }],
+      insuredOwner: true,
+      assuredOwner: true,
+      showPopup: false,
+      insurancePolicy: "电子",
+      distribution: "网点自取",
+      insurancePolicyList: [
+        { code: 1, text: "电子" },
+        { code: 2, text: "纸质" }
+      ],
+      distributionList: [
+        { code: 1, text: "邮寄" },
+        { code: 2, text: "网点自取" }
+      ],
+      columns: [],
+      currentPop: "",
+      email: "",
+      city: "",
+      cityCode: "",
+      mailInfo: {
+        // 配送方式
+        expressType: "",
+        //配送类型
+        policyType: "",
+        addr: "",
+        name: "",
+        mobile: "",
+        // 省
+        provinceValue: "",
+        province: "",
+        // 市
+        cityValue: "",
+        city: "",
+        // 区
+        district: "",
+        districtValue: ""
+      },
+      addressProps: []
+    };
+  },
+  created() {
+    this.confimHandle();
+  },
+  methods: {
+    // 确认报价
+    async confimHandle() {
+     var orderNo =  window.localStorage.getItem('orderNo')
+      console.log(orderNo)
+      const data = await priceToConfirm(orderNo);
+      if (data.state === "200") {
+        alert("成功");
+      }
     },
-    data() {
-      return {
-        activeNames: ['owner', 'upload', 'access'],
-        // 车主
-        owner: {
-          name: '',
-          IDType: '身份证',
-          ID: '',
-          phone: '',
-          address: '',
-          email: '',
-        },
-        // 投保人
-        insured: {
-          name: '',
-          IDType: '身份证',
-          ID: '',
-          phone: '',
-          address: '',
-          email: '',
-        },
-        // 被保险人
-        assured: {
-          name: '',
-          IDType: '身份证',
-          ID: '',
-          phone: '',
-          address: '',
-          email: '',
-        },
-        // 影像上传
-        imgs: {
-          idFront: '',
-          idReverse: '',
-          vehicleLicenseFront: '',
-          vehicleLicenseReverse: '',
-          carImgs: [],
-          otherImgs: [],
-        },
-        insuredOwner: true,
-        assuredOwner: true,
-        showPopup: false,
-        insurancePolicy: '电子',
-        distribution: '网点自取',
-        insurancePolicyList: ['电子', '纸质'],
-        distributionList: ['网点自取', '邮寄'],
-        columns: [],
-        currentPop: '',
-        email: '',
-        mailInfo: {
-          name: '',
-          phone: '',
-          city: '',
-          address: '',
-          // 城市code
-          cityCode: '',
+
+    // 调用核保接口
+    async confirmInsure() {
+      const data = await confirmInsured({
+        customerVoList: this.customerVoList,
+        orderNo: this.orderNo,
+        expressInfo: this.mailInfo
+      });
+      if (data.state === "200") {
+        if (data.data.status === "3") {
+          this.$router.push({ path: "/orderList" });
+        } else if (data.data.status === "4") {
+          this.$router.push({
+            path: "/payment"
+          });
+        } else if (data.state === "1") {
+          this.$toast(data.message);
+          this.$router.push({ path: "/price" });
         }
       }
     },
-    methods: {
-      checkPicker(current, list) {
-        this.currentPop = current;
-        this.columns = list;
-        this.showPopup = true;
-      },
-      confirmPopup(val) {
-        this[this.currentPop] = val;
-        this.showPopup = false;
-      },
-      checkedArea(code, city) {
-        this.mailInfo.city = city;
-        this.mailInfo.cityCode = code;
-      },
-      emitImgs(list) {
-        this.imgs = list;
-      },
+    checkPicker(current, list) {
+      console.log(current, list);
+      this.currentPop = current;
+      this.columns = list;
+      this.showPopup = true;
+    },
+    // 确定选择
+    confirmPopup(picker, values) {
+      this.showPopup = false;
+      if (picker.text) {
+        this[this.currentPop] = picker.text;
+      } else {
+        this[this.currentPop] = picker;
+        console.log(picker);
+      }
+      //职业
+      for (var i = 0; i < this.occupationList.length; i++) {
+        if (this.occupationList[i].text === picker.text) {
+          this.occupation = this.occupationList[i].text;
+          this.owner.job = this.occupationList[i].code;
+          console.log(this.owner.job);
+        }
+      }
+      //证件类型
+      for (var i = 0; i < this.dentifyList.length; i++) {
+        if (this.dentifyList[i].text === picker.text) {
+          this.dentify = this.dentifyList[i].text;
+          this.owner.dentifyType = this.dentifyList[i].code;
+        }
+      }
+      //国籍
+      for (var i = 0; i < this.chargeNationalityList.length; i++) {
+        if (this.chargeNationalityList[i].text === picker.text) {
+          this.chargeNationality = this.chargeNationalityList[i].text;
+          this.owner.countryCode = this.chargeNationalityList[i].code;
+        }
+      }
+      //车主性质
+      for (var i = 0; i < this.oneEveryList.length; i++) {
+        if (this.oneEveryList[i].text === picker.text) {
+          this.oneEvery = this.oneEveryList[i].text;
+          this.type = this.oneEveryList[i].code;
+          console.log("sdfjksdhfk");
+          console.log(this.type);
+          if (this.type == "1") {
+            aaaa.displ();
+          } else {
+            aaaa.displ2();
+          }
+        }
+      }
+      for (var i = 0; i < this.insurancePolicyList.length; i++) {
+        if (this.insurancePolicyList[i].text === picker.text) {
+          this.insurancePolicy = this.insurancePolicyList[i].text;
+          this.mailInfo.policyType = this.insurancePolicyList[i].code;
+        }
+      }
+      for (var i = 0; i < this.distributionList.length; i++) {
+        if (this.distributionList[i].text === picker.text) {
+          this.distribution = this.distributionList[i].text;
+          this.mailInfo.expressType = this.distributionList[i].code;
+        }
+      }
+    },
+    checkedArea(code, city) {
+      this.city = city;
+      this.cityCode = code;
+      var aa = this.cityCode.split(" ");
+      this.mailInfo.province = aa[0];
+      this.mailInfo.city = aa[1];
+      this.mailInfo.district = aa[2];
+      var bb = this.city.split(" ");
+      this.mailInfo.provinceValue = bb[0];
+      this.mailInfo.cityValue = bb[1];
+      this.mailInfo.districtValue = bb[2];
+    },
+    emitImgs(list) {
+      this.imgs = list;
     }
   }
+};
 </script>
 <style lang="scss">
-  .containt-insured{
-    .group{
-      margin-bottom: 15px;
-      .van-collapse-item__title{
-        .van-cell__title{
-          font-size: 18px;
-          line-height: 28px;
-          color:#4a4a4a;
-          
-        }
-      }
-      .van-collapse-item__content{
-        padding: 0;
-      }
-      .right-text{
-        color:#568EFC;
-      }
-      .item{
-        border-bottom: 8px solid #F0F2F4;
-        &:last-child{
-          border:none;
-        }
-        .check-wrap{
-          display: flex;
-          align-items: center;
-          padding-right: 16px;
-        }
+.containt-insured {
+  .group {
+    margin-bottom: 15px;
+    .van-collapse-item__title {
+      .van-cell__title {
+        font-size: 18px;
+        line-height: 28px;
+        color: #4a4a4a;
       }
     }
-    .btn-group{
-      background: #fff;
-      padding: 20px;
-      .confirm{
+    .van-collapse-item__content {
+      padding: 0;
+    }
+    .right-text {
+      color: #568efc;
+    }
+    .item {
+      .van-field__label {
+        flex: 105px 0;
+      }
+      border-bottom: 8px solid #f0f2f4;
+      &:last-child {
+        border: none;
+      }
+      .check-wrap {
         display: flex;
         align-items: center;
-        justify-content: center;
-        width: 100%;
-        border-radius: 5px;
-        height: 45px;
-        font-size: 17px;
-        color:#fff;
-        background: #568EFC;
+        padding-right: 16px;
+        position: relative;
+        .van-field__control {
+          text-align: right;
+        }
+        .every-btn {
+          flex: 1;
+          top: 35%;
+          position: absolute;
+          left: 33%;
+        }
+        .van-icon {
+          position: absolute;
+          top: 40%;
+          left: 42%;
+        }
       }
     }
   }
+  .btn-group {
+    background: #fff;
+    padding: 20px;
+    .confirm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      border-radius: 5px;
+      height: 45px;
+      font-size: 17px;
+      color: #fff;
+      background: #568efc;
+    }
+  }
+}
 </style>

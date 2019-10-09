@@ -73,16 +73,15 @@ export default {
   },
   data() {
     return {
-      // agentName: "永保保险代理有限公司河南分公司",
       Salesman: "",
       interCompanyCode: "",
-      // agentName: "",
+      agentName: "",
       Registrationagencycode: "",
       ownershipInstitutionCode: "",
       showPopup: false,
       showInsitutionPopup: false,
       // 登录机构\
-      // ID: "53",
+      ID: "53",
       registrationOrgan: "",
       registrationOrganList: [],
       // 归属机构
@@ -90,14 +89,13 @@ export default {
       ownershipInstitutionList: [],
       // 渠道类型
       channelType: "请选择",
-      channelCode: "",
       channelList: [
-        { code: "53", text: "专业代理" },
-        { code: "54", text: "经纪业务" },
-        { code: "529", text: "其他兼业代理" },
-        { code: "11", text: "传统直销" },
-        { code: "51", text: "个人代理" },
-        { code: "521", text: "车商业务" }
+        "专业代理",
+        "经纪业务",
+        "其他兼业代理",
+        "传统直销",
+        "个人代理",
+        "车商业务"
       ],
       //中介公司
       interCompany: "",
@@ -111,10 +109,12 @@ export default {
       columns: null,
       result: "",
       date: null,
+
       // 选择之后的code
       code: null,
       // 如果没有code就填他
       ownership: null,
+
       // 下面时每一个选择的code
       // 登记机构
       Registrationagency: "",
@@ -123,6 +123,7 @@ export default {
       Ownershipagency: "",
       Ownershipagen: "",
       //渠道类型
+
       //中介公司
       agency: "",
       agen: "",
@@ -131,23 +132,20 @@ export default {
       Sales: "",
       //维护人员
       Maintenancepersonnel: "",
+
       // 存储标记
       storage: "",
+
       // 暂时存储code
       storagecode: "",
       agentCode: "",
       agreementNo: "",
       agentPermitNo: ""
-      // agentName:''
     };
   },
   watch: {
     showInsitution(val) {
       this.showInsitutionPopup = val;
-      if (val) {
-        this.Sell();
-        // this.Sell();
-      }
     },
     channelType: {
       async handler(newValue, oldValue) {
@@ -157,8 +155,7 @@ export default {
           const data = await institution({
             comCode: this.Ownershipagency,
             producerName: this.channelType,
-            producerCode: this.channelCode,
-            // agentName: this.agentName
+            producerCode: this.ID
           });
           console.log(data);
           if (data.state === "200") {
@@ -186,8 +183,6 @@ export default {
 
             this.Channeltyp = data.data.agentList[0].agentName;
             this.Channelt = data.data.agentList[0].agentName;
-            console.log("==============");
-            console.log(this.Channelt);
             //业务员
             this.maintPersonnelList = data.data.handlerList;
             var main = this.maintPersonnelList.map(item => {
@@ -206,15 +201,17 @@ export default {
       }
     }
   },
+  mounted() {
+    this.Sell();
+  },
   methods: {
     //调用出单机构接口
     async Sell() {
+      window.localStorage.getItem("token");
       const data = await institution({
         loginComName: this.registrationOrgan
       });
-      console.log(2);
       if (data.state === "200") {
-        console.log(2);
         this.showInsitutionPopup = true;
         this.result = data;
         console.log(data);
@@ -228,7 +225,7 @@ export default {
         var code = this.registrationOrganList.map(item => {
           return item;
         });
-        // this.agentName = data.date.
+
         this.Registrationagency = code[0].loginComCode;
         this.Registrationagen = code[0].loginComCode;
         this.registrationOrganList = reg;
@@ -267,7 +264,6 @@ export default {
         for (let key in this.result.data.comList) {
           b.push(this.result.data.comList[key].comName);
         }
-
         this.columns = b;
       } else {
         this.$toast.fail("失败");
@@ -284,10 +280,9 @@ export default {
         comCode: this.Ownershipagency,
         agentCode: this.agency,
         handlerCode: this.Salesma,
-        producerCode: this.channelCode,
+        producerCode: this.ID,
         agreementNo: this.agreementNo,
-        agentPermitNo: this.agentPermitNo,
-        agentName: this.agentName
+        agentPermitNo: this.agentPermitNo
       });
       if (data.state === "200") {
         // alert("成功");
@@ -354,15 +349,6 @@ export default {
         this[this.currentPicker] = picker;
       }
       this.showPopup = false;
-      for (var i = 0; i < this.channelList.length; i++) {
-        if (this.channelList[i].text === picker.text) {
-          this.channelType = this.channelList[i].text;
-          this.channelCode = this.channelList[i].code;
-        }
-      }
-      console.log("1111111111111111111111")
-      console.log(this.channelType)
-      console.log(this.channelCode)
     },
 
     heihie() {

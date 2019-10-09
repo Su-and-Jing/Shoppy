@@ -6,9 +6,7 @@
         <van-button class="btn" v-show="!isShowArt" @click="isShowArt=true">展开</van-button>
         <van-button class="btn" v-show="isShowArt" @click="isShowArt=false">收起</van-button>
       </van-cell>
-      <div v-show="isShowArt" class="pre-verification-txt">
-        123
-      </div>
+      <div v-show="isShowArt" class="pre-verification-txt">123</div>
     </div>
     <!-- 预核保意见 -->
     <div class="pre-verification container">
@@ -16,13 +14,7 @@
         <van-button class="btn" v-show="!isShow" @click="isShow=true">展开</van-button>
         <van-button class="btn" v-show="isShow" @click="isShow=false">收起</van-button>
       </van-cell>
-      <div v-show="isShow" class="pre-verification-txt">
-        1、预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见
-        2、预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见
-        3、预核保意见预核保意见预核保意见预核保意见预核保意见
-        4、预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见
-        5、预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见预核保意见
-      </div>
+      <div v-show="isShow" class="pre-verification-txt">{{iLogPreUdwMess}}</div>
     </div>
     <!-- 车辆信息 -->
     <div class="car-msg container">
@@ -31,20 +23,6 @@
         <van-button class="btn" v-show="isShowCar" @click="isShowCar=false">收起</van-button>
       </van-cell>
       <div class="car-msgInfo cells">
-        <van-cell
-          v-show="isShowCar"
-          title="证件类型"
-          is-link
-          v-model="credentials"
-          arrow-direction="down"
-          @click="choosePopup(credentialsList,'credentials')"
-        />
-        <van-cell class="carNumber" title="车牌号码">
-          <span>京</span>
-          <van-icon name="arrow-down"></van-icon>
-          <input type="text" placeholder="A456455" disabled />
-        </van-cell>
-       
         <div v-show="isShowCar">
           <van-cell
             title="车辆类型"
@@ -52,54 +30,66 @@
             v-model="car"
             arrow-direction="down"
             @click="choosePopup(carList,'car')"
+            @change="changeHandle"
           />
-          <van-cell
-            title="使用性质"
-            is-link
-            arrow-direction="down"
-            v-model="useCharacter"
-            @click="choosePopup(useCharacterList,'useCharacter')"
-          />
-
-          <van-field v-model="value" label="品牌型号" readonly placeholder="大众高尔夫" />
-
-          <van-field v-model="value" label="车辆识别代号" readonly placeholder="360281029" />
-          <van-field v-model="value" label="发动机号码" placeholder="360281029" />
+          <van-field v-model="VIN" label="车架号" @change="changeHandle" />
+          <van-field v-model="engine" label="发动机号" @change="changeHandle" />
           <van-field
-            label="注册日期"
+            label="初登日期"
             v-model="registerDate"
             right-icon="notes-o"
             @click="dateShow('registerDate')"
             readonly
+            @change="changeHandle"
           />
-          <van-popup v-model="showPopupDate" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate"
-              @cancel="showPopupDate=false"
-              v-model="currentDate"
-              type="date"
+          <van-field v-model="model" label="品牌型号" @change="changeHandle" />
+          <van-cell title="一年内过户" value @change="changeHandle">
+            <van-switch-cell v-model="open" class="year" />
+          </van-cell>
+          <van-cell title="贷款车" value @change="changeHandle">
+            <van-switch-cell v-model="loanCar" class="year" />
+          </van-cell>
+          <van-cell-group v-show="loanCar">
+            <van-cell
+              title="如需搜索特约库或手动添加特约，请点击右侧按钮"
+              is-link
+              arrow-direction="down"
+              id="loanCar"
+              @click="loanCarButton"
             />
+            <van-cell title="特约1："></van-cell>
+          </van-cell-group>
+          <van-popup v-model="loanCarPopup" position="bottom"  closeable>
+            <div class="contributing">
+              <div class="top">
+                <span>特别约定</span>
+                <!-- <van-icon name="cross"></van-icon> -->
+              </div>
+              <div class="content">
+                <div class="title">
+                  <van-checkbox v-model="checked1">手工历史特约内容</van-checkbox>
+                </div>
+                <div class="child">
+                  <van-checkbox v-model="checked2">本保单第一受益人是上海租赁公司</van-checkbox>
+                  <van-checkbox v-model="checked3">本保单第一受益人是北京租赁公司</van-checkbox>
+                </div>
+                <div class="title">
+                  <van-checkbox v-model="checked4">手工添加特约</van-checkbox>
+                </div>
+              </div>
+              <van-button type="info">确定</van-button>
+            </div>
           </van-popup>
-          <van-field
-            label="发证日期"
-            v-model="certificateDate"
-            right-icon="notes-o"
-            @click="dateShow('certificateDate')"
-            readonly
-          />
           <van-popup v-model="showPopupDate" position="bottom">
             <van-datetime-picker
               @confirm="confirmDate"
               @cancel="showPopupDate=false"
               v-model="currentDate"
               type="date"
+              @change="changeHandle"
             />
           </van-popup>
         </div>
-
-        <van-cell title="一年内过户" value>
-          <van-switch-cell v-model="open" class="year" />
-        </van-cell>
       </div>
     </div>
     <!-- 车主信息 -->
@@ -109,7 +99,7 @@
         <van-button class="btn" v-show="isShowCarMaster" @click="isShowCarMaster=false">收起</van-button>
       </van-cell>
       <div class="carMaster-msgInfo cells">
-        <van-field v-model="value" label="车主姓名" readonly placeholder="黄雪芩" />
+        <van-field v-model="carName" label="车主姓名" @change="changeHandle" />
         <div v-show="isShowCarMaster">
           <van-cell
             title="证件类型"
@@ -117,8 +107,9 @@
             v-model="card"
             arrow-direction="down"
             @click="choosePopup(cardList,'card')"
+            @change="changeHandle"
           />
-          <van-field v-model="value" label="身份证号" readonly placeholder="360281199012108029" />
+          <van-field v-model="identifyNo" label="身份证号" @change="changeHandle" />
         </div>
       </div>
     </div>
@@ -132,21 +123,23 @@
       <div class="com-insurance">
         <div class="com-title">
           <div class="left">
-            <van-checkbox v-model="checked" shape="squre">交强险</van-checkbox>
+            <van-checkbox v-model="checked" shape="squre" @change="changeHandle">交强险</van-checkbox>
           </div>
           <div class="right">
             <span>合计</span>
-            <span class="money">￥1990</span>
+            <span class="money">￥{{insuranceNum}}</span>
           </div>
         </div>
         <van-divider />
         <div class="insurance-msg cells">
           <van-field
+            class="insurance-data"
             label="起保日期"
             v-model="insRegDate"
             right-icon="notes-o"
             @click-right-icon="dateShow('insRegDate')"
             readonly
+            @change="changeHandle"
           >
             <van-button slot="button" size="small" color="#3F7CF5" plain>即时起保</van-button>
           </van-field>
@@ -156,73 +149,133 @@
               @cancel="showPopupDate=false"
               v-model="currentDate"
               type="date"
+              @change="changeHandle"
             />
           </van-popup>
           <van-cell title="交强险">
-            <span style="float:right;color:#4a4a4a">￥1000</span>
+            <span
+              style="float:right;color:#4a4a4a"
+              v-show="this.insuranceMoney!=0"
+            >￥{{this.insuranceMoney}}</span>
           </van-cell>
-          <van-cell title="车船税" v-show="checked">
-            <span style="float:right;color:#4a4a4a">￥990</span>
-          </van-cell>
-          <van-cell
-            title="缴税类型"
-            is-link
-            v-model="payTax"
-            arrow-direction="down"
-            @click="choosePopup(payTaxList,'payTax')"
-          >
-            <span slot="label" v-show="payTax==='减税'||payTax==='正常缴税'">(含往年补缴xx元，滞纳金xx元)</span>
-          </van-cell>
-          <!-- 已完税 -->
-          <van-cell-group v-if="payTax==='已完税'">
-            <van-field v-model="value" label="完税凭证号码" placeholder="请输入" />
-            <van-field v-model="value" label="税务机关代码" placeholder="请输入" />
-            <van-field v-model="value" label="税务机关名称" placeholder="请输入" />
-            <van-field v-model="value" label="完税凭证填发日期" placeholder="请输入"></van-field>
-            <van-field v-model="value" label="开税凭证地区代码" placeholder="请输入" />
-          </van-cell-group>
-          <!-- 免税 -->
-          <van-cell-group v-if="payTax==='免税'">
-            <van-field v-model="value" label="免税车型" placeholder="请输入" />
-            <van-field v-model="value" label="减免税方案代码" placeholder="请输入" />
-            <van-field v-model="value" label="减免比例" placeholder="请输入" />
-            <van-field v-model="value" label="减免税凭证号" placeholder="请输入"></van-field>
-            <van-field v-model="value" label="税务机关名称" placeholder="税务机关代码" />
-          </van-cell-group>
-          <!-- 减税 -->
-          <van-cell-group v-if="payTax==='减税'">
-            <van-field v-model="value" label="免税车型" placeholder="请输入" />
-            <van-field v-model="value" label="减免税方案代码" placeholder="请输入" />
-            <van-field v-model="value" label="减免比例" placeholder="请输入" />
-            <van-field v-model="value" label="减免税凭证号" placeholder="请输入"></van-field>
-            <van-field v-model="value" label="税务机关名称" placeholder="税务机关代码" />
-          </van-cell-group>
-          <!-- 不征 -->
-          <van-cell-group v-if="payTax==='不征'">
-            <van-field v-model="value" label="减免税凭证号" placeholder="请输入"></van-field>
-            <van-field v-model="value" label="税务机关名称" placeholder="税务机关代码" />
-          </van-cell-group>
+          <div class="ship" v-show="checked">
+            <van-cell title="车船税">
+              <span style="float:right;color:#4a4a4a">￥{{shipNum}}</span>
+            </van-cell>
+            <van-cell
+              title="缴税类型"
+              is-link
+              v-model="payTax"
+              arrow-direction="down"
+              @click="choosePopup(payTaxList,'payTax')"
+              @change="changeHandle"
+            >
+              <span
+                slot="label"
+                v-show="payTax==='减税'||payTax==='正常缴税'"
+              >(含往年补缴{{sumTaxDefault}}元，滞纳金{{sumOverdue}}元)</span>
+            </van-cell>
+            <!-- 已完税 -->
+            <van-cell-group v-if="payTax==='已完税'">
+              <van-field v-model="documentNumber" label="完税凭证号码" @change="changeHandle" />
+              <van-field v-model="taxDepartmentCode" label="税务机关代码" @change="changeHandle" />
+              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+              <van-field
+                label="完税凭证填发日期"
+                v-model="taxDocumentDate"
+                right-icon="notes-o"
+                @click-right-icon="dateShow('taxDocumentDate')"
+                readonly
+                @change="changeHandle"
+              ></van-field>
+              <van-cell
+                class="cityCode"
+                title="开具完税凭证地区代码"
+                is-link
+                v-model="taxLocation"
+                arrow-direction="down"
+                @click="choosePopup(taxLocationList,'taxLocation')"
+                @change="changeHandle"
+              />
+            </van-cell-group>
+            <!-- 免税 -->
+            <van-cell-group v-if="payTax==='免税'">
+              <van-cell
+                class="cityNumber"
+                title="免税车型"
+                is-link
+                v-model="deductionDue"
+                arrow-direction="down"
+                @click="choosePopup(deductionDueList,'deductionDue')"
+                @change="changeHandle"
+              />
+
+              <van-cell
+                class="deductionDueType"
+                title="减免税方案代码"
+                is-link
+                v-model="deductionDueType"
+                arrow-direction="down"
+                @click="choosePopup(deductionDueTypeList,'deductionDueType')"
+                @change="changeHandle"
+              />
+              <van-field v-model="deductionDueProportion" label="减免比例" @change="changeHandle" />
+              <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
+              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+            </van-cell-group>
+            <!-- 减税 -->
+            <van-cell-group v-if="payTax==='减税'">
+              <van-cell
+                class="cityNumber"
+                title="免税车型"
+                is-link
+                @change="changeHandle"
+                v-model="deductionDue"
+                arrow-direction="down"
+                @click="choosePopup(deductionDueList,'deductionDue')"
+              />
+              <van-cell
+                class="cityNumber"
+                title="减免税方案代码"
+                is-link
+                v-model="deductionDueType"
+                arrow-direction="down"
+                @click="choosePopup(deductionDueTypeList,'deductionDueType')"
+                @change="changeHandle"
+              />
+              <van-field v-model="deductionDueProportion" label="减免比例" @change="changeHandle" />
+              <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
+              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+            </van-cell-group>
+            <!-- 不征 -->
+            <van-cell-group v-if="payTax==='不征'">
+              <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
+              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+            </van-cell-group>
+          </div>
         </div>
       </div>
       <!-- 商业险 -->
       <div class="buss-insurance cells">
         <div class="com-title">
           <div class="left">
-            <van-checkbox v-model="bussines" shape="squre">商业险</van-checkbox>
+            <van-checkbox v-model="bussines" shape="squre" @change="changeHandle">商业险</van-checkbox>
           </div>
           <div class="right">
             <span>合计</span>
-            <span class="money">￥2866</span>
+            <span class="money">￥{{bussinesNum}}</span>
           </div>
         </div>
         <van-divider />
         <div class="bussines-msg">
           <van-field
+            class="bussines-data"
             label="起保日期"
             v-model="busRegisterDate"
             right-icon="notes-o"
             @click-right-icon="dateShow('busRegisterDate')"
             readonly
+            @change="changeHandle"
           >
             <van-button slot="button" size="small" color="#888" plain>即时起保</van-button>
           </van-field>
@@ -232,6 +285,7 @@
               @cancel="showPopupDate=false"
               v-model="currentDate"
               type="date"
+              @change="changeHandle"
             />
           </van-popup>
           <van-field
@@ -240,6 +294,7 @@
             right-icon="notes-o"
             @click-right-icon="dateShow('RegDate')"
             readonly
+            @change="changeHandle"
           ></van-field>
           <van-popup v-model="showPopupDate" position="bottom">
             <van-datetime-picker
@@ -247,46 +302,44 @@
               @cancel="showPopupDate=false"
               v-model="currentDate"
               type="date"
+              @change="changeHandle"
             />
           </van-popup>
         </div>
         <van-divider />
         <div class="second">
-          <span class="s2">车辆损失保险</span>
+          <span class="s2">{{this.typesList[0].text}}</span>
+          <!-- <van-field class="s2" readonly label="{{this.typesList.text}}"></van-field> -->
           <van-checkbox v-model="carChecked" shape="squre">不计免赔</van-checkbox>
           <van-switch v-model="carSwitch" size="24px" />
         </div>
         <van-divider />
         <div class="coverage">
           <span>保额</span>
-          <input type="text" />
-          <span class="money">￥990</span>
+          <input type="text" v-model="carAmount" @change="changeHandle" />
+          <span class="money">￥{{coveragePremium}}</span>
+          <span
+            style="float:left;color:red;font-size:12px"
+          >(请输入的保额区间在{{minAmount}}-{{maxAmount }}之间)</span>
         </div>
-        <!-- <van-cell
-            title="保额"
-            v-model="payTax"
-            value="￥990"
-          >
-            <template slot="label">(请输入的保额区间在XXX- -XXX区间)</template>
-        </van-cell>-->
+        <van-divider />
+        <div class="second insures">
+          <span class="s2">{{this.typesList[1].text}}</span>
+          <van-checkbox v-model="secondChecked" shape="squre" @change="changeHandle">不计免赔</van-checkbox>
+          <div class="insures-right">
+            <span @change="changeHandle">{{second}}</span>
+            <van-icon name="arrow-down" @click="choosePopup(secondList,'second')"></van-icon>
+            <span class="money">￥{{secondAmount}}</span>
+          </div>
+        </div>
         <van-divider />
         <div class="more" v-show="!moreShow" @click="moreShow =true">
           <van-button color="#568EFC" plain>添加更多商业险种</van-button>
         </div>
         <div class="moreInsure" v-show="moreShow">
           <div class="second insures">
-            <span class="s2">第三者责任险</span>
-            <van-checkbox v-model="secondChecked" shape="squre">不计免赔</van-checkbox>
-            <div class="insures-right">
-              <span>{{second}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(secondList,'second')"></van-icon>
-              <span class="money">￥990</span>
-            </div>
-          </div>
-          <van-divider />
-          <div class="second insures">
-            <span class="s2">司机座位险</span>
-            <van-checkbox v-model="driverChecked" shape="squre">不计免赔</van-checkbox>
+            <span class="s2">{{this.typesList[2].text}}</span>
+            <van-checkbox v-model="driverChecked" shape="squre" @change="changeHandle">不计免赔</van-checkbox>
             <div class="insures-right">
               <span>{{driver}}</span>
               <van-icon name="arrow-down" @click="choosePopup(driverList,'driver')"></van-icon>
@@ -295,7 +348,7 @@
           </div>
           <van-divider />
           <div class="second insures">
-            <span class="s2">乘客座位险</span>
+            <span class="s2">{{this.typesList[3].text}}</span>
             <van-checkbox v-model="fareChecked" shape="squre">不计免赔</van-checkbox>
             <div class="insures-right">
               <span>{{fare}}</span>
@@ -304,8 +357,8 @@
             </div>
           </div>
           <van-divider />
-          <div class="second">
-            <span class="s2">全车盗抢险</span>
+          <div class="second" :id="this.typesList[4].code">
+            <span class="s2">{{this.typesList[4].text}}</span>
             <van-checkbox v-model="robbingChecked" shape="squre">不计免赔</van-checkbox>
             <van-switch v-model="robbingSwitch" size="24px" />
           </div>
@@ -327,8 +380,8 @@
           <div class="second">
             <span class="s2" style="margin-right:35px">指定修理厂险</span>
             <div class="import-btn">
-              <span>{{domestic}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(domesticList,'domestic')"></van-icon>
+              <span>{{import1}}</span>
+              <van-icon name="arrow-down" @click="choosePopup(importList,'import1')"></van-icon>
             </div>
             <van-switch v-model="domesticSwitch" size="24px" />
           </div>
@@ -365,11 +418,7 @@
             <van-switch v-model="natureSwitch" size="24px" />
           </div>
           <van-divider />
-          <div class="second">
-            <span class="s2">节假日限额翻倍险</span>
-            <van-checkbox v-model="holidayChecked" shape="squre">不计免赔</van-checkbox>
-            <van-switch v-model="holidaySwitch" size="24px" />
-          </div>
+
           <van-divider />
           <div class="second">
             <span class="s2">涉水行驶损失险</span>
@@ -387,53 +436,72 @@
     <div class="warranty">
       <p>中保信平台未返回上年保单信息</p>
       <div class="warranty-btn">
-        <van-button plain color="#568EFC" style="margin-right:31px">平台参考信息</van-button>
-        <van-button plain color="#568EFC">报价单</van-button>
+        <van-button plain color="#568EFC" style="margin-right:31px" @click="terrace">平台参考信息</van-button>
+        <van-button plain color="#568EFC" @click="offer">报价单</van-button>
       </div>
     </div>
-    <div class="offer">
+    <div class="offer" v-show="state === '200'">
       <div class="offer-left">
-        <p class="p1">￥14988.99</p>
+        <p class="p1">￥{{totalPremium}}</p>
         <div class="insures">
           <p>
-            商业险 ￥1990
-            <span class="money">3.5折</span>
+            商业险 ￥{{bussinesNum}}
+            <span
+              class="money"
+              v-show="this.saleDiscount!=0"
+            >{{this.saleDiscount}}折</span>
           </p>
-          <p>
-            交强险 ￥1990
-            <span class="money">2.5折</span>
-          </p>
-          <p>车船税 990</p>
+          <p>交强险 ￥{{insuranceMoney}}</p>
+          <p>车船税 ￥{{shipNum}}</p>
+
+          <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
         </div>
         <van-icon></van-icon>
       </div>
 
       <div class="offer-right">
-        <van-button type="info">确认报价</van-button>
+        <van-button type="info" ref="confirmSale" @click="confimHandle" v-show="aaa=true">确认报价</van-button>
       </div>
     </div>
-    <!-- <div class="offer" v-show="!bussines">
-      <div class="offer-left">
-        <p class="p1">￥--</p>
-        <div class="insures">
-          <p>
-            商业险 ￥--
-            <span class="money">-折</span>
-          </p>
-          <p>
-            交强险 ￥--
-            <span class="money">-折</span>
-          </p>
-          <p>车船税 ￥--</p>
+    <div v-show="off">
+      <div class="offer" v-show="state === '1' || !bussines">
+        <div class="offer-left">
+          <p class="p1">￥--</p>
+          <div class="insures">
+            <p>
+              商业险 ￥--
+              <span class="money" v-show="this.saleDiscount!=0">{{this.saleDiscount}}折</span>
+            </p>
+            <p>交强险 ￥--</p>
+            <p>车船税 ￥--</p>
+            <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
+          </div>
         </div>
+
+        <div class="offer-right">
+          <van-button
+            color="#C7C7CC"
+            ref="confirmReset"
+            :class="{active2:isActives}"
+            @click="resetHandle"
+          >重新算价</van-button>
+        </div>
+        <!-- v-show="this.aaa === true" -->
       </div>
-       <div class="offer-left2">
-        <span>￥--</span>
-    </div>-->
-    <!-- <div class="offer-right">
-        <van-button type="info">确认报价</van-button>
-      </div>
-    </div>-->
+    </div>
+    <van-popup v-model="show" class="showPopupSale">
+      <h2>修改商业折扣</h2>
+      <p>请确保输入值在{{this.lowestDiscount}}-{{this.policyDiscount}}范围之内</p>
+      <input type="text" v-model="Discount" />
+      <span
+        class="number"
+        v-show="this.Discount<this.lowestDiscount || this.Discount>this.policyDiscount"
+      >
+        <van-icon name="info-o"></van-icon>已超过输入值范围，请重新输入
+      </span>
+      <van-button plain color="#95c4fe" @click="cannelSale">取消</van-button>
+      <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
+    </van-popup>
     <!-- 下拉公共组件 -->
     <van-popup v-model="showPopup" position="bottom">
       <van-picker
@@ -441,6 +509,7 @@
         :columns="columns"
         @confirm="confirmPicker"
         @cancel="showPopup = false"
+        @change="changeHandle"
       />
     </van-popup>
   </div>
@@ -448,54 +517,274 @@
 <script>
 import dayjs from "dayjs";
 import { cpus } from "os";
+import { price, priceToConfirm, TerracePage } from "@/common/library/api";
 export default {
   data() {
     return {
+      dataObj: "",
+      aaa: false,
+      // 险别
+      typesList: [
+        { code: "A", text: "车辆损失保险" },
+        { code: "B", text: "第三者责任险" },
+        { code: "D3", text: "司机座位险" },
+        { code: "D4", text: "乘客座位险" },
+        { code: "G", text: "全车盗抢险" }
+      ],
+      state: "",
+      //车损险最大保额
+      maxAmount: "",
+      //车损险最小保额
+      minAmount: "",
+      //车损险保费
+      coveragePremium: "",
+      //车辆损失险保额
+      carAmount: "",
+      //总保费
+      totalPremium: "",
+      //折扣
+      Discount: "",
+      //一年内过户
+      open: true,
+      // 往年补缴
+      sumTaxDefault: "",
+      // 滞纳金
+      sumOverdue: "",
+      // 车船税合计
+      shipNum: "",
+      //交强险合计
+      insuranceNum: "",
+      //商业险合计
+      bussinesNum: "",
+      taxStartDate: "",
+      documentNumber: "",
+      deductionDueCode: "",
+      //开税凭证地区代码
+      taxLocation: "北京市",
+      taxLocationList: [
+        {
+          code: "110000",
+          text: "北京市"
+        },
+        {
+          code: "120000",
+          text: "天津市"
+        },
+        {
+          code: "130000",
+          text: "河北省"
+        },
+        {
+          code: "140000",
+          text: "山西省"
+        },
+        {
+          code: "150000",
+          text: "内蒙古自治区"
+        },
+        {
+          code: "210000",
+          text: "辽宁省"
+        },
+        {
+          code: "220000",
+          text: "吉林省"
+        },
+        {
+          code: "230000",
+          text: "黑龙江省"
+        },
+        {
+          code: "310000",
+          text: "上海市"
+        },
+        {
+          code: "320000",
+          text: "江苏省"
+        },
+        {
+          code: "330000",
+          text: "浙江省"
+        },
+        {
+          code: "340000",
+          text: "安徽省"
+        },
+        {
+          code: "350000",
+          text: "福建省"
+        },
+        {
+          code: "360000",
+          text: "江西省"
+        },
+        {
+          code: "370000",
+          text: "山东省"
+        },
+        {
+          code: "410000",
+          text: "河南省"
+        },
+        {
+          code: "420000",
+          text: "湖北省"
+        },
+        {
+          code: "430000",
+          text: "湖南省"
+        },
+        {
+          code: "440000",
+          text: "广东省"
+        },
+        {
+          code: "450000",
+          text: "广西壮族自治区"
+        },
+        {
+          code: "460000",
+          text: "海南省"
+        },
+        {
+          code: "500000",
+          text: "重庆市"
+        },
+        {
+          code: "510000",
+          text: "四川省"
+        },
+        {
+          code: "520000",
+          text: "贵州省"
+        },
+        {
+          code: "530000",
+          text: "云南省"
+        },
+        {
+          code: "540000",
+          text: "西藏自治区"
+        },
+        {
+          code: "610000",
+          text: "陕西省"
+        },
+        {
+          code: "620000",
+          text: "甘肃省"
+        },
+        {
+          code: "630000",
+          text: "青海省"
+        },
+        {
+          code: "640000",
+          text: "宁夏回族自治区"
+        },
+        {
+          code: "650000",
+          text: "新疆维吾尔自治区"
+        },
+        {
+          code: "710000",
+          text: "台湾省"
+        },
+        {
+          code: "810000",
+          text: "香港特别行政区"
+        },
+        {
+          code: "820000",
+          text: "澳门特别行政区"
+        }
+      ],
+
+      //减免方案
+      deductionDueType: "比例减免",
+      deductionDueTypeList: [
+        { code: "P", text: "比例减免" },
+        { code: "A", text: "金额减免" }
+      ],
+      //免税车型
+      deductionDue: "具备减免税证明",
+      deductionDueList: [
+        { code: "M1", text: "具备减免税证明" },
+        { code: "M2", text: "拖拉机" },
+        { code: "M3", text: "军队、武警专用车" },
+        { code: "M4", text: "警车" },
+        { code: "M5", text: "外国使领馆、国际组织及其人员" },
+        { code: "M6", text: "能源减免" },
+        { code: "M8", text: "机场、港口、铁路内部行驶或者作业车辆" },
+        { code: "M9", text: "其他" }
+      ],
+      //完税凭证填发日期
+      taxDocumentDate: "",
+      //减免比例
+      deductionDueProportion: "",
+      //纳税地区代码
+      taxLocationCode: "",
+      // 税务机关代码
+      taxDepartmentCode: "",
+      // 税务机关名称
+      taxDepartment: "",
+      insuranceMoney: "",
+      //身份证号
+      identifyNo: "",
+      //车主姓名
+      carName: "",
+      //发动机号
+      engine: "JT456F3G75",
+      //车架号
+      VIN: "",
+      //车牌号
+      plateNo: "",
       // 总价格
       sumShow: false,
       //添加更多保险
       moreShow: false,
       value: "",
       //涉水行驶损失险
-      wadeChecked: true,
-      wadeSwitch: true,
+      wadeChecked: false,
+      wadeSwitch: false,
       //节假日限额翻倍
-      holidayChecked: true,
-      holidaySwitch: true,
+      holidayChecked: false,
+      holidaySwitch: false,
       //自然损失险
-      natureChecked: true,
-      natureSwitch: true,
+      natureChecked: false,
+      natureSwitch: false,
       //新增设备险
-      facilityChecked: true,
-      facilitySwitch: true,
+      facilityChecked: false,
+      facilitySwitch: false,
       //精神损害险
-      spiritChecked: true,
+      spiritChecked: false,
       //划痕险
-      scratchChecked: true,
+      scratchChecked: false,
       // 指定修理厂险
-      domesticSwitch: true,
+      domesticSwitch: false,
       //玻璃单独破碎险
-      importSwitch: true,
+      importSwitch: false,
       // 车损第三方
-      damageSwitch: true,
+      damageSwitch: false,
       //全车盗抢险
-      robbingChecked: true,
-      robbingSwitch: true,
+      robbingChecked: false,
+      robbingSwitch: false,
       //乘客座位险
-      fareChecked: true,
+      fareChecked: false,
       //司机座位险
-      driverChecked: true,
+      driverChecked: false,
       //第三者责任险
-      secondChecked: true,
-      carSwitch: true,
+      secondChecked: false,
+
       //车辆损失保险
-      carChecked: true,
+      carChecked: false,
+      carSwitch: false,
       //商业险按钮
-      bussines: true,
+      bussines: false,
       //显示车船税
       shipShow: false,
       //交强险按钮
-      checked: true,
+      checked: false,
       //投保方案
       isShowScheme: false,
       //车主信息
@@ -506,50 +795,45 @@ export default {
       isShowArt: false,
       // 预核保按钮
       isShow: false,
-      //一年内过户
-      open: false,
       //证件类型下拉框
       columns: "",
       // 记录选择器对应name
       currentPicker: "",
       showPopup: false,
-      //车牌号
-     licensePlateNumber:'',
-       // 车辆所属城市
-      city: '京',
-      cityList: ['京', '津', '冀', '鲁', '豫', '黑', '辽', '吉', '晋', '浙', '皖', '沪', '闽', '渝', '赣', '蒙', '鄂', '新', '湘', '宁', '粤', '藏', '琼', '桂', '川', '贵', '云', '陕', '甘', '青', '苏', '港', '澳', '台'],
-      //证件类型
-      credentials: "驾驶证",
-      credentialsList: ["驾驶证"],
       //   车辆类型
       car: "小型普通客车",
-      carList: ["小型普通客车", "货车"],
-      //使用性质
-      useCharacter: "营运",
-      useCharacterList: ["营运", "非营运"],
-      //   注册日期
+      carList: [
+        { code: "A0", text: "小型普通客车" },
+        { code: "H0", text: "货车" }
+      ],
+      //   初登日期
       currentDate: "",
       currentDateName: "",
       // currentDate:'',
       // 默认不显示日期组件
       showPopupDate: false,
       //车主信息-证件类型
-      card: "",
-      cardList: ["身份证", "护照", "港澳台居民居住证", "外国人永久居住证"],
+      card: "身份证",
+      cardList: [
+        { code: "01", text: "身份证" },
+        { code: "03", text: "护照" },
+        { code: "553", text: "外国人永久居住证" }
+      ],
       payTax: "正常缴税",
       payTaxList: [
-        { code:'1',text: "正常缴税"},
-        { code:'2',text: "已完税" },
-        { code:'3',text: "免税" },
-        { code:'4',text: "减税" },
-        { code:'5',text: "拒缴", disabled: true },
-        { code:'6',text: "不征" }
+        { code: "1N", text: "正常缴税" },
+        { code: "2W", text: "已完税" },
+        { code: "3M", text: "免税" },
+        { code: "4J", text: "减税" },
+        { code: "5H", text: "拒缴", disabled: true },
+        { code: "6B", text: "不征" }
       ],
       //第三者责任险
-      second: "5万元",
+      second: "不投保",
       secondList: [
-        "5万元",
-        "10万元",
+        "不投保",
+        "50000",
+        "100000",
         "15万元",
         "20万元",
         "30万元",
@@ -575,37 +859,534 @@ export default {
         "1000万元"
       ],
       //司机座位险
-      driver: "5000元",
-      driverList: ["", "", ""],
+      driver: "不投保",
+      driverList: [
+        "不投保",
+        "0.5万",
+        "1万",
+        "2万",
+        "3万",
+        "4万",
+        "5万",
+        "10万",
+        "15万",
+        "20万",
+        "30万"
+      ],
       //乘客座位险
-      fare: "5000元",
-      fareList: ["", "", ""],
+      fare: "不投保",
+      fareList: [
+        "不投保",
+        "0.5万",
+        "1万",
+        "2万",
+        "3万",
+        "4万",
+        "5万",
+        "10万",
+        "15万",
+        "20万",
+        "30万"
+      ],
       // 玻璃单独破碎险
       import1: "进口",
-      importList: ["", "", ""],
-      //指定修理厂险
-      domestic: "国产",
-      domesticList: ["", "", ""],
+      importList: [{ code: 1, text: "进口" }, { code: 1, text: "国产" }],
+
       //划痕险
-      scratch: "2000元",
-      scratchList: ["2000元", "5000元", "1万元", "2万元"],
+      scratch: "不投保",
+      scratchList: ["不投保", "2000元", "5000元", "1万元", "2万元"],
       // 精神损害险
-      spirit: "5万",
-      spiritList: ["", "", ""],
+      spirit: "不投保",
+      spiritList: ["不投保", "", ""],
       // 日期
       date1: "",
       registerDate: "",
       certificateDate: "",
       busRegisterDate: "",
       RegDate: "",
-      insRegDate: ""
+      insRegDate: "",
+      aa: "",
+      // 品牌型号
+      model: "轩逸DFL7162MCB轿车",
+      // 使用性质
+      motorUsageTypeCode: "",
+      motorTypeCode: "",
+      // 证件类型编号
+      identifyType: "",
+      // 免税车型编号
+      deductionDueCode: "",
+      // 缴税类型编号
+      taxConditionCode: "",
+      // 订单号
+      orderNo: "",
+      //险种数组长度
+      riskListLength: "",
+      kindCode: "",
+      datas: "",
+      //确认报价
+      confirm: false,
+      //重新算价
+      off: true,
+      newCarSign: false,
+      isActives: false,
+      // 折扣
+      secondAmount: "0",
+      // 折扣弹出层
+      show: false,
+      // 商业险最低折扣
+      lowestDiscount: "",
+      //商业险最高折扣
+      policyDiscount: "",
+      saleDiscount: "",
+      // 预核保信息
+      iLogPreUdwMess: "",
+      data2: "",
+      // 贷款车标识
+      loanCar: false,
+      // 特别约定
+      loanCarPopup: false,
+      checked1: false,
+      checked2: false,
+      checked3: false,
+      checked4: false,
+
     };
   },
-  created() {
-    console.log(dayjs().add(1,'day').format("YYYY-MM-DD"))
-    console.log(dayjs().add(1,'year').format("YYYY-MM-DD"))
+  mounted() {
+    this.handle();
+    // console.log(dayjs().add(1,'day').format("YYYY-MM-DD"))
+    // console.log(dayjs().add(1,'year').format("YYYY-MM-DD"))
   },
+  created() {},
+  watch: {},
   methods: {
+    // 特别约定
+    loanCarButton() {
+      this.loanCarPopup = true;
+    },
+    confirmloanCar() {},
+    //平台信息参考
+    async terrace() {
+      var data = JSON.parse(localStorage.getItem("data"));
+      var orderNo = data.data.orderNo;
+      this.$router.push({
+        name: "infoPlatform",
+        params: { orderNo }
+      });
+    },
+    //报价单
+    offer() {
+      var data = JSON.parse(localStorage.getItem("data"));
+      var orderNo = data.data.orderNo;
+      this.$router.push({
+        name: "offer",
+        params: { orderNo }
+      });
+      console.log(orderNo);
+    },
+    //折扣弹出层
+    showPopupSale() {
+      console.log(123);
+      this.show = true;
+    },
+    changeHandle() {
+      this.confirm = true;
+      this.isActives = !this.isActives;
+      // this.isActives = true;
+      // if (this.isActives == false) {
+      //   this.isActives = true;
+      // }
+      // console.log("66666666666666666666");
+      // console.log(this.isActives);
+    },
+    //渲染页面
+    handle() {
+      this.aaa = false;
+      var data = JSON.parse(localStorage.getItem("data"));
+      console.log(data);
+      this.state = data.state;
+      //车牌号
+      this.plateNo = data.data.car.plateNo;
+      //初登日期
+      this.registerDate = data.data.car.registerDate;
+      for (var i = 0; i < this.carList.length; i++) {
+        if (this.carList[i].code === data.data.car.motorTypeCode) {
+          this.motorTypeCode = this.carList[i].code;
+          this.car = this.carList[i].text;
+        }
+      }
+      //订单号
+      this.orderNo = data.data.orderNo;
+      // console.log(this.orderNo);
+
+      //是否过户
+      this.open = data.data.car.newCarSign;
+      //使用性质
+      this.motorUsageTypeCode = data.data.car.motorUsageTypeCode;
+      //车架号
+      this.VIN = data.data.car.vin;
+      this.engine = data.data.car.engine;
+      this.currentDate = data.data.car.registerDate;
+      this.carName = data.data.customer.name;
+      //身份证号
+      this.identifyNo = data.data.customer.identifyNo;
+      //证件类型
+      for (var i = 0; i < this.cardList.length; i++) {
+        // console.log(this.cardList[i].code)
+        // console.log(data.data.customer.identifyType)
+        if (this.cardList[i].code === data.data.customer.identifyType) {
+          this.identifyType = this.cardList[i].code;
+          this.card = this.cardList[i].text;
+        }
+      }
+      // console.log("5465466878798798");
+      //交强险
+      for (var i = 0; i < data.data.riskList.length; i++) {
+        this.riskListLength = data.data.riskList.length;
+        if (data.data.riskList[i].riskCode === "0507") {
+          this.riskCode = data.data.riskList[i].riskCode;
+          this.checked = true;
+          this.insuranceNum = data.data.riskList[i].amount;
+          this.insuranceMoney = data.data.riskList[i].premium;
+          this.insRegDate = data.data.riskList[i].startDate;
+          //车船税
+          for (var i = 0; i < this.payTaxList.length; i++) {
+            if (this.payTaxList[i].code === data.data.tax.taxConditionCode) {
+              this.taxConditionCode = this.payTaxList[i].code;
+              this.payTax = this.payTaxList[i].text;
+            }
+          }
+          //纳税地区代码
+          for (var i = 0; i < this.taxLocationList.length; i++) {
+            if (
+              this.taxLocationList[i].code === data.data.tax.taxLocationCode
+            ) {
+              this.taxLocationCode = this.taxLocationList[i].code;
+              this.taxLocation = this.taxLocationList[i].text;
+            }
+          }
+          // 往年补缴
+          this.sumTaxDefault = data.data.tax.sumTaxDefault;
+          //滞纳金
+          this.sumOverdue = data.data.tax.sumOverDue;
+          //车船税合计
+          this.shipNum = data.data.tax.sumTax;
+          //完税凭证号码
+          this.documentNumber = data.data.tax.documentNumber;
+          //税务机关代码
+          this.taxDepartmentCode = data.data.tax.taxDepartmentCode;
+          //税务机关名称
+          this.taxDepartment = data.data.tax.taxDepartment;
+          //  完税凭证填发日期
+          this.taxDocumentDate = data.data.tax.taxDocumentDate;
+          //免税车型
+          for (var i = 0; i < this.deductionDueTypeList.length; i++) {
+            if (
+              this.deductionDueList[i].code === data.data.tax.deductionDueCode
+            ) {
+              this.deductionDueCode = this.deductionDueList[i].code;
+              this.deductionDue = this.deductionDueList[i].text;
+            }
+          }
+          //减免方案
+          for (var i = 0; i < this.deductionDueTypeList.length; i++) {
+            if (
+              this.deductionDueTypeList[i].code ===
+              data.data.tax.deductionDueType
+            ) {
+              this.deductionDueType = this.deductionDueTypeList[i].code;
+              this.deductionDueType = this.deductionDueList[i].text;
+              //减免比例
+              this.deductionDueProportion =
+                data.data.tax.deductionDueProportion;
+            }
+          }
+        } else {
+          this.busRiskCode = "0520";
+          this.bussines = true;
+          this.bussinesNum = data.data.riskList[i].premium;
+          this.busRegisterDate = data.data.riskList[i].startDate;
+          this.RegDate = data.data.riskList[i].endDate;
+        }
+      }
+      //车辆损失险
+      for (var i = 0; i < data.data.kindList.length; i++) {
+        this.kindCode = data.data.kindList[i].kindCode;
+
+        // if (this.kindCode=== data.data.kindList[i].kindCode) {
+        this.carChecked = data.data.kindList[i].notDeductibleFlag;
+        // console.log("===================================");
+        // console.log(data.data.kindList[i].notDeductibleFlag);
+        this.carSwitch = true;
+        if (this.kindCode === this.typesList[0].code) {
+          this.carChecked = true;
+          this.carSwitch = true;
+        } else if (this.kindCode === this.typesList[1].code) {
+          this.secondChecked = true;
+        }
+        this.coveragePremium = data.data.kindList[i].coveragePremium;
+        this.carAmount = data.data.kindList[i].amount;
+        this.maxAmount = data.data.maxAmount;
+        this.minAmount = data.data.minAmount;
+        // }
+      }
+      //第三者责任险
+
+      // 折扣
+      this.saleDiscount = data.data.saleDiscount;
+      //总保费
+      this.totalPremium = data.data.sumPermium;
+    },
+    //重新算价
+    async resetHandle() {
+      window.localStorage.getItem("token");
+      // console.log([56465])
+      //车辆信息
+      var car = new Object();
+      car.engine = this.engine;
+      car.vin = this.VIN;
+      car.plateNo = this.plateNo;
+      car.model = "奥迪FV7148LADWG轿车";
+      car.motorTypeCode = this.motorTypeCode;
+      car.motorUsageTypeCode = this.motorUsageTypeCode;
+      car.registerDate = this.registerDate;
+      car.transferFlag = this.open;
+      car.newCarSign = this.newCarSign;
+      //车主信息
+      var customer = new Object();
+      customer.identifyNo = this.identifyNo;
+      customer.identifyType = this.identifyType;
+      customer.name = this.carName;
+      //车船税
+      var tax = new Object();
+      tax.deductionDueCode = this.deductionDueCode;
+      tax.deductionDueProportion = this.deductionDueProportion;
+      tax.documentNumber = this.documentNumber;
+      tax.sumOverDue = this.sumOverdue;
+      tax.sumTax = this.shipNum;
+      tax.sumTaxDefault = this.sumTaxDefault;
+      tax.taxConditionCode = "1";
+      tax.taxDepartment = this.taxDepartment;
+      tax.taxDepartmentCode = this.taxDepartmentCode;
+      tax.taxLocationCode = this.taxLocationCode;
+      //险种
+      var riskList = [];
+      var risk1 = {};
+      risk1.amount = this.insuranceNum;
+      // kind1.endDate = this.endDate;
+      risk1.premium = this.insuranceMoney;
+      risk1.riskCode = this.riskCode;
+      risk1.startDate = this.insRegDate;
+      riskList.push(risk1);
+      var risk2 = {};
+      // kind2.amount = this.insuranceNum;
+      risk2.endDate = this.RegDate;
+      risk2.premium = this.bussinesNum;
+      risk2.riskCode = this.busRiskCode;
+      risk2.startDate = this.busRegisterDate;
+      riskList.push(risk2);
+
+      //险别
+      var kindList = [];
+      var kind1 = {};
+      kind1.amount = this.carAmount;
+      kind1.coveragePremium = this.coveragePremium;
+      kind1.kindCode = this.typesList[0].code;
+      kind1.notDeductibleFlag = this.carChecked;
+      kindList.push(kind1);
+      // var kind2 = {};
+      // kind2.amount = this.second;
+      // kind2.coveragePremium = this.secondAmount;
+      // kind2.kindCode = this.typesList[1].code;
+      // kind2.notDeductibleFlag = this.secondChecked;
+      // kindList.push(kind2);
+      const data = await price({
+        car,
+        customer,
+        tax,
+        saleDiscount: this.saleDiscount,
+        orderNo: this.orderNo,
+        riskList,
+        kindList
+      });
+      window.localStorage.setItem("data", JSON.stringify(data));
+
+      if (data.state === "200") {
+        this.aaa = true;
+        this.$toast("成功");
+        this.iLogPreUdwMess = data.data.iLogPreUdwMess;
+        this.lowestDiscount = data.data.lowestDiscount;
+        this.policyDiscount = data.data.policyDiscount;
+        this.saleDiscount = data.data.saleDiscount;
+        this.maxAmount = data.data.maxAmount;
+        this.minAmount = data.data.minAmount;
+        this.orderNo = data.data.orderNo;
+        this.totalPremium = data.data.sumPermium;
+        this.state = data.state;
+        //车牌号
+        this.plateNo = data.data.car.plateNo;
+        //初登日期
+        this.registerDate = data.data.car.registerDate;
+        for (var i = 0; i < this.carList.length; i++) {
+          if (this.carList[i].code === data.data.car.motorTypeCode) {
+            this.motorTypeCode = this.carList[i].code;
+            this.car = this.carList[i].text;
+          }
+        }
+        //订单号
+        this.orderNo = data.data.orderNo;
+        //是否过户
+        this.open = data.data.car.newCarSign;
+        //使用性质
+        this.motorUsageTypeCode = data.data.car.motorUsageTypeCode;
+        //车架号
+        this.VIN = data.data.car.vin;
+        this.engine = data.data.car.engine;
+        this.currentDate = data.data.car.registerDate;
+        this.carName = data.data.customer.name;
+        //身份证号
+        this.identifyNo = data.data.customer.identifyNo;
+        //证件类型
+        for (var i = 0; i < this.cardList.length; i++) {
+          if (this.cardList[i].code === data.data.customer.identifyType) {
+            this.identifyType = this.cardList[i].code;
+            console.log(154646868);
+            console.log(this.identifyType);
+            this.card = this.cardList[i].text;
+          }
+        }
+        //交强险
+        for (var i = 0; i < data.data.riskList.length; i++) {
+          this.riskListLength = data.data.riskList.length;
+          if (data.data.riskList[i].riskCode === "0507") {
+            this.riskCode = data.data.riskList[i].riskCode;
+            this.checked = true;
+            this.insuranceNum = data.data.riskList[i].amount;
+            this.insuranceMoney = data.data.riskList[i].premium;
+            this.insRegDate = data.data.riskList[i].startDate;
+            //车船税
+            for (var i = 0; i < this.payTaxList.length; i++) {
+              if (this.payTaxList[i].code === data.data.tax.taxConditionCode) {
+                this.taxConditionCode = this.payTaxList[i].code;
+                this.payTax = this.payTaxList[i].text;
+              }
+            }
+            //纳税地区代码
+            for (var i = 0; i < this.taxLocationList.length; i++) {
+              if (
+                this.taxLocationList[i].code === data.data.tax.taxLocationCode
+              ) {
+                this.taxLocationCode = this.taxLocationList[i].code;
+                this.taxLocation = this.taxLocationList[i].text;
+              }
+            }
+            // 往年补缴
+            this.sumTaxDefault = data.data.tax.sumTaxDefault;
+            //滞纳金
+            this.sumOverdue = data.data.tax.sumOverDue;
+            //车船税合计
+            this.shipNum = data.data.tax.sumTax;
+            //完税凭证号码
+            this.documentNumber = data.data.tax.documentNumber;
+            //税务机关代码
+            this.taxDepartmentCode = data.data.tax.taxDepartmentCode;
+            //税务机关名称
+            this.taxDepartment = data.data.tax.taxDepartment;
+            //  完税凭证填发日期
+            this.taxDocumentDate = data.data.tax.taxDocumentDate;
+            //免税车型
+            for (var i = 0; i < this.deductionDueTypeList.length; i++) {
+              if (
+                this.deductionDueList[i].code === data.data.tax.deductionDueCode
+              ) {
+                this.deductionDueCode = this.deductionDueList[i].code;
+                this.deductionDue = this.deductionDueList[i].text;
+              }
+            }
+            //减免方案
+            for (var i = 0; i < this.deductionDueTypeList.length; i++) {
+              if (
+                this.deductionDueTypeList[i].code ===
+                data.data.tax.deductionDueType
+              ) {
+                this.deductionDueType = this.deductionDueTypeList[i].code;
+                this.deductionDueType = this.deductionDueList[i].text;
+                //减免比例
+                this.deductionDueProportion =
+                  data.data.tax.deductionDueProportion;
+              }
+            }
+          } else {
+            this.busRiskCode = "0520";
+            this.bussines = true;
+            this.bussinesNum = data.data.riskList[i].premium;
+            this.busRegisterDate = data.data.riskList[i].startDate;
+            this.RegDate = data.data.riskList[i].endDate;
+          }
+        }
+        //车辆损失险
+        for (var i = 0; i < data.data.kindList.length; i++) {
+          this.kindCode = data.data.kindList[i].kindCode;
+          console.log("5468======");
+          console.log(this.kindCode);
+          // if (this.kindCode=== data.data.kindList[i].kindCode) {
+          //   this.carChecked = data.data.kindList[i].notDeductibleFlag;
+          //   this.carSwitch = true;
+          if (this.kindCode === this.typesList[0].code) {
+            console.log(
+              "=========================================================================="
+            );
+            console.log(data.data.kindList[i].notDeductibleFlag);
+            this.carChecked = data.data.kindList[i].notDeductibleFlag;
+            this.carSwitch = true;
+          } else if (this.kindCode === this.typesList[1].code) {
+            this.secondChecked = true;
+          }
+          this.coveragePremium = data.data.kindList[i].coveragePremium;
+          this.carAmount = data.data.kindList[i].amount;
+          this.maxAmount = data.data.maxAmount;
+          this.minAmount = data.data.minAmount;
+          // }
+        }
+        //第三者责任险
+
+        // 折扣
+        this.saleDiscount = data.data.saleDiscount;
+        //总保费
+        this.totalPremium = data.data.sumPermium;
+      } else {
+        this.$toast(data.message);
+      }
+    },
+
+    confirmSaleDiscount() {
+      this.show = false;
+      this.saleDiscount = this.Discount;
+      // this.$refs.confirmSale.innerHTML = "重新算价";
+      // this.$refs.confirmSale.style.width = "150px";
+    },
+    // 确认报价
+    async confimHandle() {
+      window.localStorage.setItem("orderNo", this.orderNo);
+      console.log(this.orderNo);
+      this.$router.push({
+        path: "ConfirmInsured"
+
+        // params: {
+        //   orderNo: this.orderNo
+        // }
+      });
+      // if (this.$refs.confirmSale.innerHTML === "重新算价") {
+      //   this.resetHandle();
+      //   this.$refs.confirmSale.innerHTML = "确认报价";
+      // } else {
+      //   // window.localStorage.setItem("data2", JSON.stringify(data));
+      //   this.$router.push({ path: "ConfirmInsured" });
+      // }
+    },
+    cannelSale() {
+      this.show = false;
+    },
     // 选择器 共用
     choosePopup(list, name) {
       console.log(list, name);
@@ -615,12 +1396,16 @@ export default {
     },
     // 确定选择
     confirmPicker(picker, values) {
-      // console.log(picker, values);
+      // var values = this.value;
+      // console.log(5648487)
+      // console.log(values)
+      // console.log(picker, values);//
       if (picker.text) {
         this[this.currentPicker] = picker.text;
       } else {
         this[this.currentPicker] = picker;
       }
+      var bbb = (this[this.currentPicker.values] = values);
       this.showPopup = false;
     },
     //显示注册日期
@@ -641,391 +1426,34 @@ export default {
 };
 </script>
 <style lang="scss" scope>
-.price {
-  color: #4a4a4a;
-  font-size: 14px;
-  //添加更多商业品种
-  .more,
-  .close {
-    .van-button {
-      border: 0;
-      font-size: 15px;
-      font-family: PingFangSC;
-      font-weight: 500;
-      color: rgba(86, 142, 252, 1);
-      line-height: 21px;
-    }
-    text-align: center;
-  }
-  // 日期统一样式
-  // 即时起保按钮
-  .van-button--small {
-    position: absolute;
-    right: 165px;
-    top: 8px;
-    border-radius: 4px;
-  }
-  .van-field__right-icon {
-    position: absolute;
-    right: 0px;
-    top: 12px;
-    font-size: 22px;
-  }
-  .van-field__control {
-    position: absolute;
-    left: 140px;
-    top: 12px;
-    color: #f68900;
-  }
-  //钱
-  .money {
-    color: #f68900;
-  }
-  //复选框按钮
-  .van-icon-success {
-    border-radius: 3px;
-  }
-  //标题统一样式
-  .container {
-        font-family: PingFangSC;
-    .van-cell__title {
-      color: #4a4a4a;
-      font-size: 18px;
-      font-weight: 500;
-      color: rgba(74, 74, 74, 1);
-      line-height: 25px;
-      padding: 12px 0;
-      float: left;
-    }
-    .btn {
-      font-size: 15px;
-      font-weight: 500;
-      color: rgba(86, 142, 252, 1);
-      line-height: 21px;
-      float: right;
-      border: 0;
-      padding: 12px 0;
-    }
-  }
-  .van-icon-arrow-down {
-    line-height: 44px;
-  }
-  .item {
-    padding: 2px 15px;
-  }
-  //内容统一样式
-  input {
-    border: 0;
-  }
+@import "/style/price.scss";
+#loanCar {
   .van-cell__title {
-    margin-right: 15px;
+    flex: 88% 0 !important;
+    font-size: 12px;
+    color: #568efc;
   }
-  // 预核保意见
-  .container {
-    margin-bottom: 15px;
-    background: #fff;
-    .pre-verification-txt {
-      background: #fff;
-      font-size: 14px;
-      font-family: PingFangSC;
-      font-weight: 400;
-      color: rgba(74, 74, 74, 1);
-      line-height: 24px;
-      padding: 13px 15px;
-      text-align: justify;
-    }
+}
+.contributing {
+  .van-button{
+    width: 100%;
+    border-radius: 8px;
   }
-  //单元格格式
-  .cells {
-    font-family: PingFangSC;
-    .van-cell {
-      font-size: 15px;
-      font-weight: 400;
-      color: rgba(70, 70, 70, 1);
-      line-height: 21px;
-      padding: 0 15px;
-    }
-    .van-cell__title {
-      font-size: 15px;
-      font-weight: 400;
-      color: rgba(70, 70, 70, 1);
-      line-height: 21px;
-      flex: 160px 0;
-    }
-    .van-cell__value {
-      text-align: left;
-      margin-left: -70px;
-      padding-top: 12px;
-    }
-    .s1 {
-      margin-right: 22px;
-    }
-  }
-  //车辆信息
-  .car-msgInfo {
-    .van-field__control {
-      margin-left: -140px;
-    }
-    .carNumber {
-      padding-top: 0;
-      line-height: 21px;
-      .van-cell__value {
-        padding-top: 0;
-      }
-      input {
-        background: #fff;
-      }
-      .van-icon {
-        margin-right: 10px;
-      }
-    }
-    //开关按钮
-    .year {
-      padding-right: 0;
-    }
-    .van-icon-notes-o {
-      font-size: 22px;
-    }
-  }
-  //日期图标
-  .van-icon-notes-o {
-    font-size: 22px !important;
-    float: right;
-  }
-  .van-cell__value--alone {
-    padding: 0 !important;
-  }
-  //车主信息
-  .carMaster-msg {
-    .van-field__control {
-      margin-left: -140px;
-    }
-  }
-  //投保方案
-  .insurance-scheme {
-    font-family: PingFangSC;
-    .van-switch {
-      margin-top: 12px;
-    }
-    color: #464646;
-    .com-title {
-      overflow: hidden;
-      padding: 13px 15px;
-      .van-checkbox {
-        background: rgba(255, 255, 255, 1);
-        font-size: 16px;
-        font-weight: 500;
-        color: rgba(70, 70, 70, 1);
-        line-height: 22px;
-      }
-      .left {
-        float: left;
-        font-size: 16px;
-        font-weight: 500;
-        color: rgba(70, 70, 70, 1);
-        line-height: 24px;
-        padding-top: 3px;
-      }
-      .right {
-        float: right;
-        .money {
-          font-size: 17px;
-          font-weight: 500;
-          color: rgba(246, 137, 0, 1);
-          line-height: 24px;
-        }
-      }
-    }
-    //交强险
-    //起保日期
-    .insurance-msg {
-      .van-field__control{
-        // padding-right:px !important;
-      }
-      .van-field {
-        position: relative;
-      }
-      // 起保日期
-      .van-field__body {
-        text-align: left;
-      }
-      //已完税弹出信息
-      .van-field__label {
-        flex: 120px 0 !important;
-      }
-      //正常缴税提示信息
-      .van-cell__label {
-        color: red;
-        width: 120%;
-      }
-      .van-cell {
-        .title-style {
-          size: large;
-        }
-        span{
-          flex: 120px;
-        }
-        // padding: 0 15px;
-        .van-icon-notes-o {
-          padding-top: 15px;
-        }
-        .van-button {
-        
-          padding: 4px 12px;
-          margin-left: 20px;
-          line-height: 1;
-        }
-        .van-icon-notes-o {
-          padding-top: 0;
-        }
-      }
-    }
-    //保额
-    .coverage {
-      .money {
-        padding-right: 0 !important;
-      }
-    }
-  }
-  //商业险
-  .buss-insurance {
-    .bussines-msg {
-      .van-field__label {
-        flex: 120px 0;
-      }
-      .van-field__control {
-        left: 140px;
-      }
-      .van-button--plain {
-        padding: 0 12px;
-        margin-left: 100px;
-      }
-      .van-button::before{
-
-      }
-    }
-    .s2 {
-      flex: 125px 0 !important;
-      padding-top: 12px !important;
-    }
-    .second {
-      box-sizing: border-box;
-      display: flex;
-      padding: 0 15px 7px 15px;
-      font-size: 15px;
-      font-family: PingFangSC;
-      font-weight: 400;
-      color: rgba(70, 70, 70, 1);
-      line-height: 21px;
-      span {
-        flex: 1;
-        padding-top: 2px;
-        position: relative;
-      }
-      .van-checkbox {
-        flex: 1;
-      }
-    }
-    .coverage {
-      padding: 0 15px;
-      .money {
-        float: right;
-        padding: 17px 17px 0 0;
-        font-size: 17px;
-      }
-      input {
-        border: 1px solid #c7c7cc;
-        margin: 8px 0 8px 15px;
-        padding: 5px 0 5px 19px;
-        width: 35%;
-        border-radius: 4px;
-      }
-    }
-    .insures {
-      padding-top: 0;
-      // vertical-align: middle;
-      .van-checkbox {
-        line-height: 21px;
-        padding: 12px 0 20px 0;
-      }
-      .insures-right {
-        position: relative;
-        .money {
-          position: absolute;
-          top: 36px;
-          right: 17px;
-        }
-      }
-    }
-    .import-btn {
-      // position: absolute;
-      // top: 12px;
-      // left: 12px;
-      flex: 1;
-      padding-top: 0;
-    }
-  }
-  .van-divider {
-    margin: 0;
-    padding: 0 15px;
-  }
-  //确认报价
-  .offer {
-    padding: 15px 15px 22px;
-    background: #fff;
-    .offer-left {
-      float: left;
-      .p1 {
-        font-size: 23px;
-        font-family: PingFangSC;
-        font-weight: 500;
-        color: rgba(70, 70, 70, 1);
-        line-height: 33px;
-      }
-      .insures {
-        p {
-          font-size: 12px;
-          font-family: PingFangSC;
-          font-weight: 400;
-          color: rgba(70, 70, 70, 1);
-          line-height: 16px;
-        }
-      }
-    }
-    .offer-right {
+  padding: 20px;
+  .top {
+    padding-bottom: 40px;
+    font-size: 18px;
+    .van-icon {
       float: right;
-      margin: 20px 5px 0 0;
-      .van-button__text {
-        padding: 0 32px;
-      }
     }
   }
-  //保单信息
-  .warranty {
-    padding: 15px 15px;
-    background: #fff;
-    margin-bottom: 15px;
-    p {
-      font-size: 12px;
-      font-family: PingFangSC;
-      font-weight: 400;
-      color: rgba(245, 86, 86, 1);
-      line-height: 26px;
+  .content {
+    .van-checkbox {
+      margin-bottom: 15px;
     }
-    .van-button__text {
-      padding-top: 10px;
-    }
-    .warranty-btn {
-      display: flex;
-      padding: 0 7px;
-
-      .van-button {
-        flex: 1;
-        height: 30px;
-        line-height: 30px;
-        background: rgba(255, 255, 255, 1);
-        border-radius: 4px;
-        border: 1px solid rgba(86, 142, 252, 1);
+    .child{
+      .van-checkbox{
+        padding-left: 15px;
       }
     }
   }

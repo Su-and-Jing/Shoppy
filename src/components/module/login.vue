@@ -37,7 +37,7 @@
             >
               <span class="code-btn" slot="button" @click="sendVCode" v-text="codeMessage"></span>
             </van-field>
-            <div class="submit" :class="{disabled:(!phone || !sms)}" @click="handleLogin">立即登录</div>
+            <div class="submit" :class="{disabled:(!phone || !sms)}" @click="iphoneHandle">立即登录</div>
           </van-cell-group>
         </van-tab>
       </van-tabs>
@@ -45,8 +45,10 @@
   </van-popup>
 </template>
 <script>
+import config from "../../common/http/config";
+import Cookies from "js-cookie";
 import { clearInterval } from "timers";
-import { login, institution } from "@/common/library/api";
+import { login, institution, iphoneLogin } from "@/common/library/api";
 import { async } from "q";
 export default {
   name: "login",
@@ -58,9 +60,9 @@ export default {
   },
   data() {
     return {
-      username: "13095013",
+      username: "41830005",
       passwd: "0000",
-      phone: "",
+      phone: "13910653201",
       sms: "",
       showPopup: this.showLogin,
       codeDisabled: false,
@@ -80,21 +82,36 @@ export default {
     // console.log(login);
   },
   methods: {
-    // 点击登录
-    async handleLogin() {
-      const data = await login({ userCode: this.username, pwd: this.passwd });
+    // 手机号登录
+    async iphoneHandle() {
+      const data = await iphoneLogin({
+        phoneNo: this.phone,
+        type: 1,
+        vCode: this.sms
+      });
       // console.log(data);
       if (data.state === "200") {
         this.$emit("closeLogin");
-        window.localStorage.setItem("userCode", data.data.token);
-
+        window.localStorage.setItem("token", data.data.token);
       } else {
+        this.$toast.fail("手机号或验证码错误");
+      }
+    },
+    // 用户名登录
+    async handleLogin() {
+      window.localStorage.removeItem("token");
+      const data = await login({ userCode: this.username, pwd: this.passwd });
+      // console.log(data);
+        console.log(1)
+      if (data.state === "200") {
+        this.$emit("closeLogin");
+        window.localStorage.setItem("token", data.data.token);
+        window.localStorage.setItem("carVerifyCode", data.data.carVerifyCode);
+      } else {
+        console.log(1)
         this.$toast.fail("用户名或密码错误");
       }
     },
-    // closeLogin() {
-    //   this.$emit('closeLogin')
-    // },
     sendVCode() {
       if (this.codeDisabled) {
         return;
@@ -111,6 +128,20 @@ export default {
         this.codeDisabled = false;
         return;
       }
+      //手机号登录
+
+      const data = iphoneLogin({
+        phoneNo: this.phone,
+        vCode: this.msm,
+        type: 0
+      });
+      // console.log(data);
+      // if (data.state === "200") {
+      //   this.$emit("closeLogin");
+      //   window.localStorage.setItem("token", data.data.token);
+      // } else {
+      //   this.$toast.fail("用户名或密码错误");
+      // }
       this.setCodeInterval();
     },
     // 发送验证码

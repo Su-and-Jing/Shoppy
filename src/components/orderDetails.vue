@@ -6,7 +6,7 @@
       <div class="item policy">
         <span>投保单</span>
       </div>
-      <div class="item upload" >
+      <div class="item upload">
         <span>电子保单</span>
       </div>
       <div class="item invoice">
@@ -14,6 +14,9 @@
       </div>
       <div class="item upload">
         <span>影像上传</span>
+      </div>
+      <div class="item distribution">
+        <span>保单配送信息</span>
       </div>
     </div>
     <!-- 已退保、已退费 -->
@@ -70,7 +73,10 @@ export default {
       &.upload {
         background: url(../assets/04.png) no-repeat center;
         background-size: 100%;
-
+      }
+      &.distribution {
+        background: url(../assets/05.png) no-repeat center;
+        background-size: 100%;
       }
       span {
         position: absolute;

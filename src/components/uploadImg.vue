@@ -2,11 +2,12 @@
   <div class="containt">
     <!-- 身份证识别 -->
     <div class="id-wrap">
-      <div class="img-wrap">
-        <div class="img" @click="LoadImg">
-          <img class="img" src="../assets/driver-license.png" alt data-id />
+      <van-icon name="close" v-show="close1" class="close1" @click="closes1"></van-icon>
+      <div class="img-wrap" @click="oneHandle">
+        <div class="img">
+          <img class="img" :src="imgData" alt :onerror="errorImg01" />
         </div>
-        <div class="center">上传照片</div>
+        <!-- <div >上传照片</div> -->
         <van-uploader class="disabeld-file" :after-read="afterRead" />
       </div>
       <van-cell-group class="field-group">
@@ -18,19 +19,21 @@
           right-icon="arrow-down"
           @click="choosePopup(typeList, 'IDType')"
         />
-        <van-field v-model="ID" label="身份证号" placeholder="请输入身份证号" />
+        <van-field v-model="identifyNumber" label="身份证号" placeholder="请输入身份证号" />
+        <van-field v-model="addr" label="地址" placeholder="请输入地址" />
       </van-cell-group>
     </div>
     <!-- 间隔样式 -->
     <div class="line-wrapper"></div>
     <!-- 驾驶证识别 -->
     <div class="driver-license-wrap">
-      <div class="img-wrap" @click="LoadImg">
+      <van-icon name="close" v-show="close2" class="close2" @click="closes2"></van-icon>
+      <div class="img-wrap">
         <div class="img">
-          <img class="img" src="../assets/driver-license.png" alt />
+          <img class="img" :src="imgUrl" alt :onerror="errorImg02" />
         </div>
-        <div class="center">上传照片</div>
-        <van-uploader class="disabeld-file" :after-read="afterRead" />
+        <!-- <div class="center" >上传照片</div> -->
+        <van-uploader class="disabeld-file" :after-read="afterRead2" :before-read="this.LoadImg" />
       </div>
       <van-cell-group class="field-group">
         <van-field
@@ -38,7 +41,8 @@
           readonly
           label="证件类型"
           right-icon="arrow-down"
-          @click="choosePopup(typeList, 'IDType')"
+          placeholder="请选择"
+          @click="choosePopup(typeList, 'daiverIDType')"
         />
         <van-field v-model="licensePlateNumber" label="车牌号码" placeholder="请输入车牌号码" />
         <van-field v-model="vin" label="车架号" placeholder="请输入车架号" />
@@ -48,14 +52,23 @@
           label="车辆类型"
           right-icon="arrow-down"
           @click="choosePopup(carList, 'car')"
+          placeholder="请选择"
         />
-        <van-field v-model="card" readonly label="号牌种类" right-icon="arrow-down" />
+        <van-field
+          v-model="card"
+          readonly
+          label="号牌种类"
+          right-icon="arrow-down"
+          @click="choosePopup(cardList, 'card')"
+          placeholder="请选择"
+        />
         <van-field
           v-model="Properties"
           readonly
           label="使用性质"
           right-icon="arrow-down"
           @click="choosePopup(PropertiesList, 'Properties')"
+          placeholder="请选择"
         />
         <van-field v-model="registration" label="注册日期" />
         <van-field v-model="certification" label="发证日期" />
@@ -65,12 +78,13 @@
     <div class="line-wrapper"></div>
     <!-- 识别失败 -->
     <div class="failure-wrap">
+      <van-icon class="close3" name="close" v-show="close3" @click="closes3"></van-icon>
       <div class="img-wrap">
         <div class="img">
-          <img class="img" src="../assets/ID.png" alt />
+          <img class="img" :src="errImg" alt :onerror="errorImg03" />
         </div>
-        <p class="remind" v-if="">
-          <van-icon class="icon" name="warning"/>小农暂时无法识别此类图片，再试试看哟！
+        <p class="remind" v-show="errorShow">
+          <van-icon class="icon" name="warning" />小农暂时无法识别此类图片，再试试看哟！
         </p>
       </div>
       <van-cell-group class="field-group">
@@ -79,37 +93,61 @@
           readonly
           label="证件类型"
           right-icon="arrow-down"
-          @click="choosePopup(typeList.title, 'IDType')"
+          @click="choosePopup(typeList, 'IDType')"
         />
       </van-cell-group>
     </div>
     <div class="submit">
-      <van-button class="btn" type="info" size="large">确认报价</van-button>
+      <van-button class="btn" type="info" size="large" @click="confirmHandle">确认报价</van-button>
     </div>
     <!-- 选择器 公用-->
     <van-popup v-model="showPopup" position="bottom">
       <van-picker
         show-toolbar
         :columns="currentColumns"
-        value-key="title"
         @confirm="confirm"
         @cancel="showPopup = false"
       />
     </van-popup>
+
+    <!-- 显示遮罩层 -->
+    <!-- <van-overlay :show="showupload">
+      <div>cklsfj;lask</div>
+      <img src="../assets/fenlei.png" alt="">
+    </van-overlay>-->
   </div>
 </template>
 <script>
-import { UploadImg } from "@/common/library/api";
+import { UploadImg, price } from "@/common/library/api";
+import { stringify } from "querystring";
 export default {
   data() {
     return {
+      addr: "",
+      engine: "",
+      newCarSign: "1",
+      close1: false,
+      close2: false,
+      close3: false,
+      list2: "",
+      list1: [],
+      errorShow: false,
+      errorImg01: 'this.src="' + require("../assets/upload/sfz.png") + '"',
+      errorImg02: 'this.src="' + require("../assets/upload/xsz.png") + '"',
+      errorImg03: 'this.src="' + require("../assets/ID.png") + '"',
+      errImg: "",
+      imgUrl: "",
+      imgData: "",
       name: "",
       imgList: [],
-      ID: "",
+      identifyNumber: "",
       imgId: "",
       daiverIDType: "",
-      IDType: "",
-      typeList: ["车主证件-身份证正面", "车辆证件-行驶证"],
+      IDType: "车主证件-身份证正面",
+      typeList: [
+        { code: "01", text: "车主证件-身份证正面" },
+        { code: "02", text: "车辆证件-行驶证" }
+      ],
       showPopup: false,
       current: "",
       currentColumns: [],
@@ -119,23 +157,44 @@ export default {
       vin: "",
       //车辆类型
       car: "客车",
-      carList: ["客车"],
+      carCode: "A0",
+      carList: [{ code: "A0", text: "客车" }],
       //号牌种类
-      card: "",
-      cardList: [],
+      cardCode: "",
+      card: "小型汽车",
+      cardList: [
+        { code: "02", text: "小型汽车" },
+        { code: "01", text: "大型汽车" },
+        { code: "52", text: "小型新能源汽车" },
+        { code: "51", text: "外籍汽车" }
+      ],
       //使用性质
       Properties: "",
-      PropertiesList: ["营业出租租赁", "家庭自用"],
+      PropertiesCode: "",
+      PropertiesList: [
+        { code: "9A", text: "营业出租租赁" },
+        { code: "8A", text: "家庭自用" }
+      ],
       //注册日期
       registration: "",
-      //初登日期
+      //发证日期
       certification: "",
-      content:''
+      content: "",
+      aaa: "",
+      img: "",
+      list3: [],
+      list4: [],
+      bbb: "",
+      showupload: true,
+      identifyType: "",
+      imgList2: []
     };
   },
   created() {
     this.imgList = this.imgList.concat(this.$route.params.imgs);
+    this.list2 = [];
     this.LoadImg();
+    // this.confirmHandle();
   },
   methods: {
     // onChange(picker, value, index) {
@@ -147,59 +206,237 @@ export default {
 
     // 调用传图投保接口
     async LoadImg() {
+      this.$toast.loading({
+        mask: true,
+        message: "正在上传..."
+      });
+      console.log("==================");
+      this.showupload = true;
       let list = [];
       for (let i = 0; i < this.imgList.length; i++) {
         list.push({ img: this.imgList[i].content, imgId: i + "" });
       }
-      console.log(UploadImg);
       const data = await UploadImg({
         imgList: list
       });
       console.log(data);
       if (data.state === "200") {
-        this.$toast.success("上传成功");
+        // this.$toast.success("上传成功");
+        this.showupload = false;
+        this.imgList2 = data.data.imgList;
         if (data.data.customerInfo) {
+          this.close1 = true;
+          // console.log(imgData)
           // this.IDType = data.data.customerInfo.identifyType;
-          this.ID = data.data.customerInfo.identifyNumber;
+          this.addr = data.data.customerInfo.addr;
+          this.identifyNumber = data.data.customerInfo.identifyNumber;
           this.name = data.data.customerInfo.name;
+          this.identifyType = data.data.customerInfo.identifyType;
+          for (let i = 0; i < data.data.imgList.length; i++) {
+            if (data.data.imgList[i].imgType === "1") {
+              this.IDType = "车主证件-身份证正面";
+              this.imgData = data.data.imgList[i].imgUrl;
+            } else if (data.data.imgList[i].imgType === "2") {
+              console.log(this.daiverIDType);
+              this.daiverIDType = "车辆证件-行驶证";
+              this.imgUrl = data.data.imgList[i].imgUrl;
+            }
+          }
         }
         if (data.data.carInfo) {
+          this.close2 = true;
+          this.engine = data.data.carInfo.engine;
+          this.licensePlateNumber = data.data.carInfo.plateNo;
+          this.motorTypeCode = data.data.carInfo.motorTypeCode;
+          this.vin = data.data.carInfo.vIN;
+          this.registration = data.data.carInfo.registerDate;
+          this.certification = data.data.carInfo.issueDate;
+          this.motorUsageTypeCode = data.data.carInfo.motorUsageTypeCode;
+          if (data.data.carInfo.motorUsageTypeCode === "9A") {
+            this.Properties = "家庭自用";
+          } else {
+            this.Properties = "营业出租租赁";
+          }
+        }
+        for (let i = 0; i < data.data.imgList.length; i++) {
+          if (data.data.imgList[i].imgType === "1") {
+            this.IDType = "车主证件-身份证正面";
+            this.imgData = data.data.imgList[i].imgUrl;
+          } else if (data.data.imgList[i].imgType === "2") {
+            this.daiverIDType = "车辆证件-行驶证";
+            this.imgUrl = data.data.imgList[i].imgUrl;
+          }
+        }
+        if (data.data.carInfo === null && data.data.customerInfo === null) {
+          this.errorShow = true;
+          this.close3 = true;
+          this.errImg = data.data.imgList[0].imgUrl;
+        }
+        for (var i = 0; i < this.cardList.length; i++) {}
+      } else {
+        this.$toast.fail("上传失败");
+      }
+    },
+    oneHandle() {},
+    async afterRead(item) {
+      this.list2 = this.list2.concat(JSON.stringify(item));
+      this.aaa = item.content;
+      console.log(this.aaa);
+      this.list1.push({
+        img: this.aaa,
+        imgId: 0 + "",
+        imgType: "1"
+      });
+      const data = await UploadImg({
+        imgList: this.list1
+      });
+      this.$toast.loading({
+        mask: true,
+        message: "正在上传..."
+      });
+      if (data.state === "200") {
+        this.$toast.success("上传成功999999");
+        if (data.data.customerInfo) {
+          this.close1 = true;
+          // console.log(imgData)
+          this.identifyType = data.data.customerInfo.identifyType;
+          // this.IDType = data.data.customerInfo.identifyType;
+          this.addr = data.data.customerInfo.addr;
+          this.identifyNumber = data.data.customerInfo.identifyNumber;
+          this.name = data.data.customerInfo.name;
+          for (let i = 0; i < data.data.imgList.length; i++) {
+            if (data.data.imgList[i].imgType === "1") {
+              this.IDType = "车主证件-身份证正面";
+              this.imgData = data.data.imgList[i].imgUrl;
+            } else if (data.data.imgList[i].imgType === "2") {
+              console.log(this.daiverIDType);
+              this.daiverIDType = "车辆证件-行驶证";
+              this.imgUrl = data.data.imgList[i].imgUrl;
+            }
+          }
+        } else {
+          this.errorShow = true;
+          this.close3 = true;
+          this.errImg = data.data.imgList[0].imgUrl;
+        }
+      }
+    },
+
+    async afterRead2(item) {
+      this.list3 = this.list3.concat(JSON.stringify(item));
+      this.bbb = item.content;
+      this.list4.push({
+        img: this.bbb,
+        imgId: 0 + "",
+        imgType: "2"
+      });
+      const data = await UploadImg({
+        imgList: this.list4
+      });
+      this.$toast.loading({
+        mask: true,
+        message: "正在上传..."
+      });
+      if (data.state === "200") {
+        this.$toast.success("上传成功88888");
+        if (data.data.carInfo) {
+          this.close2 = true;
           this.licensePlateNumber = data.data.carInfo.plateNo;
           this.vin = data.data.carInfo.vIN;
+          this.registration = data.data.carInfo.registerDate;
+          this.certification = data.data.carInfo.issueDate;
+
+          if (data.data.carInfo.motorUsageTypeCode === "9A") {
+            this.Properties = "家庭自用";
+          } else {
+            this.Properties = "营业出租租赁";
+          }
+          for (let i = 0; i < data.data.imgList.length; i++) {
+            if (data.data.imgList[i].imgType === "1") {
+              this.IDType = "车主证件-身份证正面";
+              this.imgData = data.data.imgList[i].imgUrl;
+            } else if (data.data.imgList[i].imgType === "2") {
+              this.daiverIDType = "车辆证件-行驶证";
+              this.imgUrl = data.data.imgList[i].imgUrl;
+            }
+          }
+        } else {
+          this.errorShow = true;
+          this.close3 = true;
+          this.errImg = data.data.imgList[0].imgUrl;
         }
       } else {
         this.$toast.fail("上传失败");
       }
     },
-   async afterRead() {
-      let list = [];
-      for (let i = 0; i < this.imgList.length; i++) {
-        list.push({ img: this.imgList[i].content, imgId: i + "" });
-      }
-      console.log(UploadImg);
-      const data = await UploadImg({
-        imgList: list
+    async confirmHandle() {
+      window.localStorage.getItem("token");
+      console.log("chuantu");
+      var car = {};
+      car.plateNo = this.licensePlateNumber;
+      car.VIN = this.vin;
+      car.motorTypeCode = this.motorTypeCode;
+      car.motorUsageTypeCode = this.motorUsageTypeCode;
+      car.newCarSign = this.newCarSign;
+      car.engine = this.engine;
+      var customer = {};
+      customer.name = this.name;
+      customer.identifyNo = this.identifyNumber;
+      customer.identifyType = this.identifyType;
+      customer.role = this.role;
+      customer.type = this.type;
+      const data = await price({
+        car,
+        customer,
+        imgList: this.imgList2
       });
-      console.log(data);
+      window.localStorage.setItem("data", JSON.stringify(data));
       if (data.state === "200") {
-        this.$toast.success("上传成功");
-        if (data.data.customerInfo) {
-          // this.IDType = data.data.customerInfo.identifyType;
-          this.ID = data.data.customerInfo.identifyNumber;
-          this.name = data.data.customerInfo.name;
-        }
+        this.$router.push({
+          name: "price",
+          params: p
+        });
+      }
+      if (data.state === "1") {
+        this.$router.push({ name: "price" });
+        this.$toast("请手动把信息补全");
       } else {
-        this.$toast.fail("上传失败");
+        this.$toast.fail("跳转失败");
       }
     },
-    choosePopup(list, type) {
+    choosePopup(list, name) {
+      console.log(list, name);
       this.showPopup = true;
-      this.current = type;
       this.currentColumns = list;
+      this.current = name;
     },
-    confirm(picker) {
-      this.showPopup = false;
+    confirm(picker, values) {
+      picker = this.currentColumns[values].text;
       this[this.current] = picker;
+      this.showPopup = false;
+      this.PropertiesCode = this.PropertiesList[values].code;
+      this.cardCode = this.cardList[values].code;
+    },
+    closes1() {
+      this.close1 = false;
+      this.imgData = "";
+      this.name = "";
+      this.identifyNumber = "";
+    },
+    closes2() {
+      this.close2 = false;
+      this.licensePlateNumber = "";
+      this.vin = "";
+      this.registration = "";
+      this.certification = "";
+      this.Properties = "";
+      this.imgUrl = "";
+      this.car = "";
+      this.card = "";
+    },
+    closes3() {
+      this.close3 = true;
+      this.errImg = "";
     }
   }
 };
@@ -209,6 +446,17 @@ export default {
 .containt {
   min-height: 100vh;
   background: #fff;
+  .id-wrap {
+    position: relative;
+
+    .close1 {
+      position: absolute;
+      height: 30px;
+      top: 25px;
+      right: 30px;
+      font-size: 24px;
+    }
+  }
   .id-wrap,
   .driver-license-wrap,
   .failure-wrap {
@@ -242,6 +490,11 @@ export default {
         }
       }
     }
+
+    // .van-uploader {
+    //   position: relative;
+    // }
+
     .field-group {
       width: 100%;
     }
@@ -259,6 +512,28 @@ export default {
       bottom: 12px;
     }
   }
+  .driver-license-wrap {
+    position: relative;
+
+    .close2 {
+      position: absolute;
+      height: 30px;
+      top: 25px;
+      right: 30px;
+      font-size: 24px;
+    }
+  }
+  .failure-wrap {
+    position: relative;
+    .close3 {
+      position: absolute;
+      height: 30px;
+      top: 25px;
+      right: 30px;
+      font-size: 24px;
+    }
+  }
+
   .submit {
     margin: 24px 16px;
     .btn {

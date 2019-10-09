@@ -15,6 +15,7 @@ import UploadScreenage from '@/components/uploadScreenage'
 import Price from '@/components/price'
 import IndexPc from '@/components/indexPc'
 
+
 Vue.use(Router)
 
 export default new Router({
