@@ -47,39 +47,8 @@
             <van-switch-cell v-model="open" class="year" />
           </van-cell>
           <van-cell title="贷款车" value @change="changeHandle">
-            <van-switch-cell v-model="loanCar" class="year" />
+            <van-switch-cell v-model="open" class="year" />
           </van-cell>
-          <van-cell-group v-show="loanCar">
-            <van-cell
-              title="如需搜索特约库或手动添加特约，请点击右侧按钮"
-              is-link
-              arrow-direction="down"
-              id="loanCar"
-              @click="loanCarButton"
-            />
-            <van-cell title="特约1："></van-cell>
-          </van-cell-group>
-          <van-popup v-model="loanCarPopup" position="bottom"  closeable>
-            <div class="contributing">
-              <div class="top">
-                <span>特别约定</span>
-                <!-- <van-icon name="cross"></van-icon> -->
-              </div>
-              <div class="content">
-                <div class="title">
-                  <van-checkbox v-model="checked1">手工历史特约内容</van-checkbox>
-                </div>
-                <div class="child">
-                  <van-checkbox v-model="checked2">本保单第一受益人是上海租赁公司</van-checkbox>
-                  <van-checkbox v-model="checked3">本保单第一受益人是北京租赁公司</van-checkbox>
-                </div>
-                <div class="title">
-                  <van-checkbox v-model="checked4">手工添加特约</van-checkbox>
-                </div>
-              </div>
-              <van-button type="info">确定</van-button>
-            </div>
-          </van-popup>
           <van-popup v-model="showPopupDate" position="bottom">
             <van-datetime-picker
               @confirm="confirmDate"
@@ -940,16 +909,7 @@ export default {
       saleDiscount: "",
       // 预核保信息
       iLogPreUdwMess: "",
-      data2: "",
-      // 贷款车标识
-      loanCar: false,
-      // 特别约定
-      loanCarPopup: false,
-      checked1: false,
-      checked2: false,
-      checked3: false,
-      checked4: false,
-
+      data2: ""
     };
   },
   mounted() {
@@ -960,11 +920,6 @@ export default {
   created() {},
   watch: {},
   methods: {
-    // 特别约定
-    loanCarButton() {
-      this.loanCarPopup = true;
-    },
-    confirmloanCar() {},
     //平台信息参考
     async terrace() {
       var data = JSON.parse(localStorage.getItem("data"));
@@ -978,6 +933,7 @@ export default {
     offer() {
       var data = JSON.parse(localStorage.getItem("data"));
       var orderNo = data.data.orderNo;
+
       this.$router.push({
         name: "offer",
         params: { orderNo }
@@ -991,13 +947,8 @@ export default {
     },
     changeHandle() {
       this.confirm = true;
+      console.log(this.isActives);
       this.isActives = !this.isActives;
-      // this.isActives = true;
-      // if (this.isActives == false) {
-      //   this.isActives = true;
-      // }
-      // console.log("66666666666666666666");
-      // console.log(this.isActives);
     },
     //渲染页面
     handle() {
@@ -1036,6 +987,8 @@ export default {
         // console.log(data.data.customer.identifyType)
         if (this.cardList[i].code === data.data.customer.identifyType) {
           this.identifyType = this.cardList[i].code;
+          console.log(154646868);
+          console.log(this.identifyType);
           this.card = this.cardList[i].text;
         }
       }
@@ -1115,8 +1068,8 @@ export default {
 
         // if (this.kindCode=== data.data.kindList[i].kindCode) {
         this.carChecked = data.data.kindList[i].notDeductibleFlag;
-        // console.log("===================================");
-        // console.log(data.data.kindList[i].notDeductibleFlag);
+        console.log("===================================");
+        console.log(data.data.kindList[i].notDeductibleFlag);
         this.carSwitch = true;
         if (this.kindCode === this.typesList[0].code) {
           this.carChecked = true;
@@ -1139,6 +1092,7 @@ export default {
     },
     //重新算价
     async resetHandle() {
+      // console.log()
       window.localStorage.getItem("token");
       // console.log([56465])
       //车辆信息
@@ -1367,15 +1321,11 @@ export default {
     },
     // 确认报价
     async confimHandle() {
-      window.localStorage.setItem("orderNo", this.orderNo);
-      console.log(this.orderNo);
-      this.$router.push({
-        path: "ConfirmInsured"
+      // window.localStorage.setItem('orderNo',this.orderNo)
+      console.log(this.orderNo)
+      
+      this.$router.push({path: "ConfirmInsured",query: {orderNo: this.orderNo,}});
 
-        // params: {
-        //   orderNo: this.orderNo
-        // }
-      });
       // if (this.$refs.confirmSale.innerHTML === "重新算价") {
       //   this.resetHandle();
       //   this.$refs.confirmSale.innerHTML = "确认报价";
@@ -1396,10 +1346,8 @@ export default {
     },
     // 确定选择
     confirmPicker(picker, values) {
-      // var values = this.value;
-      // console.log(5648487)
-      // console.log(values)
-      // console.log(picker, values);//
+     
+      console.log(picker, values);
       if (picker.text) {
         this[this.currentPicker] = picker.text;
       } else {
@@ -1417,6 +1365,7 @@ export default {
     // 确定选择
     confirmDate(picker) {
       this.currentDate = this[this.currentDateName];
+      console.log(this[this.currentDateName])
       let date = dayjs(picker).format("YYYY-MM-DD");
       console.log(date, this.currentDateName);
       this[this.currentDateName] = date;
@@ -1427,35 +1376,4 @@ export default {
 </script>
 <style lang="scss" scope>
 @import "/style/price.scss";
-#loanCar {
-  .van-cell__title {
-    flex: 88% 0 !important;
-    font-size: 12px;
-    color: #568efc;
-  }
-}
-.contributing {
-  .van-button{
-    width: 100%;
-    border-radius: 8px;
-  }
-  padding: 20px;
-  .top {
-    padding-bottom: 40px;
-    font-size: 18px;
-    .van-icon {
-      float: right;
-    }
-  }
-  .content {
-    .van-checkbox {
-      margin-bottom: 15px;
-    }
-    .child{
-      .van-checkbox{
-        padding-left: 15px;
-      }
-    }
-  }
-}
 </style>

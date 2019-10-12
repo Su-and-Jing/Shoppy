@@ -98,10 +98,6 @@
               @click="choosePopup(certificateList, 'certificateType')"
             />
             <van-field label="证件号码" clearable placeholder="请输入证件号码" v-model="identifyNo" />
-            <van-cell title="贷款车" value class="loanCar">
-              <van-switch-cell v-model="loanCar" class="year" />
-            </van-cell>
-            <van-field label="第一受益人" clearable placeholder="请输入第一受益人" v-show="loanCar" />
             <span class="submit" type="info" @click="priceHandle">立即报价</span>
           </van-cell-group>
         </template>
@@ -144,8 +140,6 @@ import { price, institution } from "@/common/library/api";
 export default {
   data() {
     return {
-      //贷款车
-      loanCar: false,
       // 验车码
       carVerifyCode: "",
       // 车牌号
@@ -359,16 +353,16 @@ export default {
     // 确定选择
     confirmPicker(picker, values) {
       picker = this.columns[values].text;
-
+      
       this[this.currentPicker] = picker;
-      console.log(this.currentPicker);
+      console.log(this.currentPicker)
       this.showPopup = false;
       this.type = this.masterPropertiesList[values].code;
     },
     // 关闭登录框 登录成功
     async closeLogin() {
       this.showInsitution = true;
-      console.log(this.showInsitution);
+      console.log(this.showInsitution)
       this.onLogin = true;
       this.showLoginPop = false;
     }
@@ -380,17 +374,12 @@ export default {
 @import "/style/index.scss";
 @import "/style/share.scss";
 </style>
-<style  lang="scss" scope>
+<style>
 .van-checkbox__icon {
   font-size: 16px;
   margin-right: -4px;
 }
 .border-no.van-cell:not(:last-child)::after {
   display: none;
-}
-.loanCar {
-  .van-switch-cell {
-    padding: 0;
-  }
 }
 </style>

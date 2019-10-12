@@ -15,36 +15,28 @@
               class="figure tab-item"
               :class="{'active': currentTab == 1}"
               @click="changeTab(1)"
-            >传图投保</span>
+            >
+              传图投保
+            </span>
             <span
               class="manually tab-item"
               :class="{'active': currentTab == 2}"
               @click="changeTab(2)"
-            >手动输入</span>
+            >
+              手动输入
+            </span>
           </div>
           <!-- 传图投保 -->
-          <div class="figure-wrap" v-if="currentTab == 1">
+          <div class="figure-wrap" v-if="currentTab == 1" >
             <p class="title">请上传投保车辆的行驶证、车主身份证</p>
             <div class="upload">
-              <!-- <v-uploader :multiple="true" :item-limit = 2 preview-img="../assets/sc.png"></v-uploader> -->
-              <el-upload
-                class="upload-demo"
-                drag
-                action="https://jsonplaceholder.typicode.com/posts/"
-                multiple
-                list-type="picture-card"
-              >
-                <div class="el-upload__text">拖拽图片到这里上传</div>
-              </el-upload>
+              <Upload></Upload>
+              <!-- <p class="txt">请拖拽图片到此处上传</p> -->
             </div>
-            <div class="el-upload__tip" slot="tip">共0张，还能上传2张</div>
-            <!-- <p class="title">请上传投保车辆的行驶证、车主身份证</p>
-            <div class="upload">
-              <v-uploader :multiple="true" :item-limit = 2 preview-img="../assets/sc.png"></v-uploader>
-            </div>-->
-            <!-- <div class="images">
-              <img src="../assets/sc.png" alt="">
-            </div>-->
+            <!-- <p class="num">共1张，还能上传1张</p> -->
+            <!-- <div class="img">
+              <img src="../assets/上传.png" alt />
+            </div> -->
             <div class="btn">
               <van-button color="#568EFC">立即报价</van-button>
               <van-button color="#FEA23B">我的订单</van-button>
@@ -52,7 +44,7 @@
             </div>
           </div>
           <!-- 手动输入 -->
-          <div class="manually-wrap" v-if="currentTab == 2">
+          <div class="manually-wrap" v-if="currentTab == 2" >
             <p class="title">如您手头暂无证件图片，也可选择车牌号报价</p>
             <van-cell-group>
               <div class="license-number van-hairline--bottom">
@@ -98,13 +90,13 @@
                 @click="choosePopup(certificateList, 'certificateType')"
               />
               <van-field label="证件号码" clearable placeholder="请输入证件号码" v-model="idNumber" />
-              <span class="submit" type="info" @click="priceHandle">立即报价</span>
+              <span class="submit" type="info"  @click="priceHandle">立即报价</span>
             </van-cell-group>
           </div>
         </div>
       </div>
     </div>
-    <!-- 选择器 公用-->
+     <!-- 选择器 公用-->
     <van-popup v-model="showPopup" position="bottom">
       <van-picker
         show-toolbar
@@ -113,7 +105,7 @@
         @cancel="showPopup = false"
       />
     </van-popup>
-    <!-- 登录 -->
+     <!-- 登录 -->
     <Login :show-login="showLoginPop" @closeLogin="closeLogin"></Login>
     <!-- 选择出单机构 -->
     <Institution :show-insitution="showInsitution"></Institution>
@@ -122,14 +114,15 @@
 
 <script>
 // import Login from './login';
-// import Upload from "./module/upload";
+import Upload from "./module/upload";
 import Login from "./module/login.vue";
 import Institution from "./module/institution";
-import { async } from "q";
+import { async } from 'q';
 export default {
-  components: {
+    components: {
     Login,
-    Institution
+    Institution,
+    Upload
   },
   created() {
     // if (navigator.userAgent && navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
@@ -216,12 +209,7 @@ export default {
   },
 
   methods: {
-    //拖拽上传
-    // uploadDone(files) {
-    //   if (files && Array.isArray(files) && files.length) {
-    //     // do something...
-    //   }
-    // },
+   
     // 切换tab
     changeTab(type) {
       if (!this.onLogin) {
@@ -279,35 +267,7 @@ export default {
 
 <style lang="scss" scope>
 @import "/style/share.scss";
-// .qq-upload-fail {
-//   display: none !important;
-// }
-// .qq-upload-status-text-selector {
-//   display: none;
-// }
-// .info-show {
-//   display: none;
-// }
-// .qq-upload-button-selector {
-//   display: none !important;
-// }
 .index-containt {
-  .manually {
-    padding-right: 0 !important;
-    margin-right: 65px;
-    padding-bottom: 11px;
-    &:hover {
-      border-bottom: 3px solid #5c81ff;
-    }
-  }
-  .figure {
-    padding-right: 0 !important;
-    margin-right: 65px;
-    padding-bottom: 11px;
-    &:hover {
-      border-bottom: 3px solid #5c81ff;
-    }
-  }
   .bj {
     background: #417bf4;
     background: url("../assets/bg2.png") no-repeat;
@@ -334,8 +294,7 @@ export default {
         line-height: 44px;
       }
     }
-    .figure-wrap,
-    .manually-wrap {
+    .figure-wrap,.manually-wrap {
       .title {
         background: url("../assets/clock.png") no-repeat left center;
         background-size: 20px 20px;
@@ -346,57 +305,17 @@ export default {
       }
     }
     .figure-wrap {
-      .el-upload-list__item-actions {
-        margin-top: 100px
-      }
-      position: relative;
-      .el-upload__text {
-        color: #fff;
-        width: 170px;
-        height: 25px;
-        line-height: 25px;
-        background: rgba(0, 0, 0, 1);
-        opacity: 0.5;
-        border-radius: 2px;
-        position: absolute;
-        top: 90px;
-        left: 32%;
-        text-align: center !important;
-      }
       .upload {
-        border: 1px dashed #4a4a4a;
-        width: 500px !important;
-        height: 400px !important;
-      }
-      .el-upload-dragger {
-        width: 478px !important;
-        height: 377px !important;
-        background: url("../assets/upl.png") no-repeat;
-        background-size: 100% !important;
-        padding-bottom: 100px !important;
-        position: relative;
-        border: 0;
-      }
-      .qq-upload-list {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-      }
-      .v-uploader {
         width: 478px;
         height: 377px;
-        box-sizing: border-box;
-        opacity: 1;
-        // background: red;
+        // background: url("../assets/上传示意.png") no-repeat;
+        background-size: 100%;
         position: relative;
-      }
-      .v-uploader {
-        height: 377px;
-        .txt {
+        .txt{
           position: absolute;
           font-size: 14px;
           left: 150px;
-          top: 95px;
+          top:95px;
           color: #fff;
           width: 170px;
           text-align: center;
@@ -404,7 +323,7 @@ export default {
           opacity: 0.8;
           height: 36px;
           line-height: 36px;
-          background: rgba(70, 70, 70, 1);
+          background:rgba(70, 70, 70, 1)
         }
       }
       .num {
@@ -418,7 +337,7 @@ export default {
       }
       .btn {
         padding-bottom: 50px;
-        margin-top: 130px;
+        margin-top: 160px;
         .van-button {
           width: 160px;
           height: 40px;
@@ -440,4 +359,6 @@ export default {
 .border-no.van-cell:not(:last-child)::after {
   display: none;
 }
+
+
 </style>

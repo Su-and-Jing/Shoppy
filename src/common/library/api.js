@@ -41,16 +41,6 @@ export const TerracePage = orderNo => {
   return axios.get(`/api/quote/platFormMessage/${orderNo}`,
   )
 }
-// 订单列表页
-export const orderInfoList = data => {
-  return axios.post('/api/orderInfo/orderInfoList', data)
-}
-// 在线支付接口
-export const apply = orderNo => {
-  return axios.get(`/api/payment/apply/${orderNo}`,
-  )
-}
-
 
 
 
