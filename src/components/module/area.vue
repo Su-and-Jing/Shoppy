@@ -7,7 +7,7 @@
       @click="checkArea = true"
       placeholder="请选择地址"
     />
-    
+
     <!-- 配送地址 -->
     <van-popup position="bottom" v-model="checkArea">
       <van-area
@@ -21,8 +21,6 @@
 </template>
 <script>
 import area from "@/common/library/area";
-import { priceToConfirm } from "@/common/library/api";
-
 export default {
   props: ["currentArea"],
   data() {
@@ -30,24 +28,20 @@ export default {
       checkArea: false,
       areaList: area,
       current: this.currentArea,
-      cityValue:this.currentArea,
+      cityValue: "",
       cityValue0: "",
       cityValue1: "",
-      cityValue2: "",
-
+      cityValue2: ""
     };
   },
  
   created() {
-    
-  },
-  mounted(){
     console.log(this.currentArea)
   },
+
   methods: {
-    async confirmArea(val) {
-      console.log(val)
-      this.current0 =val[0].code;
+    confirmArea(val) {
+      this.current0 = val[0].code;
       this.current1 = val[1].code;
       this.current2 = val[2].code;
       this.cityValue = `${val[0].name} ${val[1].name} ${val[2].name}`;

@@ -7,15 +7,17 @@ import config from './config.js'
 const instance = axios.create({
 	baseURL: config.baseURL,
 	headers: config.headers,
-	transformResponse: [function (data) {}]
+	transformResponse: [function (data) { }]
 })
 
 instance.interceptors.request.use(
 	config => {
-		  var token = window.localStorage.getItem("token")
-        if (token) {
-            config.headers.token = token
-        }
+
+		var token = window.localStorage.getItem("token")
+		if (token) {
+			config.headers.token = token
+		}
+
 		return config
 	},
 	error => {

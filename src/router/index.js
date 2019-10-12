@@ -14,13 +14,13 @@ import ConfirmInsured from '@/components/confirmInsured'
 import UploadScreenage from '@/components/uploadScreenage'
 import Price from '@/components/price'
 import IndexPc from '@/components/indexPc'
-import Vehicle from '@/components/VehicleBrand'
+import QRCode from 'qrcodejs2';
+
 
 Vue.use(Router)
-
+Vue.prototype.$qrCode = QRCode
 export default new Router({
   routes: [
-    
     {
       path: '/',
       name: 'index',
@@ -141,13 +141,6 @@ export default new Router({
         title: '影像上传'
       }
     },
-    {
-      path: '/Vehicle',
-      name: 'Vehicle',
-      component: Vehicle,
-      meta: {
-        title: '车辆品牌'
-      }
-    },
+
   ]
 })

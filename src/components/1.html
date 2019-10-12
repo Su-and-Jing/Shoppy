@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>H5新特性实现拖拽图片上传</title>
+    <style>
+        * {
+            text-align: center;
+        }
+
+        #container {
+            border: 1px solid #aaa;
+            padding: 10px;
+            margin: 10px auto;
+            width: 500px;
+            min-height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>请选择的图片拖拽到下方区域</h3>
+    <div id="container"> </div>
+    <script>        // 拖动的源事件对象--document         // 监听drop事件，防止浏览器中打开客户端图片        document.ondragover = function (e) {            // 阻止ondragover的默认行为（触发ondragleave)            e.preventDefault();        };        document.ondrop = function (e) {            // 阻止ondrop的默认行为(触发在当前窗口打开客户端图片)            e.preventDefault();        };         // 拖动的目标对象---div#container         // 若图片释放此元素上方，则需要在其中显示此图片        container.ondragover = function (e) {            // 阻止ondragover的默认行为（触发ondragleave)            e.preventDefault();        }         container.ondrop = function (e) {            // 读取拖放进来的客户端图片内容            // console.log(e.dataTransfer);             // var list=e.dataTransfer.file;            // for(var i=0;i<list.length;i++){            // 	var f=list[i];            // 	console.log(f);            // }             // 只读取一个图片做演示            var f0 = e.dataTransfer.files[0];            // 创建文件读取器            var reader = new FileReader();            // 读取指定文件中的内容，作为"数据URL"            reader.readAsDataURL(f0);            reader.onload = function () {                console.log("客户端数据读取完成");                // 读取的结果(格式为数据编码)                console.log(reader.result)                var img = new Image();                img.src = reader.result;                container.appendChild(img);                // 用ajax将读出的图片结果提交给服务端            }        }    </script>
+</body>
+
+</html>

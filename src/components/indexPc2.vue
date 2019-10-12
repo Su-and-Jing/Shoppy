@@ -6,8 +6,8 @@
           class="notice-bar"
           color="#fff"
           background="rgba(0,0,0,0)"
-          text="系统公告：江苏省苏州市因系统维护，10月2日19:00-24:00暂停出单。"
-          
+          text="足协杯战线连续第2年上演广州德比战，上赛季半决赛上恒大以两回合5-3的总比分淘汰富力。"
+          left-icon="volume-o"
         />
         <div class="content">
           <div class="tab">
@@ -26,21 +26,26 @@
           <div class="figure-wrap" v-if="currentTab == 1">
             <p class="title">请上传投保车辆的行驶证、车主身份证</p>
             <div class="upload">
-              <Upload @upImgList="upImg"></Upload>
-              <!-- <p class="txt">请拖拽图片到此处上传</p> -->
+              <!-- <v-uploader :multiple="true" :item-limit = 2 preview-img="../assets/sc.png"></v-uploader> -->
+              <el-upload
+                class="upload-demo"
+                drag
+                action="https://jsonplaceholder.typicode.com/posts/"
+                multiple
+                list-type="picture"
+              >
+                <div class="el-upload__text">拖拽图片到这里上传</div>
+              </el-upload>
             </div>
-            <!-- <p class="num">共1张，还能上传1张</p> -->
-            <!-- <div class="img">
-              <img :src="imgUrl" alt :onerror="Img01" />
-            </div>-->
+            <div class="el-upload__tip" slot="tip">共0张，还能上传2张</div>
             <div class="btn">
-              <van-button color="#568EFC" @click="handle">立即报价</van-button>
+              <van-button color="#568EFC">立即报价</van-button>
               <van-button color="#FEA23B">我的订单</van-button>
               <p>当日验车码：080913</p>
             </div>
           </div>
           <!-- 手动输入 -->
-          <!-- <div class="manually-wrap" v-if="currentTab == 2">
+          <div class="manually-wrap" v-if="currentTab == 2">
             <p class="title">如您手头暂无证件图片，也可选择车牌号报价</p>
             <van-cell-group>
               <div class="license-number van-hairline--bottom">
@@ -88,7 +93,7 @@
               <van-field label="证件号码" clearable placeholder="请输入证件号码" v-model="idNumber" />
               <span class="submit" type="info" @click="priceHandle">立即报价</span>
             </van-cell-group>
-          </div>-->
+          </div>
         </div>
       </div>
     </div>
@@ -110,30 +115,22 @@
 
 <script>
 // import Login from './login';
-import Upload from "./module/upload";
+// import Upload from "./module/upload";
 import Login from "./module/login.vue";
 import Institution from "./module/institution";
 import { async } from "q";
 export default {
   components: {
     Login,
-    Institution,
-    Upload
+    Institution
   },
   created() {
-    if (
-      navigator.userAgent &&
-      navigator.userAgent.match(
-        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
-      )
-    ) {
-      this.$router.push({ path: "/index" });
-    }
+    // if (navigator.userAgent && navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+    //   this.$router.push({ path: "/index" });
+    // }
   },
   data() {
     return {
-      // Img01: 'this.src="' + require("../assets/sc.png") + '"',
-      imgUrl: "",
       // 登陆框
       showLoginPop: false,
       // 记录登录状态
@@ -141,7 +138,7 @@ export default {
       // 机构名称 简写
       institutions: "北京",
       // 选择出单机构
-      showInsitution: false,
+      showInsitution: true,
       cityShadow: false,
       showPopup: false,
       columns: [],
@@ -207,18 +204,27 @@ export default {
         "外国人永久居住证"
       ],
       // 证件号码
-      idNumber: "",
-      imgLists: [],
-      content: "",
-      imgList: [],
-      content: ""
+      idNumber: ""
     };
   },
+
   methods: {
-    upImg(item) {
-      console.log(item);
-      this.imgList = item;
+    handleRemove(file) {
+      console.log(file);
     },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleDownload(file) {
+      console.log(file);
+    },
+    //拖拽上传
+    // uploadDone(files) {
+    //   if (files && Array.isArray(files) && files.length) {
+    //     // do something...
+    //   }
+    // },
     // 切换tab
     changeTab(type) {
       if (!this.onLogin) {
@@ -236,19 +242,11 @@ export default {
       this.$router.push({ path: "orderList" });
     },
     // 传图投保
-    handle() {
-      console.log(this.imgList);
-      for (var i = 0; i < this.imgList.length; i++) {
-        this.imgList[i].content = this.imgList[i].file.src;
-        console.log(this.imgList[i].content);
-        // this.imgLists[i].content.push(this.imgList[i].file.src)
-        // console.log(this.imgLists[i].content);
-      }
-
+    afterRead(item) {
       this.$router.push({
         name: "uploadImg",
         params: {
-          imgs: this.imgList
+          imgs: item
         }
       });
     },
@@ -284,11 +282,11 @@ export default {
 
 <style lang="scss" scope>
 @import "/style/share.scss";
-// .img {
-//   img {
-//     margin-top: 50px;
-//   }
-// }
+
+.el-upload-list__item {
+  float: left;
+  width: 200px;
+}
 .index-containt {
   .manually {
     padding-right: 0 !important;
@@ -302,7 +300,6 @@ export default {
     padding-right: 0 !important;
     margin-right: 65px;
     padding-bottom: 11px;
-    border-bottom: 3px solid #5c81ff;
     &:hover {
       border-bottom: 3px solid #5c81ff;
     }
@@ -319,14 +316,13 @@ export default {
   .main {
     margin: 0 auto;
     // height: 600px;
-    width: 1187px;
+    width: 1024px;
   }
   .content {
     background: #fff;
     // height: 700px;
-    margin-top: 430px;
+    margin-top: 320px;
     padding: 30px 170px;
-    border-radius: 20PX;
     .tab {
       border-bottom: 1px solid rgba(229, 229, 229, 1);
       span {
@@ -346,12 +342,49 @@ export default {
       }
     }
     .figure-wrap {
+      position: relative;
+      .el-upload__text {
+        color: #fff;
+        width: 170px;
+        height: 25px;
+        line-height: 25px;
+        background: rgba(0, 0, 0, 1);
+        opacity: 0.5;
+        border-radius: 2px;
+        position: absolute;
+        top: 90px;
+        left: 32%;
+        text-align: center !important;
+      }
       .upload {
+        border: 1px dashed #4a4a4a;
+        width: 500px !important;
+        height: 400px !important;
+      }
+      .el-upload-dragger {
+        width: 478px !important;
+        height: 377px !important;
+        background: url("../assets/upl.png") no-repeat;
+        background-size: 100% !important;
+        padding-bottom: 100px !important;
+        position: relative;
+        border: 0;
+      }
+      .qq-upload-list {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+      }
+      .v-uploader {
         width: 478px;
         height: 377px;
-        // background: url("../assets/上传示意.png") no-repeat;
-        background-size: 100%;
+        box-sizing: border-box;
+        opacity: 1;
+        // background: red;
         position: relative;
+      }
+      .v-uploader {
+        height: 377px;
         .txt {
           position: absolute;
           font-size: 14px;
@@ -378,7 +411,7 @@ export default {
       }
       .btn {
         padding-bottom: 50px;
-        margin-top: 190px;
+        margin-top: 150px;
         .van-button {
           width: 160px;
           height: 40px;
@@ -397,7 +430,7 @@ export default {
     }
   }
 }
-.border-no.van-cell:not(:last-child)::after {
-  display: none;
-}
+// .border-no.van-cell:not(:last-child)::after {
+//   display: none;
+// }
 </style>

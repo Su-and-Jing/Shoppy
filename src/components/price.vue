@@ -47,8 +47,56 @@
             <van-switch-cell v-model="open" class="year" />
           </van-cell>
           <van-cell title="贷款车" value @change="changeHandle">
-            <van-switch-cell v-model="open" class="year" />
+            <van-switch-cell v-model="loanCar" class="year" />
           </van-cell>
+          <van-cell-group v-show="loanCar">
+            <van-cell
+              title="如需搜索特约库或手动添加特约，请点击右侧按钮"
+              is-link
+              arrow-direction="down"
+              id="loanCar"
+              @click="loanCarButton"
+            />
+            <van-cell title="特约1：">{{this.beneficiaryContent}}</van-cell>
+          </van-cell-group>
+          <van-popup v-model="loanCarPopup" position="bottom" closeable>
+            <div class="contributing">
+              <div class="top">
+                <span>特别约定</span>
+                <!-- <van-icon name="cross"></van-icon> -->
+              </div>
+              <div class="content">
+                <div class="title">
+                  <van-checkbox v-model="checked2">手工历史特约内容</van-checkbox>
+                </div>
+
+                <van-radio-group v-model="radio">
+                  <van-radio
+                    class="child"
+                    :name="item"
+                    checked-color="#568efc"
+                    v-for="(item, index) in this.engageList"
+                    :key="index"
+                  >{{item.engageDetail}}</van-radio>
+                </van-radio-group>
+                <div class="title add">
+                  <van-checkbox v-model="checked" style="padding-bottom:0">手工添加特约</van-checkbox>
+                </div>
+                <p id="AddloanCar" v-show="addShow" @click="addShowInput">添加一条特约</p>
+                <div class="child" v-show="!addShow">
+                  <van-checkbox v-model="checked5">
+                    <input
+                      type="text"
+                      class="addBeneficiary"
+                      placeholder="手工添加特约内容"
+                      v-model="beneficiaryContent"
+                    />
+                  </van-checkbox>
+                </div>
+              </div>
+              <van-button type="info" @click="beneficiaryHandle">确定</van-button>
+            </div>
+          </van-popup>
           <van-popup v-model="showPopupDate" position="bottom">
             <van-datetime-picker
               @confirm="confirmDate"
@@ -486,10 +534,17 @@
 <script>
 import dayjs from "dayjs";
 import { cpus } from "os";
-import { price, priceToConfirm, TerracePage } from "@/common/library/api";
+import {
+  price,
+  priceToConfirm,
+  TerracePage,
+  addEngage,
+  engage
+} from "@/common/library/api";
 export default {
   data() {
     return {
+      radio: null,
       dataObj: "",
       aaa: false,
       // 险别
@@ -909,17 +964,75 @@ export default {
       saleDiscount: "",
       // 预核保信息
       iLogPreUdwMess: "",
-      data2: ""
+      data2: "",
+      // 贷款车标识
+      loanCar: false,
+      // 特别约定
+      loanCarPopup: false,
+      checked: false,
+      checked1: false,
+      checked5: false,
+      checked2: false,
+      // checked3: false,
+      // checked4: false,
+      // checked4: false,
+      beneficiaryContent: "",
+      engageList: [],
+      addShow: true,
+      radio: "1"
+      // isOk: false
     };
   },
   mounted() {
     this.handle();
+    // this.beneficiaryHandle();
+
     // console.log(dayjs().add(1,'day').format("YYYY-MM-DD"))
     // console.log(dayjs().add(1,'year').format("YYYY-MM-DD"))
   },
   created() {},
   watch: {},
   methods: {
+    // 添加特约
+    async beneficiaryHandle() {
+      const data = await addEngage({
+        engageDetail: this.beneficiaryContent
+      });
+      if (data.state == 200) {
+        this.loanCarPopup = false;
+      }
+    },
+    check(index) {
+      console.log(this.engageList[index].isOk);
+      console.log(this.engageList);
+      this.engageList[index].isOk = !this.engageList[index].isOk;
+      console.log(this.engageList);
+      console.log(this.engageList[index].isOk);
+      this.$set(
+        this.engageList,
+        this.engageList[index].isOk,
+        !this.engageList[index].isOk
+      );
+    },
+    // 显示手动添加特约框
+    addShowInput() {
+      this.addShow = !this.addShow;
+      this.checked4 = true;
+      this.checked5 = true;
+    },
+
+    // 特别约定
+    async loanCarButton() {
+      this.loanCarPopup = true;
+      const data = await engage({});
+      if (data.state == 200) {
+        this.engageList = data.data;
+        this.engageList.forEach(item => {
+          item.isOk = false;
+        });
+      }
+    },
+    confirmloanCar() {},
     //平台信息参考
     async terrace() {
       var data = JSON.parse(localStorage.getItem("data"));
@@ -933,7 +1046,6 @@ export default {
     offer() {
       var data = JSON.parse(localStorage.getItem("data"));
       var orderNo = data.data.orderNo;
-
       this.$router.push({
         name: "offer",
         params: { orderNo }
@@ -947,8 +1059,13 @@ export default {
     },
     changeHandle() {
       this.confirm = true;
-      console.log(this.isActives);
       this.isActives = !this.isActives;
+      // this.isActives = true;
+      // if (this.isActives == false) {
+      //   this.isActives = true;
+      // }
+      // console.log("66666666666666666666");
+      // console.log(this.isActives);
     },
     //渲染页面
     handle() {
@@ -987,8 +1104,6 @@ export default {
         // console.log(data.data.customer.identifyType)
         if (this.cardList[i].code === data.data.customer.identifyType) {
           this.identifyType = this.cardList[i].code;
-          console.log(154646868);
-          console.log(this.identifyType);
           this.card = this.cardList[i].text;
         }
       }
@@ -1068,8 +1183,8 @@ export default {
 
         // if (this.kindCode=== data.data.kindList[i].kindCode) {
         this.carChecked = data.data.kindList[i].notDeductibleFlag;
-        console.log("===================================");
-        console.log(data.data.kindList[i].notDeductibleFlag);
+        // console.log("===================================");
+        // console.log(data.data.kindList[i].notDeductibleFlag);
         this.carSwitch = true;
         if (this.kindCode === this.typesList[0].code) {
           this.carChecked = true;
@@ -1092,7 +1207,6 @@ export default {
     },
     //重新算价
     async resetHandle() {
-      // console.log()
       window.localStorage.getItem("token");
       // console.log([56465])
       //车辆信息
@@ -1321,11 +1435,15 @@ export default {
     },
     // 确认报价
     async confimHandle() {
-      // window.localStorage.setItem('orderNo',this.orderNo)
-      console.log(this.orderNo)
-      
-      this.$router.push({path: "ConfirmInsured",query: {orderNo: this.orderNo,}});
+      window.localStorage.setItem("orderNo", this.orderNo);
+      console.log(this.orderNo);
+      this.$router.push({
+        path: "ConfirmInsured"
 
+        // params: {
+        //   orderNo: this.orderNo
+        // }
+      });
       // if (this.$refs.confirmSale.innerHTML === "重新算价") {
       //   this.resetHandle();
       //   this.$refs.confirmSale.innerHTML = "确认报价";
@@ -1346,8 +1464,7 @@ export default {
     },
     // 确定选择
     confirmPicker(picker, values) {
-     
-      console.log(picker, values);
+      console.log(picker, values); //
       if (picker.text) {
         this[this.currentPicker] = picker.text;
       } else {
@@ -1365,7 +1482,6 @@ export default {
     // 确定选择
     confirmDate(picker) {
       this.currentDate = this[this.currentDateName];
-      console.log(this[this.currentDateName])
       let date = dayjs(picker).format("YYYY-MM-DD");
       console.log(date, this.currentDateName);
       this[this.currentDateName] = date;
@@ -1376,4 +1492,49 @@ export default {
 </script>
 <style lang="scss" scope>
 @import "/style/price.scss";
+#loanCar,
+#AddloanCar {
+  .van-cell__title {
+    flex: 88% 0 !important;
+    font-size: 12px;
+    color: #568efc;
+  }
+}
+.contributing {
+  .van-button {
+    width: 100%;
+    border-radius: 8px;
+  }
+  padding: 20px;
+  .top {
+    padding-bottom: 40px;
+    font-size: 18px;
+    .van-icon {
+      float: right;
+    }
+  }
+  .content {
+    .title {
+      margin-bottom: 15px;
+    }
+    .child {
+      padding-left: 15px;
+      padding-bottom: 10px;
+    }
+  }
+}
+#AddloanCar {
+  color: #568efc;
+  font-size: 12px;
+  padding: 0 0 15px 13px;
+}
+.child {
+  input {
+    border: 1px solid rgb(153, 151, 151);
+    width: 100%;
+    height: 25px;
+    padding: 0 15px;
+    border-radius: 5px;
+  }
+}
 </style>

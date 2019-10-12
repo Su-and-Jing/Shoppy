@@ -45,8 +45,8 @@
   </van-popup>
 </template>
 <script>
-import config from "../../common/http/config"
-import Cookies from 'js-cookie'
+import config from "../../common/http/config";
+import Cookies from "js-cookie";
 import { clearInterval } from "timers";
 import { login, institution, iphoneLogin } from "@/common/library/api";
 import { async } from "q";
@@ -93,31 +93,25 @@ export default {
       if (data.state === "200") {
         this.$emit("closeLogin");
         window.localStorage.setItem("token", data.data.token);
-        console.log(this.showInsitutionPopup)
-        
       } else {
         this.$toast.fail("手机号或验证码错误");
       }
     },
     // 用户名登录
     async handleLogin() {
+      window.localStorage.removeItem("token");
       const data = await login({ userCode: this.username, pwd: this.passwd });
       // console.log(data);
+        console.log(1)
       if (data.state === "200") {
         this.$emit("closeLogin");
-           window.localStorage.setItem('token',data.data.token)
-        // this.$cookies.set("token", data.data.token)
-        // config.headers.token = data.data.token;
-        // console.log("dsdsdsdsdsdsdsdsssd" +config.headers.token)
-        // console.log( this.$cookies.get('token'))
-        window.localStorage.setItem('carVerifyCode',data.data.carVerifyCode)
+        window.localStorage.setItem("token", data.data.token);
+        window.localStorage.setItem("carVerifyCode", data.data.carVerifyCode);
       } else {
+        console.log(1)
         this.$toast.fail("用户名或密码错误");
       }
     },
-    // closeLogin() {
-    //   this.$emit('closeLogin')
-    // },
     sendVCode() {
       if (this.codeDisabled) {
         return;

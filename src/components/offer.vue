@@ -91,7 +91,10 @@
       <span class="copy" @click="copyUrl">复制报价单链接</span>
     </div>
     <input type="text" :value="copycode" id="copy" />
-    <div class="remind">友情提示：此报价单生成时间为 {{this.createDate }}，正式投保时的报价结果可能会根据车辆、车主和保险方案的情况产生变化，试算结果仅供参考。</div>
+
+    <div
+      class="remind"
+    >友情提示：此报价试算结果为根据您提供的各项信息生成，生成时间为{{this.createDate }}。正式投保时的报价结果可能会根据车辆、车主和保险方案等的情况产生变化。此报价试算结果仅供参考，您投保时需要支付的保费及税款等均应当以正式投保时的报价结果为准。</div>
     <!-- 复制链接 -->
     <van-popup v-model="showShare" class="popup-wrap" :close-on-click-overlay="false">
       <div class="share-link">
@@ -121,9 +124,9 @@ export default {
   data() {
     return {
       // 座位数
-      approvedPassengersCapacity:"",
+      approvedPassengersCapacity: "",
       //创建日期
-      createDate:'',
+      createDate: "",
       //起保日期
       startDate: "",
       //截止日期
@@ -160,7 +163,7 @@ export default {
       orderNo: "",
       info: "",
       //使用性质
-      motorUsageType:""
+      motorUsageType: ""
     };
   },
   components: {
@@ -174,7 +177,7 @@ export default {
     } else {
       var str = window.location.href;
       this.orderNo = this.$route.query.orderNo;
-      this.offerHandle()
+      this.offerHandle();
     }
   },
   methods: {
@@ -187,13 +190,14 @@ export default {
         this.registerDate = data.data.car.registerDate;
         this.model = data.data.car.model;
         this.sumTax = data.data.tax.sumTax;
-        this.createDate = data.data.createDate
-        this.approvedPassengersCapacity = data.data.car.approvedPassengersCapacity
+        this.createDate = data.data.createDate;
+        this.approvedPassengersCapacity =
+          data.data.car.approvedPassengersCapacity;
         //使用性质
-        if (data.data.car.motorUsageTypeCode === "8A"){
-          this.motorUsageType = "非营运"
-        }else{
-          this.motorUsageType = "营运"
+        if (data.data.car.motorUsageTypeCode === "8A") {
+          this.motorUsageType = "非营运";
+        } else {
+          this.motorUsageType = "营运";
         }
         // 险别
         this.kindList = data.data.kindList;
@@ -202,10 +206,10 @@ export default {
             this.kindList[i].kindName = "机动车损失险";
             // this.coveragePremium = this.kindList[i].coveragePremium;
             // this.amount = this.kindList[i].amount;
-            console.log("===============")
-            console.log(this.kindList[i].notDeductibleFlag)
-            this.notDeductibleFlag = this.kindList[i].notDeductibleFlag
-            console.log(this.notDeductibleFlag)
+            console.log("===============");
+            console.log(this.kindList[i].notDeductibleFlag);
+            this.notDeductibleFlag = this.kindList[i].notDeductibleFlag;
+            console.log(this.notDeductibleFlag);
           }
         }
         // 险种
@@ -241,8 +245,8 @@ export default {
       } else {
       }
     },
-    goBack(){
-        this.$router.push({path:'/price'});
+    goBack() {
+      this.$router.push({ path: "/price" });
     }
   }
 };

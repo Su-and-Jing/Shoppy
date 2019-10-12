@@ -98,6 +98,16 @@
               @click="choosePopup(certificateList, 'certificateType')"
             />
             <van-field label="证件号码" clearable placeholder="请输入证件号码" v-model="identifyNo" />
+            <van-cell title="贷款车" value class="loanCar">
+              <van-switch-cell v-model="loanCar" class="year" />
+            </van-cell>
+            <van-field
+              label="第一受益人"
+              clearable
+              placeholder="请输入第一受益人"
+              v-show="loanCar"
+              v-model="beneficiary"
+            />
             <span class="submit" type="info" @click="priceHandle">立即报价</span>
           </van-cell-group>
         </template>
@@ -140,6 +150,9 @@ import { price, institution } from "@/common/library/api";
 export default {
   data() {
     return {
+      beneficiary: "",
+      //贷款车
+      loanCar: false,
       // 验车码
       carVerifyCode: "",
       // 车牌号
@@ -248,16 +261,16 @@ export default {
     Institution
   },
   mounted() {
-    // if (
-    //   !(
-    //     navigator.userAgent &&
-    //     navigator.userAgent.match(
-    //       /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
-    //     )
-    //   )
-    // ) {
-    //   this.$router.push({ path: "/indexPc" });
-    // }
+    if (
+      !(
+        navigator.userAgent &&
+        navigator.userAgent.match(
+          /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+        )
+      )
+    ) {
+      this.$router.push({ path: "/indexPc" });
+    }
     this.carVerifyCode = window.localStorage.getItem("carVerifyCode");
   },
   methods: {
@@ -273,6 +286,8 @@ export default {
       car.motorTypeCode = this.motorTypeCode;
       car.motorUsageTypeCode = this.motorUsageTypeCode;
       car.newCarSign = this.newCarSign;
+      car.loanStatus = this.loanCar;
+      car.firstBeneMan = this.beneficiary
       var customer = {};
       customer.name = this.name;
       customer.identifyNo = this.identifyNo;
@@ -292,7 +307,13 @@ export default {
         });
       }
       if (data.state === "1") {
-        this.$router.push({ name: "price" });
+        console.log(this.beneficiary);
+        this.$router.push({
+          name: "price",
+          params: {
+            beneficiary: this.beneficiary
+          }
+        });
         this.$toast("请手动把信息补全");
       } else {
         this.$toast.fail("跳转失败");
@@ -328,6 +349,7 @@ export default {
     },
     // 传图投保
     afterRead(item) {
+      console.log(item);
       this.$router.push({
         name: "uploadImg",
         params: {
@@ -353,16 +375,16 @@ export default {
     // 确定选择
     confirmPicker(picker, values) {
       picker = this.columns[values].text;
-      
+
       this[this.currentPicker] = picker;
-      console.log(this.currentPicker)
+      console.log(this.currentPicker);
       this.showPopup = false;
       this.type = this.masterPropertiesList[values].code;
     },
     // 关闭登录框 登录成功
     async closeLogin() {
       this.showInsitution = true;
-      console.log(this.showInsitution)
+      console.log(this.showInsitution);
       this.onLogin = true;
       this.showLoginPop = false;
     }
@@ -374,12 +396,17 @@ export default {
 @import "/style/index.scss";
 @import "/style/share.scss";
 </style>
-<style>
+<style  lang="scss" scope>
 .van-checkbox__icon {
   font-size: 16px;
   margin-right: -4px;
 }
 .border-no.van-cell:not(:last-child)::after {
   display: none;
+}
+.loanCar {
+  .van-switch-cell {
+    padding: 0;
+  }
 }
 </style>
