@@ -18,7 +18,7 @@ import {
   Collapse,
   CollapseItem,
   Switch,
-  DropdownMenu,
+  DropdownMenu, 
   DropdownItem,
   SwitchCell,
   DatetimePicker,
@@ -26,16 +26,15 @@ import {
   Divider,
   Cell,
   Overlay,
-  Image
+  IndexBar,
+  IndexAnchor
 } from 'vant'
 
-import {
-  Upload
-} from 'element-ui'
+
 export default [
-  Image,
-  Upload,
-  Overlay,
+  IndexBar,
+  IndexAnchor,
+  Overlay ,
   Button,
   CellGroup,
   Field,
@@ -55,7 +54,7 @@ export default [
   Collapse,
   CollapseItem,
   Switch,
-  DropdownMenu,
+  DropdownMenu, 
   DropdownItem,
   SwitchCell,
   DatetimePicker,

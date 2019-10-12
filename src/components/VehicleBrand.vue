@@ -93,7 +93,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
      body,html{
         width: 100%;
         height: 100%;
