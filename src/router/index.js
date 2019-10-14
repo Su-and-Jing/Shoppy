@@ -18,6 +18,7 @@ import Vehicle from '@/components/VehicleBrand'
 import SelectBrand from '@/components/SelectBrand'
 import SelectCar from '@/components/SelectCar'
 import QRCode from 'qrcodejs2';
+import Annual from '@/components/Annual'
 Vue.use(Router)
 Vue.prototype.$qrCode = QRCode
 export default new Router({
@@ -165,6 +166,15 @@ export default new Router({
       component:SelectCar,
       meta: {
         title: '车辆品牌'
+      }
+    },
+
+    {
+      path: '/Annual',
+      name: 'Annual',
+      component:Annual,
+      meta: {
+        title: '选择年款'
       }
     },
   ]
