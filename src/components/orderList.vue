@@ -25,7 +25,7 @@
         <div class="list van-hairline--top">
           <div class="item" v-for="(item,index) in list" :key="index">
             <div class="sign">
-              <p class="type">{{item.statusName}}</p>
+              <p class="type">{{item.orderStatusName}}</p>
               <p class="times">{{item.createDate}}</p>
               <van-button plain color="#2EBE8D">下载投保单</van-button>
             </div>
@@ -142,11 +142,9 @@ export default {
     this.orderListHandle();
   },
   methods: {
-    onSearch() {
-      console.log("999");
-    },
-
+    onSearch() {},
     async orderListHandle() {
+      this.active = this.$route.params.orderType;
       for (var i = 0; i < this.tabList.length; i++) {}
       const data = await orderInfoList({
         id: this.id,

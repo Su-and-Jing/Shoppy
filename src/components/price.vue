@@ -1,302 +1,340 @@
 <template>
   <div class="price">
-    <!-- 人工核保意见 -->
-    <div class="art-Nuclear container">
-      <van-cell title="人工核保意见" class="item">
-        <van-button class="btn" v-show="!isShowArt" @click="isShowArt=true">展开</van-button>
-        <van-button class="btn" v-show="isShowArt" @click="isShowArt=false">收起</van-button>
-      </van-cell>
-      <div v-show="isShowArt" class="pre-verification-txt">123</div>
-    </div>
-    <!-- 预核保意见 -->
-    <div class="pre-verification container">
-      <van-cell title="预核保意见" class="item">
-        <van-button class="btn" v-show="!isShow" @click="isShow=true">展开</van-button>
-        <van-button class="btn" v-show="isShow" @click="isShow=false">收起</van-button>
-      </van-cell>
-      <div v-show="isShow" class="pre-verification-txt">{{iLogPreUdwMess}}</div>
-    </div>
-    <!-- 车辆信息 -->
-    <div class="car-msg container">
-      <van-cell title="车辆信息" class="item">
-        <van-button class="btn" v-show="!isShowCar" @click="isShowCar=true">展开</van-button>
-        <van-button class="btn" v-show="isShowCar" @click="isShowCar=false">收起</van-button>
-      </van-cell>
-      <div class="car-msgInfo cells">
-        <div v-show="isShowCar">
-          <van-cell
-            title="车辆类型"
-            is-link
-            v-model="car"
-            arrow-direction="down"
-            @click="choosePopup(carList,'car')"
-            @change="changeHandle"
-          />
-          <van-field v-model="VIN" label="车架号" @change="changeHandle" />
-          <van-field v-model="engine" label="发动机号" @change="changeHandle" />
-          <van-field
-            label="初登日期"
-            v-model="registerDate"
-            right-icon="notes-o"
-            @click="dateShow('registerDate')"
-            readonly
-            @change="changeHandle"
-          />
-          <van-field v-model="model" label="品牌型号" @change="changeHandle" />
-          <van-cell title="一年内过户" value @change="changeHandle">
-            <van-switch-cell v-model="open" class="year" />
-          </van-cell>
-          <van-cell title="贷款车" value @change="changeHandle">
-            <van-switch-cell v-model="loanCar" class="year" />
-          </van-cell>
-          <van-cell-group v-show="loanCar">
+    <div @change="changeHandle">
+      <!-- 人工核保意见 -->
+      <div class="art-Nuclear container">
+        <van-cell title="人工核保意见" class="item">
+          <van-button class="btn" v-show="!isShowArt" @click="isShowArt=true">展开</van-button>
+          <van-button class="btn" v-show="isShowArt" @click="isShowArt=false">收起</van-button>
+        </van-cell>
+        <div v-show="isShowArt" class="pre-verification-txt">123</div>
+      </div>
+      <!-- 预核保意见 -->
+      <div class="pre-verification container">
+        <van-cell title="预核保意见" class="item">
+          <van-button class="btn" v-show="!isShow" @click="isShow=true">展开</van-button>
+          <van-button class="btn" v-show="isShow" @click="isShow=false">收起</van-button>
+        </van-cell>
+        <div v-show="isShow" class="pre-verification-txt">{{iLogPreUdwMess}}</div>
+      </div>
+      <!-- 车辆信息 -->
+      <div class="car-msg container">
+        <van-cell title="车辆信息" class="item">
+          <van-button class="btn" v-show="!isShowCar" @click="isShowCar=true">展开</van-button>
+          <van-button class="btn" v-show="isShowCar" @click="isShowCar=false">收起</van-button>
+        </van-cell>
+        <div class="car-msgInfo cells">
+          <div v-show="isShowCar">
             <van-cell
-              title="如需搜索特约库或手动添加特约，请点击右侧按钮"
+              title="车辆类型"
               is-link
+              v-model="car"
               arrow-direction="down"
-              id="loanCar"
-              @click="loanCarButton"
-            />
-            <van-cell title="特约1：">{{this.beneficiaryContent}}</van-cell>
-          </van-cell-group>
-          <van-popup v-model="loanCarPopup" position="bottom" closeable>
-            <div class="contributing">
-              <div class="top">
-                <span>特别约定</span>
-                <!-- <van-icon name="cross"></van-icon> -->
-              </div>
-              <div class="content">
-                <div class="title">
-                  <van-checkbox v-model="checked2">手工历史特约内容</van-checkbox>
-                </div>
-
-                <van-radio-group v-model="radio">
-                  <van-radio
-                    class="child"
-                    :name="item"
-                    checked-color="#568efc"
-                    v-for="(item, index) in this.engageList"
-                    :key="index"
-                  >{{item.engageDetail}}</van-radio>
-                </van-radio-group>
-                <div class="title add">
-                  <van-checkbox v-model="checked" style="padding-bottom:0">手工添加特约</van-checkbox>
-                </div>
-                <p id="AddloanCar" v-show="addShow" @click="addShowInput">添加一条特约</p>
-                <div class="child" v-show="!addShow">
-                  <van-checkbox v-model="checked5">
-                    <input
-                      type="text"
-                      class="addBeneficiary"
-                      placeholder="手工添加特约内容"
-                      v-model="beneficiaryContent"
-                    />
-                  </van-checkbox>
-                </div>
-              </div>
-              <van-button type="info" @click="beneficiaryHandle">确定</van-button>
-            </div>
-          </van-popup>
-          <van-popup v-model="showPopupDate" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate"
-              @cancel="showPopupDate=false"
-              v-model="currentDate"
-              type="date"
+              @click="choosePopup(carList,'car')"
               @change="changeHandle"
             />
-          </van-popup>
-        </div>
-      </div>
-    </div>
-    <!-- 车主信息 -->
-    <div class="carMaster-msg container">
-      <van-cell title="车主信息" class="item">
-        <van-button class="btn" v-show="!isShowCarMaster" @click="isShowCarMaster=true">展开</van-button>
-        <van-button class="btn" v-show="isShowCarMaster" @click="isShowCarMaster=false">收起</van-button>
-      </van-cell>
-      <div class="carMaster-msgInfo cells">
-        <van-field v-model="carName" label="车主姓名" @change="changeHandle" />
-        <div v-show="isShowCarMaster">
-          <van-cell
-            title="证件类型"
-            is-link
-            v-model="card"
-            arrow-direction="down"
-            @click="choosePopup(cardList,'card')"
-            @change="changeHandle"
-          />
-          <van-field v-model="identifyNo" label="身份证号" @change="changeHandle" />
-        </div>
-      </div>
-    </div>
-    <!-- 投保方案 -->
-    <div class="insurance-scheme container">
-      <van-cell title="投保方案" class="item">
-        <van-button class="btn" v-show="!isShowScheme" @click="isShowScheme=true">展开</van-button>
-        <van-button class="btn" v-show="isShowScheme" @click="isShowScheme=false">收起</van-button>
-      </van-cell>
-      <!-- 交强险 -->
-      <div class="com-insurance">
-        <div class="com-title">
-          <div class="left">
-            <van-checkbox v-model="checked" shape="squre" @change="changeHandle">交强险</van-checkbox>
-          </div>
-          <div class="right">
-            <span>合计</span>
-            <span class="money">￥{{insuranceNum}}</span>
-          </div>
-        </div>
-        <van-divider />
-        <div class="insurance-msg cells">
-          <van-field
-            class="insurance-data"
-            label="起保日期"
-            v-model="insRegDate"
-            right-icon="notes-o"
-            @click-right-icon="dateShow('insRegDate')"
-            readonly
-            @change="changeHandle"
-          >
-            <van-button slot="button" size="small" color="#3F7CF5" plain>即时起保</van-button>
-          </van-field>
-          <van-popup v-model="showPopupDate" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate"
-              @cancel="showPopupDate=false"
-              v-model="currentDate"
-              type="date"
+            <van-field v-model="VIN" label="车架号" />
+            <van-field v-model="engine" label="发动机号" />
+            <van-field
+              label="初登日期"
+              v-model="registerDate"
+              right-icon="notes-o"
+              @click="dateShow2('registerDate')"
+              readonly
               @change="changeHandle"
             />
-          </van-popup>
-          <van-cell title="交强险">
-            <span
-              style="float:right;color:#4a4a4a"
-              v-show="this.insuranceMoney!=0"
-            >￥{{this.insuranceMoney}}</span>
-          </van-cell>
-          <div class="ship" v-show="checked">
-            <van-cell title="车船税">
-              <span style="float:right;color:#4a4a4a">￥{{shipNum}}</span>
+            <!-- <van-popup v-model="showPopupDate" position="bottom">
+              <van-datetime-picker
+                @confirm="confirmDate"
+                @cancel="showPopupDate=false"
+                v-model="currentDate"
+                type="year-mounth"
+              />
+            </van-popup>-->
+            <van-field v-model="model" label="品牌型号" />
+            <van-cell title="一年内过户" value>
+              <van-switch-cell v-model="open" class="year" />
             </van-cell>
+            <van-field
+              v-show="open == true"
+              placeholder="请选择发证日期"
+              label="发证日期"
+              v-model="issueDate"
+              right-icon="notes-o"
+              @click="dateShow2('issueDate')"
+              readonly
+              @change="changeHandle"
+            />
+            <van-cell title="贷款车" value>
+              <van-switch-cell v-model="loanCar" class="year" />
+            </van-cell>
+            <van-cell-group v-show="loanCar">
+              <van-cell
+                title="如需搜索特约库或手动添加特约，请点击右侧按钮"
+                is-link
+                arrow-direction="down"
+                id="loanCar"
+                @click="loanCarButton"
+              />
+              <van-cell title="特约1：">{{this.beneficiaryContent}}</van-cell>
+            </van-cell-group>
+            <van-popup v-model="loanCarPopup" position="bottom" closeable>
+              <div class="contributing">
+                <div class="top">
+                  <span>特别约定</span>
+                  <!-- <van-icon name="cross"></van-icon> -->
+                </div>
+                <div class="content">
+                  <div class="title">
+                    <van-checkbox v-model="checked2">手工历史特约内容</van-checkbox>
+                  </div>
+
+                  <van-radio-group v-model="radio">
+                    <van-radio
+                      class="child"
+                      :name="item"
+                      checked-color="#568efc"
+                      v-for="(item, index) in this.engageList"
+                      :key="index"
+                      @click="radioBtn"
+                    >{{item.engageDetail}}</van-radio>
+                  </van-radio-group>
+                  <div class="title add">
+                    <van-checkbox v-model="checked" style="padding-bottom:0">手工添加特约</van-checkbox>
+                  </div>
+                  <p id="AddloanCar" v-show="addShow" @click="addShowInput">添加一条特约</p>
+                  <div class="child" v-show="!addShow">
+                    <van-checkbox v-model="checked">
+                      <input
+                        type="text"
+                        class="addBeneficiary"
+                        placeholder="手工添加特约内容"
+                        v-model="beneficiaryContent"
+                      />
+                    </van-checkbox>
+                  </div>
+                </div>
+                <van-button type="info" @click="beneficiaryHandle">确定</van-button>
+              </div>
+            </van-popup>
+            <!-- <van-popup v-model="showPopupDate" position="bottom">
+              <van-datetime-picker
+                @confirm="confirmDate"
+                @cancel="showPopupDate=false"
+                v-model="currentDate"
+                type="datetime"
+              />
+            </van-popup>-->
+          </div>
+        </div>
+      </div>
+      <!-- 车主信息 -->
+      <div class="carMaster-msg container">
+        <van-cell title="车主信息" class="item">
+          <van-button class="btn" v-show="!isShowCarMaster" @click="isShowCarMaster=true">展开</van-button>
+          <van-button class="btn" v-show="isShowCarMaster" @click="isShowCarMaster=false">收起</van-button>
+        </van-cell>
+        <div class="carMaster-msgInfo cells">
+          <van-field v-model="carName" label="车主姓名" @change="changeHandle" />
+          <div v-show="isShowCarMaster">
             <van-cell
-              title="缴税类型"
+              title="证件类型"
               is-link
-              v-model="payTax"
+              v-model="card"
               arrow-direction="down"
-              @click="choosePopup(payTaxList,'payTax')"
+              @click="choosePopup(cardList,'card')"
+              @change="changeHandle"
+            />
+            <van-field v-model="identifyNo" label="身份证号" @change="changeHandle" />
+          </div>
+        </div>
+      </div>
+      <!-- 投保方案 -->
+      <div class="insurance-scheme container">
+        <van-cell title="投保方案" class="item">
+          <van-button class="btn" v-show="!isShowScheme" @click="isShowScheme=true">展开</van-button>
+          <van-button class="btn" v-show="isShowScheme" @click="isShowScheme=false">收起</van-button>
+        </van-cell>
+        <!-- 交强险 -->
+        <div class="com-insurance">
+          <div class="com-title">
+            <div class="left">
+              <van-checkbox v-model="checked" shape="squre" @change="changeHandle">交强险</van-checkbox>
+            </div>
+            <div class="right">
+              <span>合计</span>
+              <span class="money">￥{{insuranceNum}}</span>
+            </div>
+          </div>
+          <van-divider />
+          <div class="insurance-msg cells">
+            <van-field
+              class="insurance-data"
+              label="起保日期"
+              v-model="insRegDate"
+              right-icon="notes-o"
+              @click-right-icon="dateShow('insRegDate')"
+              readonly
               @change="changeHandle"
             >
+              <van-button slot="button" size="small" color="#3F7CF5" plain @click="quick2">即时起保</van-button>
+            </van-field>
+            <!-- <van-popup v-model="showPopupDate" position="bottom">
+              <van-datetime-picker
+                @confirm="confirmDate"
+                @cancel="showPopupDate=false"
+                v-model="currentDate"
+                type="datetime"
+                :min-date="minDate"
+                :max-date="maxDate"
+                @change="changeHandle"
+              />
+            </van-popup>-->
+            <van-cell title="交强险">
               <span
-                slot="label"
-                v-show="payTax==='减税'||payTax==='正常缴税'"
-              >(含往年补缴{{sumTaxDefault}}元，滞纳金{{sumOverdue}}元)</span>
+                style="float:right;color:#4a4a4a"
+                v-show="this.insuranceMoney!=0"
+              >￥{{this.insuranceMoney}}</span>
             </van-cell>
-            <!-- 已完税 -->
-            <van-cell-group v-if="payTax==='已完税'">
-              <van-field v-model="documentNumber" label="完税凭证号码" @change="changeHandle" />
-              <van-field v-model="taxDepartmentCode" label="税务机关代码" @change="changeHandle" />
-              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
-              <van-field
-                label="完税凭证填发日期"
-                v-model="taxDocumentDate"
-                right-icon="notes-o"
-                @click-right-icon="dateShow('taxDocumentDate')"
-                readonly
-                @change="changeHandle"
-              ></van-field>
+            <div class="ship" v-show="checked">
+              <van-cell title="车船税">
+                <span style="float:right;color:#4a4a4a">￥{{shipNum}}</span>
+              </van-cell>
               <van-cell
-                class="cityCode"
-                title="开具完税凭证地区代码"
+                title="缴税类型"
                 is-link
-                v-model="taxLocation"
+                v-model="payTax"
                 arrow-direction="down"
-                @click="choosePopup(taxLocationList,'taxLocation')"
+                @click="choosePopup(payTaxList,'payTax')"
                 @change="changeHandle"
-              />
-            </van-cell-group>
-            <!-- 免税 -->
-            <van-cell-group v-if="payTax==='免税'">
-              <van-cell
-                class="cityNumber"
-                title="免税车型"
-                is-link
-                v-model="deductionDue"
-                arrow-direction="down"
-                @click="choosePopup(deductionDueList,'deductionDue')"
-                @change="changeHandle"
-              />
+              >
+                <span
+                  slot="label"
+                  v-show="payTax==='减税'||payTax==='正常缴税'"
+                >(含往年补缴{{sumTaxDefault}}元，滞纳金{{sumOverdue}}元)</span>
+              </van-cell>
+              <!-- 已完税 -->
+              <van-cell-group v-if="payTax==='已完税'">
+                <van-field v-model="documentNumber" label="完税凭证号码" @change="changeHandle" />
+                <van-field v-model="taxDepartmentCode" label="税务机关代码" @change="changeHandle" />
+                <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+                <van-field
+                  label="完税凭证填发日期"
+                  v-model="taxDocumentDate"
+                  right-icon="notes-o"
+                  @click-right-icon="dateShow('taxDocumentDate')"
+                  readonly
+                  @change="changeHandle"
+                ></van-field>
+                <van-cell
+                  class="cityCode"
+                  title="开具完税凭证地区代码"
+                  is-link
+                  v-model="taxLocation"
+                  arrow-direction="down"
+                  @click="choosePopup(taxLocationList,'taxLocation')"
+                  @change="changeHandle"
+                />
+              </van-cell-group>
+              <!-- 免税 -->
+              <van-cell-group v-if="payTax==='免税'">
+                <van-cell
+                  class="cityNumber"
+                  title="免税车型"
+                  is-link
+                  v-model="deductionDue"
+                  arrow-direction="down"
+                  @click="choosePopup(deductionDueList,'deductionDue')"
+                  @change="changeHandle"
+                />
 
-              <van-cell
-                class="deductionDueType"
-                title="减免税方案代码"
-                is-link
-                v-model="deductionDueType"
-                arrow-direction="down"
-                @click="choosePopup(deductionDueTypeList,'deductionDueType')"
-                @change="changeHandle"
-              />
-              <van-field v-model="deductionDueProportion" label="减免比例" @change="changeHandle" />
-              <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
-              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
-            </van-cell-group>
-            <!-- 减税 -->
-            <van-cell-group v-if="payTax==='减税'">
-              <van-cell
-                class="cityNumber"
-                title="免税车型"
-                is-link
-                @change="changeHandle"
-                v-model="deductionDue"
-                arrow-direction="down"
-                @click="choosePopup(deductionDueList,'deductionDue')"
-              />
-              <van-cell
-                class="cityNumber"
-                title="减免税方案代码"
-                is-link
-                v-model="deductionDueType"
-                arrow-direction="down"
-                @click="choosePopup(deductionDueTypeList,'deductionDueType')"
-                @change="changeHandle"
-              />
-              <van-field v-model="deductionDueProportion" label="减免比例" @change="changeHandle" />
-              <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
-              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
-            </van-cell-group>
-            <!-- 不征 -->
-            <van-cell-group v-if="payTax==='不征'">
-              <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
-              <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
-            </van-cell-group>
+                <van-cell
+                  class="deductionDueType"
+                  title="减免税方案代码"
+                  is-link
+                  v-model="deductionDueType"
+                  arrow-direction="down"
+                  @click="choosePopup(deductionDueTypeList,'deductionDueType')"
+                  @change="changeHandle"
+                />
+                <van-field v-model="deductionDueProportion" label="减免比例" @change="changeHandle" />
+                <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
+                <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+              </van-cell-group>
+              <!-- 减税 -->
+              <van-cell-group v-if="payTax==='减税'">
+                <van-cell
+                  class="cityNumber"
+                  title="免税车型"
+                  is-link
+                  @change="changeHandle"
+                  v-model="deductionDue"
+                  arrow-direction="down"
+                  @click="choosePopup(deductionDueList,'deductionDue')"
+                />
+                <van-cell
+                  class="cityNumber"
+                  title="减免税方案代码"
+                  is-link
+                  v-model="deductionDueType"
+                  arrow-direction="down"
+                  @click="choosePopup(deductionDueTypeList,'deductionDueType')"
+                  @change="changeHandle"
+                />
+                <van-field v-model="deductionDueProportion" label="减免比例" @change="changeHandle" />
+                <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
+                <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+              </van-cell-group>
+              <!-- 不征 -->
+              <van-cell-group v-if="payTax==='不征'">
+                <van-field v-model="documentNumber" label="减免税凭证号" @change="changeHandle"></van-field>
+                <van-field v-model="taxDepartment" label="税务机关名称" @change="changeHandle" />
+              </van-cell-group>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- 商业险 -->
-      <div class="buss-insurance cells">
-        <div class="com-title">
-          <div class="left">
-            <van-checkbox v-model="bussines" shape="squre" @change="changeHandle">商业险</van-checkbox>
+        <!-- 商业险 -->
+        <div class="buss-insurance cells">
+          <div class="com-title">
+            <div class="left">
+              <van-checkbox v-model="bussines" shape="squre" @change="changeHandle">商业险</van-checkbox>
+            </div>
+            <div class="right">
+              <span>合计</span>
+              <span class="money">￥{{bussinesNum}}</span>
+            </div>
           </div>
-          <div class="right">
-            <span>合计</span>
-            <span class="money">￥{{bussinesNum}}</span>
-          </div>
-        </div>
-        <van-divider />
-        <div class="bussines-msg">
-          <van-field
-            class="bussines-data"
-            label="起保日期"
-            v-model="busRegisterDate"
-            right-icon="notes-o"
-            @click-right-icon="dateShow('busRegisterDate')"
-            readonly
-            @change="changeHandle"
-          >
-            <van-button slot="button" size="small" color="#888" plain>即时起保</van-button>
-          </van-field>
-          <van-popup v-model="showPopupDate" position="bottom">
+          <van-divider />
+          <div class="bussines-msg">
+            <van-field
+              class="bussines-data"
+              label="起保日期"
+              v-model="busRegisterDate"
+              right-icon="notes-o"
+              @click-right-icon="dateShow('busRegisterDate')"
+              readonly
+              @change="changeHandle"
+            >
+              <van-button slot="button" size="small" color="#888" plain @click="quick1">即时起保</van-button>
+            </van-field>
+            <!-- <van-popup v-model="showPopupDate" position="bottom">
+              <van-datetime-picker
+                @confirm="confirmDate"
+                @cancel="showPopupDate=false"
+                v-model="currentDate"
+                type="data"
+                @change="changeHandle"
+              />
+            </van-popup>-->
+            <van-field
+              label="终保日期"
+              v-model="RegDate"
+              right-icon="notes-o"
+              @click-right-icon="dateShow('RegDate')"
+              readonly
+              @change="changeHandle"
+            ></van-field>
+            <!-- <van-popup v-model="showPopupDate" position="bottom">
             <van-datetime-picker
               @confirm="confirmDate"
               @cancel="showPopupDate=false"
@@ -304,221 +342,214 @@
               type="date"
               @change="changeHandle"
             />
-          </van-popup>
-          <van-field
-            label="终保日期"
-            v-model="RegDate"
-            right-icon="notes-o"
-            @click-right-icon="dateShow('RegDate')"
-            readonly
-            @change="changeHandle"
-          ></van-field>
-          <van-popup v-model="showPopupDate" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate"
-              @cancel="showPopupDate=false"
-              v-model="currentDate"
-              type="date"
-              @change="changeHandle"
-            />
-          </van-popup>
-        </div>
-        <van-divider />
-        <div class="second">
-          <span class="s2">{{this.typesList[0].text}}</span>
-          <!-- <van-field class="s2" readonly label="{{this.typesList.text}}"></van-field> -->
-          <van-checkbox v-model="carChecked" shape="squre">不计免赔</van-checkbox>
-          <van-switch v-model="carSwitch" size="24px" />
-        </div>
-        <van-divider />
-        <div class="coverage">
-          <span>保额</span>
-          <input type="text" v-model="carAmount" @change="changeHandle" />
-          <span class="money">￥{{coveragePremium}}</span>
-          <span
-            style="float:left;color:red;font-size:12px"
-          >(请输入的保额区间在{{minAmount}}-{{maxAmount }}之间)</span>
-        </div>
-        <van-divider />
-        <div class="second insures">
-          <span class="s2">{{this.typesList[1].text}}</span>
-          <van-checkbox v-model="secondChecked" shape="squre" @change="changeHandle">不计免赔</van-checkbox>
-          <div class="insures-right">
-            <span @change="changeHandle">{{second}}</span>
-            <van-icon name="arrow-down" @click="choosePopup(secondList,'second')"></van-icon>
-            <span class="money">￥{{secondAmount}}</span>
-          </div>
-        </div>
-        <van-divider />
-        <div class="more" v-show="!moreShow" @click="moreShow =true">
-          <van-button color="#568EFC" plain>添加更多商业险种</van-button>
-        </div>
-        <div class="moreInsure" v-show="moreShow">
-          <div class="second insures">
-            <span class="s2">{{this.typesList[2].text}}</span>
-            <van-checkbox v-model="driverChecked" shape="squre" @change="changeHandle">不计免赔</van-checkbox>
-            <div class="insures-right">
-              <span>{{driver}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(driverList,'driver')"></van-icon>
-              <span class="money">￥100</span>
-            </div>
-          </div>
-          <van-divider />
-          <div class="second insures">
-            <span class="s2">{{this.typesList[3].text}}</span>
-            <van-checkbox v-model="fareChecked" shape="squre">不计免赔</van-checkbox>
-            <div class="insures-right">
-              <span>{{fare}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(fareList,'fare')"></van-icon>
-              <span class="money">￥100</span>
-            </div>
-          </div>
-          <van-divider />
-          <div class="second" :id="this.typesList[4].code">
-            <span class="s2">{{this.typesList[4].text}}</span>
-            <van-checkbox v-model="robbingChecked" shape="squre">不计免赔</van-checkbox>
-            <van-switch v-model="robbingSwitch" size="24px" />
+            </van-popup>-->
+            <van-popup v-model="showPopupDate" position="bottom">
+              <van-datetime-picker
+                @cancel="showPopupDate=false"
+                v-model="currentDate"
+                type="datetime"
+                @confirm="confirmDate"
+                @change="changeHandle"
+              />
+            </van-popup>
           </div>
           <van-divider />
           <div class="second">
-            <span style="padding-top:12px">车损无法找到第三方险</span>
-            <van-switch v-model="damageSwitch" size="24px" />
+            <span class="s2">{{this.typesList[0].text}}</span>
+            <!-- <van-field class="s2" readonly label="{{this.typesList.text}}"></van-field> -->
+            <van-checkbox v-model="carChecked" shape="squre">不计免赔</van-checkbox>
+            <van-switch v-model="carSwitch" size="24px" />
           </div>
           <van-divider />
-          <div class="second">
-            <span class="s2" style="margin-right:35px">玻璃单独破碎险</span>
-            <div class="import-btn">
-              <span>{{import1}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(importList,'import1')"></van-icon>
-            </div>
-            <van-switch v-model="importSwitch" size="24px" />
-          </div>
-          <van-divider />
-          <div class="second">
-            <span class="s2" style="margin-right:35px">指定修理厂险</span>
-            <div class="import-btn">
-              <span>{{import1}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(importList,'import1')"></van-icon>
-            </div>
-            <van-switch v-model="domesticSwitch" size="24px" />
-          </div>
-          <van-divider />
-          <div class="second insures">
-            <span class="s2">划痕险</span>
-            <van-checkbox v-model="scratchChecked" shape="squre">不计免赔</van-checkbox>
-            <div class="insures-right">
-              <span>{{scratch}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(scratchList,'scratch')"></van-icon>
-              <span class="money">￥100</span>
-            </div>
-          </div>
-          <van-divider />
-          <div class="second insures">
-            <span class="s2">精神损害险</span>
-            <van-checkbox v-model="spiritChecked" shape="squre">不计免赔</van-checkbox>
-            <div class="insures-right">
-              <span>{{spirit}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(spiritList,'spirit')"></van-icon>
-              <span class="money">￥990</span>
-            </div>
-          </div>
-          <van-divider />
-          <div class="second">
-            <span class="s2">新增设备损失险</span>
-            <van-checkbox v-model="facilityChecked" shape="squre">不计免赔</van-checkbox>
-            <van-switch v-model="facilitySwitch" size="24px" />
-          </div>
-          <van-divider />
-          <div class="second">
-            <span class="s2">自然损失险</span>
-            <van-checkbox v-model="natureChecked" shape="squre">不计免赔</van-checkbox>
-            <van-switch v-model="natureSwitch" size="24px" />
-          </div>
-          <van-divider />
-
-          <van-divider />
-          <div class="second">
-            <span class="s2">涉水行驶损失险</span>
-            <van-checkbox v-model="wadeChecked" shape="squre">不计免赔</van-checkbox>
-            <van-switch v-model="wadeSwitch" size="24px" />
-          </div>
-          <van-divider />
-        </div>
-        <div class="close">
-          <van-button color="#568EFC" plain v-show="moreShow" @click="moreShow=false">点击收起</van-button>
-        </div>
-      </div>
-    </div>
-    <!-- 保单信息 -->
-    <div class="warranty">
-      <p>中保信平台未返回上年保单信息</p>
-      <div class="warranty-btn">
-        <van-button plain color="#568EFC" style="margin-right:31px" @click="terrace">平台参考信息</van-button>
-        <van-button plain color="#568EFC" @click="offer">报价单</van-button>
-      </div>
-    </div>
-    <div class="offer" v-show="state === '200'">
-      <div class="offer-left">
-        <p class="p1">￥{{totalPremium}}</p>
-        <div class="insures">
-          <p>
-            商业险 ￥{{bussinesNum}}
+          <div class="coverage">
+            <span>保额</span>
+            <input type="text" v-model="carAmount" @change="changeHandle" />
+            <span class="money">￥{{coveragePremium}}</span>
             <span
-              class="money"
-              v-show="this.saleDiscount!=0"
-            >{{this.saleDiscount}}折</span>
-          </p>
-          <p>交强险 ￥{{insuranceMoney}}</p>
-          <p>车船税 ￥{{shipNum}}</p>
+              style="float:left;color:red;font-size:12px"
+            >(请输入的保额区间在{{minAmount}}-{{maxAmount }}之间)</span>
+          </div>
+          <van-divider />
+          <div class="second insures">
+            <span class="s2">{{this.typesList[1].text}}</span>
+            <van-checkbox v-model="secondChecked" shape="squre" @change="changeHandle">不计免赔</van-checkbox>
+            <div class="insures-right">
+              <span @change="changeHandle">{{second}}</span>
+              <van-icon name="arrow-down" @click="choosePopup(secondList,'second')"></van-icon>
+              <span class="money">￥{{secondAmount}}</span>
+            </div>
+          </div>
+          <van-divider />
+          <div class="more" v-show="!moreShow" @click="moreShow =true">
+            <van-button color="#568EFC" plain>添加更多商业险种</van-button>
+          </div>
+          <div class="moreInsure" v-show="moreShow">
+            <div class="second insures">
+              <span class="s2">{{this.typesList[2].text}}</span>
+              <van-checkbox v-model="driverChecked" shape="squre" @change="changeHandle">不计免赔</van-checkbox>
+              <div class="insures-right">
+                <span>{{driver}}</span>
+                <van-icon name="arrow-down" @click="choosePopup(driverList,'driver')"></van-icon>
+                <span class="money">￥100</span>
+              </div>
+            </div>
+            <van-divider />
+            <div class="second insures">
+              <span class="s2">{{this.typesList[3].text}}</span>
+              <van-checkbox v-model="fareChecked" shape="squre">不计免赔</van-checkbox>
+              <div class="insures-right">
+                <span>{{fare}}</span>
+                <van-icon name="arrow-down" @click="choosePopup(fareList,'fare')"></van-icon>
+                <span class="money">￥100</span>
+              </div>
+            </div>
+            <van-divider />
+            <div class="second" :id="this.typesList[4].code">
+              <span class="s2">{{this.typesList[4].text}}</span>
+              <van-checkbox v-model="robbingChecked" shape="squre">不计免赔</van-checkbox>
+              <van-switch v-model="robbingSwitch" size="24px" />
+            </div>
+            <van-divider />
+            <div class="second">
+              <span style="padding-top:12px">车损无法找到第三方险</span>
+              <van-switch v-model="damageSwitch" size="24px" />
+            </div>
+            <van-divider />
+            <div class="second">
+              <span class="s2" style="margin-right:35px">玻璃单独破碎险</span>
+              <div class="import-btn">
+                <span>{{import1}}</span>
+                <van-icon name="arrow-down" @click="choosePopup(importList,'import1')"></van-icon>
+              </div>
+              <van-switch v-model="importSwitch" size="24px" />
+            </div>
+            <van-divider />
+            <div class="second">
+              <span class="s2" style="margin-right:35px">指定修理厂险</span>
+              <div class="import-btn">
+                <span>{{import1}}</span>
+                <van-icon name="arrow-down" @click="choosePopup(importList,'import1')"></van-icon>
+              </div>
+              <van-switch v-model="domesticSwitch" size="24px" />
+            </div>
+            <van-divider />
+            <div class="second insures">
+              <span class="s2">划痕险</span>
+              <van-checkbox v-model="scratchChecked" shape="squre">不计免赔</van-checkbox>
+              <div class="insures-right">
+                <span>{{scratch}}</span>
+                <van-icon name="arrow-down" @click="choosePopup(scratchList,'scratch')"></van-icon>
+                <span class="money">￥100</span>
+              </div>
+            </div>
+            <van-divider />
+            <div class="second insures">
+              <span class="s2">精神损害险</span>
+              <van-checkbox v-model="spiritChecked" shape="squre">不计免赔</van-checkbox>
+              <div class="insures-right">
+                <span>{{spirit}}</span>
+                <van-icon name="arrow-down" @click="choosePopup(spiritList,'spirit')"></van-icon>
+                <span class="money">￥990</span>
+              </div>
+            </div>
+            <van-divider />
+            <div class="second">
+              <span class="s2">新增设备损失险</span>
+              <van-checkbox v-model="facilityChecked" shape="squre">不计免赔</van-checkbox>
+              <van-switch v-model="facilitySwitch" size="24px" />
+            </div>
+            <van-divider />
+            <div class="second">
+              <span class="s2">自然损失险</span>
+              <van-checkbox v-model="natureChecked" shape="squre">不计免赔</van-checkbox>
+              <van-switch v-model="natureSwitch" size="24px" />
+            </div>
+            <van-divider />
 
-          <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
+            <van-divider />
+            <div class="second">
+              <span class="s2">涉水行驶损失险</span>
+              <van-checkbox v-model="wadeChecked" shape="squre">不计免赔</van-checkbox>
+              <van-switch v-model="wadeSwitch" size="24px" />
+            </div>
+            <van-divider />
+          </div>
+          <div class="close">
+            <van-button color="#568EFC" plain v-show="moreShow" @click="moreShow=false">点击收起</van-button>
+          </div>
         </div>
-        <van-icon></van-icon>
       </div>
-
-      <div class="offer-right">
-        <van-button type="info" ref="confirmSale" @click="confimHandle" v-show="aaa=true">确认报价</van-button>
+      <!-- 保单信息 -->
+      <div class="warranty">
+        <p>中保信平台未返回上年保单信息</p>
+        <div class="warranty-btn">
+          <van-button plain color="#568EFC" style="margin-right:31px" @click="terrace">平台参考信息</van-button>
+          <van-button plain color="#568EFC" @click="offer">报价单</van-button>
+        </div>
       </div>
-    </div>
-    <div v-show="off">
-      <div class="offer" v-show="state === '1' || !bussines">
+      <div class="offer" v-show="state === '200'">
         <div class="offer-left">
-          <p class="p1">￥--</p>
+          <p class="p1">￥{{totalPremium}}</p>
           <div class="insures">
             <p>
-              商业险 ￥--
-              <span class="money" v-show="this.saleDiscount!=0">{{this.saleDiscount}}折</span>
+              商业险 ￥{{bussinesNum}}
+              <span
+                class="money"
+                v-show="this.saleDiscount!=0"
+              >{{this.saleDiscount}}折</span>
             </p>
-            <p>交强险 ￥--</p>
-            <p>车船税 ￥--</p>
+            <p>交强险 ￥{{insuranceMoney}}</p>
+            <p>车船税 ￥{{shipNum}}</p>
+
             <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
           </div>
+          <van-icon></van-icon>
         </div>
 
         <div class="offer-right">
-          <van-button
-            color="#C7C7CC"
-            ref="confirmReset"
-            :class="{active2:isActives}"
-            @click="resetHandle"
-          >重新算价</van-button>
+          <van-button type="info" ref="confirmSale" @click="confimHandle" v-show="aaa=true">确认报价</van-button>
         </div>
-        <!-- v-show="this.aaa === true" -->
       </div>
+      <div v-show="off">
+        <div class="offer" v-show="state === '1' || !bussines">
+          <div class="offer-left">
+            <p class="p1">￥--</p>
+            <div class="insures">
+              <p>
+                商业险 ￥--
+                <span class="money" v-show="this.saleDiscount!=0">{{this.saleDiscount}}折</span>
+              </p>
+              <p>交强险 ￥--</p>
+              <p>车船税 ￥--</p>
+              <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
+            </div>
+          </div>
+
+          <div class="offer-right">
+            <van-button
+              color="#C7C7CC"
+              ref="confirmReset"
+              :class="{active2:isActives}"
+              @click="resetHandle"
+            >重新算价</van-button>
+          </div>
+          <!-- v-show="this.aaa === true" -->
+        </div>
+      </div>
+      <van-popup v-model="show" class="showPopupSale">
+        <h2>修改商业折扣</h2>
+        <p>请确保输入值在{{this.lowestDiscount}}-{{this.policyDiscount}}范围之内</p>
+        <input type="text" v-model="Discount" />
+        <span
+          class="number"
+          v-show="this.Discount<this.lowestDiscount || this.Discount>this.policyDiscount"
+        >
+          <van-icon name="info-o"></van-icon>已超过输入值范围，请重新输入
+        </span>
+        <van-button plain color="#95c4fe" @click="cannelSale">取消</van-button>
+        <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
+      </van-popup>
     </div>
-    <van-popup v-model="show" class="showPopupSale">
-      <h2>修改商业折扣</h2>
-      <p>请确保输入值在{{this.lowestDiscount}}-{{this.policyDiscount}}范围之内</p>
-      <input type="text" v-model="Discount" />
-      <span
-        class="number"
-        v-show="this.Discount<this.lowestDiscount || this.Discount>this.policyDiscount"
-      >
-        <van-icon name="info-o"></van-icon>已超过输入值范围，请重新输入
-      </span>
-      <van-button plain color="#95c4fe" @click="cannelSale">取消</van-button>
-      <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
-    </van-popup>
     <!-- 下拉公共组件 -->
     <van-popup v-model="showPopup" position="bottom">
       <van-picker
@@ -544,6 +575,12 @@ import {
 export default {
   data() {
     return {
+      issueDate: "",
+      minHour: 10,
+      maxHour: 20,
+      minDate: new Date(),
+      maxDate: new Date(2019, 10, 1),
+      currentDate: new Date(2019, 10, 1, 11),
       radio: null,
       dataObj: "",
       aaa: false,
@@ -931,7 +968,7 @@ export default {
       insRegDate: "",
       aa: "",
       // 品牌型号
-      model: "轩逸DFL7162MCB轿车",
+      model: "",
       // 使用性质
       motorUsageTypeCode: "",
       motorTypeCode: "",
@@ -979,7 +1016,8 @@ export default {
       beneficiaryContent: "",
       engageList: [],
       addShow: true,
-      radio: "1"
+      radio: "1",
+      transferDate: ""
       // isOk: false
     };
   },
@@ -993,6 +1031,11 @@ export default {
   created() {},
   watch: {},
   methods: {
+    radioBtn() {
+      console.log(this.radio);
+
+      this.beneficiaryContent = this.radio.engageDetail;
+    },
     // 添加特约
     async beneficiaryHandle() {
       const data = await addEngage({
@@ -1002,17 +1045,25 @@ export default {
         this.loanCarPopup = false;
       }
     },
+    quick1() {
+      this.busRegisterDate = new Date();
+    },
+    quick2() {
+      this.insRegDate = new Date();
+      console.log(this.insRegDate);
+      // this.insRegDate = dayjs(this.insRegDate).format("YYYY-MM-DD HH");
+    },
     check(index) {
-      console.log(this.engageList[index].isOk);
-      console.log(this.engageList);
-      this.engageList[index].isOk = !this.engageList[index].isOk;
-      console.log(this.engageList);
-      console.log(this.engageList[index].isOk);
-      this.$set(
-        this.engageList,
-        this.engageList[index].isOk,
-        !this.engageList[index].isOk
-      );
+      // console.log(this.engageList[index].isOk);
+      // console.log(this.engageList);
+      // this.engageList[index].isOk = !this.engageList[index].isOk;
+      // console.log(this.engageList);
+      // console.log(this.engageList[index].isOk);
+      // this.$set(
+      //   this.engageList,
+      //   this.engageList[index].isOk,
+      //   !this.engageList[index].isOk
+      // );
     },
     // 显示手动添加特约框
     addShowInput() {
@@ -1027,9 +1078,9 @@ export default {
       const data = await engage({});
       if (data.state == 200) {
         this.engageList = data.data;
-        this.engageList.forEach(item => {
-          item.isOk = false;
-        });
+        // this.engageList.forEach(item => {
+        //   item.isOk = false;
+        // });
       }
     },
     confirmloanCar() {},
@@ -1039,6 +1090,7 @@ export default {
       var orderNo = data.data.orderNo;
       this.$router.push({
         name: "infoPlatform",
+
         params: { orderNo }
       });
     },
@@ -1059,7 +1111,7 @@ export default {
     },
     changeHandle() {
       this.confirm = true;
-      this.isActives = !this.isActives;
+      this.isActives = true;
       // this.isActives = true;
       // if (this.isActives == false) {
       //   this.isActives = true;
@@ -1095,6 +1147,7 @@ export default {
       this.VIN = data.data.car.vin;
       this.engine = data.data.car.engine;
       this.currentDate = data.data.car.registerDate;
+      this.transferDate = data.data.car.transferDate;
       this.carName = data.data.customer.name;
       //身份证号
       this.identifyNo = data.data.customer.identifyNo;
@@ -1104,6 +1157,7 @@ export default {
         // console.log(data.data.customer.identifyType)
         if (this.cardList[i].code === data.data.customer.identifyType) {
           this.identifyType = this.cardList[i].code;
+          // this.identifyType = this.cardList[i].code;
           this.card = this.cardList[i].text;
         }
       }
@@ -1169,8 +1223,9 @@ export default {
                 data.data.tax.deductionDueProportion;
             }
           }
-        } else {
-          this.busRiskCode = "0520";
+        } else if (data.data.riskList[i].riskCode === "0520") {
+          this.busRiskCode = data.data.riskList[i].riskCode;
+          console.log(this.busRiskCode);
           this.bussines = true;
           this.bussinesNum = data.data.riskList[i].premium;
           this.busRegisterDate = data.data.riskList[i].startDate;
@@ -1214,12 +1269,13 @@ export default {
       car.engine = this.engine;
       car.vin = this.VIN;
       car.plateNo = this.plateNo;
-      car.model = "奥迪FV7148LADWG轿车";
+      car.model = this.model;
       car.motorTypeCode = this.motorTypeCode;
       car.motorUsageTypeCode = this.motorUsageTypeCode;
       car.registerDate = this.registerDate;
       car.transferFlag = this.open;
       car.newCarSign = this.newCarSign;
+      car.transferDate = this.issueDate;
       //车主信息
       var customer = new Object();
       customer.identifyNo = this.identifyNo;
@@ -1251,6 +1307,7 @@ export default {
       risk2.endDate = this.RegDate;
       risk2.premium = this.bussinesNum;
       risk2.riskCode = this.busRiskCode;
+      console.log(risk2.riskCode);
       risk2.startDate = this.busRegisterDate;
       riskList.push(risk2);
 
@@ -1301,6 +1358,7 @@ export default {
             this.car = this.carList[i].text;
           }
         }
+
         //订单号
         this.orderNo = data.data.orderNo;
         //是否过户
@@ -1435,14 +1493,13 @@ export default {
     },
     // 确认报价
     async confimHandle() {
-      window.localStorage.setItem("orderNo", this.orderNo);
+      // window.localStorage.setItem("orderNo", this.orderNo);
       console.log(this.orderNo);
       this.$router.push({
-        path: "ConfirmInsured"
-
-        // params: {
-        //   orderNo: this.orderNo
-        // }
+        path: "ConfirmInsured",
+        query: {
+          orderNo: this.orderNo
+        }
       });
       // if (this.$refs.confirmSale.innerHTML === "重新算价") {
       //   this.resetHandle();
@@ -1471,6 +1528,7 @@ export default {
         this[this.currentPicker] = picker;
       }
       var bbb = (this[this.currentPicker.values] = values);
+      this.motorTypeCode = this.carList[values].code;
       this.showPopup = false;
     },
     //显示注册日期
@@ -1479,13 +1537,21 @@ export default {
       this.currentDateName = name;
       console.log(this.currentDateName);
     },
+    dateShow2(name) {
+      this.showPopupDate = true;
+      this.currentDateName = name;
+      console.log(this.currentDateName);
+    },
     // 确定选择
     confirmDate(picker) {
       this.currentDate = this[this.currentDateName];
-      let date = dayjs(picker).format("YYYY-MM-DD");
-      console.log(date, this.currentDateName);
+      let date = dayjs(picker).format("YYYY-MM-DD HH");
       this[this.currentDateName] = date;
+      console.log(date);
+      console.log(this.currentDateName);
       this.showPopupDate = false;
+      this.registerDate = dayjs(picker).format("YYYY-MM-DD");
+      this.issueDate = dayjs(picker).format("YYYY-MM-DD");
     }
   }
 };

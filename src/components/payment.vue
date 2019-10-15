@@ -12,9 +12,8 @@
           <canvas id="qrccode-canvas"></canvas>
         </div>
         <div class="btn-wrap">
-          <img :src="this.bannerUrl" class="image" style="display:none"/>
-         
-         
+          <img :src="this.bannerUrl" class="image" style="display:none" />
+
           <!-- <img class="img" :src="this.imgUrl" alt /> -->
           <!-- <button @click="createQrc">点击</button> -->
         </div>
@@ -27,6 +26,7 @@
         </div>
         <p class="text">支持微信/支付宝扫码付款</p>
       </div>
+      <p class="info">温馨提示：支付完成后，稍后可取我的订单查看支付状态</p>
       <div class="confirm">确认支付</div>
     </div>
   </div>
@@ -41,16 +41,16 @@ export default {
   },
   data() {
     return {
-      bannerUrl: "https://syb.allinpay.com/apiweb/insdmf/"
+      bannerUrl: ""
     };
   },
   created() {
-    // this.createQrc()
-    this.imgUrl = this.$route.params.imgUrl;
+    console.log(1111);
+    this.bannerUrl = this.$route.params.imgUrl;
+    this.createQrc();
+    console.log(this.bannerUrl);
   },
   mounted() {
-    this.createQrc();
-    // console.log(this.imgUrl);
     this.$nextTick(function() {
       // DOM操作
       canvas = document.getElementById("qrccode-canvas");
@@ -58,12 +58,12 @@ export default {
   },
   methods: {
     createQrc() {
+      console.log(12121);
       setTimeout(() => {
         if (!this.bannerUrl) {
           window.alert("链接不能为空");
           return false;
         }
-        console.log(12121);
         QRCode.toCanvas(canvas, this.bannerUrl, error => {
           if (error) {
             console.log(error);
@@ -128,13 +128,18 @@ export default {
     }
     .confirm {
       width: 89%;
-      margin: 34px 0 20px;
+      margin: 20px 0 20px;
       border-radius: 5px;
       background: #568efc;
       font-size: 17px;
       color: #fff;
       line-height: 45px;
       text-align: center;
+    }
+    .info {
+      padding-top: 15px;
+      font-size: 12px;
+      color: #464646;
     }
   }
 }

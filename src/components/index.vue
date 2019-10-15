@@ -156,24 +156,24 @@ export default {
       // 验车码
       carVerifyCode: "",
       // 车牌号
-      plateNo: "豫A33R43",
+      plateNo: "",
       // 车架号
-      VIN: "ERW33984674855131",
+      VIN: "",
       // 车辆类型
-      motorTypeCode: "A0",
+      motorTypeCode: "",
       // 是否上牌
       noLicenseFlag: 0,
       //使用性质
-      motorUsageTypeCode: "8A",
+      motorUsageTypeCode: "",
       //是否新车
       newCarSign: false,
       //身份证号
-      identifyNo: "410526199709191528",
+      identifyNo: "",
       // /证件类型
-      identifyType: "01",
+      identifyType: "",
       //姓名
-      name: "周震南",
-      type: "2",
+      name: "",
+      type: "",
       role: "3",
       // 登陆框
       showLoginPop: false,
@@ -239,7 +239,7 @@ export default {
         { code: "9A", text: "营运" }
       ],
       // 车主证件类型
-      certificateType: "身份证",
+      certificateType: "",
       certificateList: [
         { code: "01", text: "身份证" },
         { code: "03", text: "护照" },
@@ -380,6 +380,9 @@ export default {
       console.log(this.currentPicker);
       this.showPopup = false;
       this.type = this.masterPropertiesList[values].code;
+      this.identifyType = this.certificateList[values].code;
+      this.motorUsageTypeCode = this.usingNatureList[values].code;
+      this.motorTypeCode = this.vehicleList[values].code;
     },
     // 关闭登录框 登录成功
     async closeLogin() {

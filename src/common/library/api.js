@@ -58,7 +58,12 @@ export const engage = data => {
 export const addEngage = data => {
   return axios.post('/api/engage/', data)
 }
+//电子发票获取
 
+export const edownload = contractNo => {
+  return axios.get(`/api/policy/edownload/${contractNo}`,
+  )
+}
 
 
 
