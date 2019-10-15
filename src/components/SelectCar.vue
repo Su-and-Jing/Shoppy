@@ -18,7 +18,7 @@
         <div class="Car">
             <p class="cartit"> 丰田</p>
             <ul>
-                <li>saasass</li>
+                <li>车辆的 牌子</li>
             </ul>
         </div>
 
@@ -45,6 +45,8 @@ export default {
             top: 0;
             left: 0;
             z-index:1;
+            border-bottom: 1px solid #E5E5E5;
+
             .iconLeft{
                 padding: 13px 0 0 15px;
             }
@@ -62,9 +64,9 @@ export default {
         .content{
             // flex:1;
             width:100%;
-           
+           margin-top:53px; 
                 .search-wrap {
-                    margin-top:50px; 
+                    
                     .btn {
                     flex: 34px 0;
                     margin: 0 13px;

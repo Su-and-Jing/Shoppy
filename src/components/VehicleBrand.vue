@@ -26,7 +26,7 @@
         <div class="hot">
             <p class="hotTiT">热门品牌</p>
             <ul>
-                <li  v-for="(item,index) in hot" :key="index">{{item}} </li>
+                <router-link tag="li"  v-for="(item,index) in hot" :key="index"  :to="{name:'SelectBrand',query:{name:item}}">{{item}} </router-link>
             </ul>
         </div>
         <!-- 全部车辆品牌 -->
@@ -34,7 +34,7 @@
                 <p  :id="'anchor-'+index" class="zimuTiT item">{{key}}</p>
                 <ul>
                     <!-- <router-link tag="li" v-for="item in value" :key="item.id" :to="{name:'city',params:{id:item.id}}">{{item.name}}</router-link> -->
-                    <li v-for="item of value">{{item}}</li>
+                    <router-link tag="li" v-for="item of value"  :to="{name:'SelectBrand',query:{name:item}}">{{item}}</router-link>
                 </ul>
         </div>
       </div>
@@ -97,7 +97,9 @@ export default {
      body,html{
         width: 100%;
         height: 100%;
+        
     }
+
     .Vehicle{
         width:100%;
         
@@ -110,6 +112,7 @@ export default {
             top: 0;
             left: 0;
             z-index:1;
+            border-bottom: 1px solid #E5E5E5;
             .iconLeft{
                 padding: 13px 0 0 15px;
             }
@@ -127,9 +130,9 @@ export default {
         .contain{
             // flex:1;
             width:100%;
-           
+             margin-top:53px; 
                 .search-wrap {
-                    margin-top:50px; 
+                   
                     .btn {
                     flex: 34px 0;
                     margin: 0 13px;

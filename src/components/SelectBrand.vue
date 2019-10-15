@@ -16,9 +16,9 @@
         </van-search>
 
         <div class="Car">
-            <p class="cartit"> 丰田</p>
+            <p class="cartit"> {{CarBrands}}</p>
             <ul>
-                <li>saasass</li>
+                <li>车辆的类型</li>
             </ul>
         </div>
 
@@ -28,12 +28,34 @@
 </template>
 
 <script>
+import {SelectBrand} from "@/common/library/api";
 export default {
+    data(){
+        return{
+            CarBrands:''
+        }
+    },
+    created(){
 
+    },
+    mounted(){
+        console.log(this.$route)
+        this.Select()
+    },
+    methods:{
+        async Select(){
+            this.CarBrands=this.$route.query.name
+           
+            const data=await SelectBrand(this.CarBrands)
+            console.log(data)
+        }
+    }
+   
 }
 </script>
 
 <style lang="scss" scope>
+
     .contain{
         width:100%;
          header{
@@ -45,6 +67,8 @@ export default {
             top: 0;
             left: 0;
             z-index:1;
+            border-bottom: 1px solid #E5E5E5;
+
             .iconLeft{
                 padding: 13px 0 0 15px;
             }
@@ -62,7 +86,7 @@ export default {
         .content{
             // flex:1;
             width:100%;
-           
+            margin-top: 53px;
                 .search-wrap {
                     margin-top:50px; 
                     .btn {

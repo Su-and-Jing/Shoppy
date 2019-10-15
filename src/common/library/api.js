@@ -41,6 +41,9 @@ export const TerracePage = orderNo => {
   return axios.get(`/api/quote/platFormMessage/${orderNo}`,
   )
 }
+export const SelectBrand = data=>{
+  return axios.post('/api/car/brand/',data)
+}
 // 订单列表页
 export const orderInfoList = data => {
   return axios.post('/api/orderInfo/orderInfoList', data)
