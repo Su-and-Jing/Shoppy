@@ -1322,13 +1322,13 @@ export default {
               orderType: this.orderType
             }
           });
-          alert("下发修改");
+          // alert("下发修改");
         } else if (data.data.status === "3") {
           this.peopleShow = true;
           this.orderType = "1";
-          alert("人工核保");
+          // alert("人工核保");
         } else if (data.data.status === "5") {
-          alert("待支付");
+          // alert("待支付");
           this.pay();
         }
       } else if (data.state === "1") {

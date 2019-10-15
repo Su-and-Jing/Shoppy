@@ -296,7 +296,7 @@ export default {
         message: "正在上传..."
       });
       if (data.state === "200") {
-        this.$toast.success("上传成功");
+        // this.$toast.success("上传成功");
         if (data.data.customerInfo) {
           this.close1 = true;
           // console.log(imgData)
@@ -340,7 +340,7 @@ export default {
         message: "正在上传..."
       });
       if (data.state === "200") {
-        this.$toast.success("上传成功88888");
+        // this.$toast.success("上传成功88888");
         if (data.data.carInfo) {
           this.close2 = true;
           this.licensePlateNumber = data.data.carInfo.plateNo;

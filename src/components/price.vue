@@ -1338,7 +1338,7 @@ export default {
 
       if (data.state === "200") {
         this.aaa = true;
-        this.$toast("成功");
+        // this.$toast("成功");
         this.iLogPreUdwMess = data.data.iLogPreUdwMess;
         this.lowestDiscount = data.data.lowestDiscount;
         this.policyDiscount = data.data.policyDiscount;
