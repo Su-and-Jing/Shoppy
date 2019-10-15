@@ -862,7 +862,7 @@ export default {
       currentPicker: "",
       showPopup: false,
       //   车辆类型
-      car: "小型普通客车",
+      car: "请选择",
       carList: [
         { code: "A0", text: "小型普通客车" },
         { code: "H0", text: "货车" }

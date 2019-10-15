@@ -162,7 +162,6 @@ export default {
           });
           console.log(data);
           if (data.state === "200") {
-            this.$toast.success("成功22");
             this.agentPermitNo = data.data.agentList[0].agentPermitNo;
             console.log(this.agentPermitNo);
             this.agreementNo = data.data.handlerList[0].agreementNo;

@@ -45,8 +45,9 @@ export default {
     };
   },
   created() {
-    console.log(1111);
+    console.log(this.$route.params.imgUrl);
     this.bannerUrl = this.$route.params.imgUrl;
+    console.log(this.bannerUrl);
     this.createQrc();
     console.log(this.bannerUrl);
   },

@@ -668,22 +668,21 @@ export default {
       occupation: "",
       TwoOccupation: "工人",
       occupationList: [
-        { code: "P0001", text: "文员白领" },
-        { code: "P0002", text: "公务员" },
-        { code: "P0003", text: "农民" },
-        { code: "P0004", text: "个体商户" },
-        { code: "P0005", text: "公共服务" },
-        { code: "P0006", text: "工人" },
-        { code: "P0007", text: "教师" },
-        { code: "P0008", text: "专业技术人员" },
-        { code: "P0009", text: "商业" },
-        { code: "P00010", text: "服务业人员" },
-        { code: "P00011", text: "生产" },
-        { code: "P00012", text: "运输人员" },
-        { code: "P00013", text: "军人" },
-        { code: "P9999", text: "其他从业人员" }
+        { code: "000101", text: "公务员．职员" },
+        { code: "0402005", text: "工人" },
+        { code: "1201002", text: "教师" },
+        { code: "2103", text: "个体经营员" },
+        { code: "210302", text: "无固定职业人员" },
+        { code: "2105", text: "现役军人" },
+        { code: "31", text: "学生" },
+        { code: "410001", text: "文员白领" },
+        { code: "410002", text: "农民" },
+        { code: "410003", text: "公共服务" },
+        { code: "410004", text: "专业技术人员" },
+        { code: "410005", text: "商业、服务业人员" },
+        { code: "410006", text: "生产、运输人员" },
+        { code: "410007", text: "其他从业人员" }
       ],
-
       // 车主
       dentify: "身份证",
       dentifyList: [
@@ -1331,12 +1330,6 @@ export default {
         } else if (data.data.status === "5") {
           alert("待支付");
           this.pay();
-          this.$router.push({
-            name: "payment",
-            params: {
-              imgUrl: data.data
-            }
-          });
         }
       } else if (data.state === "1") {
         this.$toast(data.message);
@@ -1358,11 +1351,13 @@ export default {
       const data = await apply(orderNo);
       console.log(orderNo);
       if (data.state === "200") {
+        var imgUrl = data.data;
+        console.log(imgUrl);
         // window.localStorage.setItem(imgUrl,'data.data')
         this.$router.push({
           name: "payment",
           params: {
-            imgUrl: data.data
+            imgUrl: imgUrl
           }
         });
       }

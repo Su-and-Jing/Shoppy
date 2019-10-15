@@ -34,7 +34,7 @@
                 <p  :id="'anchor-'+index" class="zimuTiT item">{{key}}</p>
                 <ul>
                     <!-- <router-link tag="li" v-for="item in value" :key="item.id" :to="{name:'city',params:{id:item.id}}">{{item.name}}</router-link> -->
-                    <router-link tag="li" v-for="item of value"  :to="{name:'SelectBrand',query:{name:item}}">{{item}}</router-link>
+                    <router-link tag="li" v-for="(item,index) of value" :key='index'  :to="{name:'SelectBrand',query:{name:item}}">{{item}}</router-link>
                 </ul>
         </div>
       </div>

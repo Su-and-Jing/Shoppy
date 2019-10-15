@@ -230,16 +230,16 @@ export default {
         "台"
       ],
       //车辆类型
-      vehicle: "小型普通客车",
+      vehicle: "请选择",
       vehicleList: [{ code: "80", text: "小型普通客车" }],
       // 使用性质
-      usingNature: "非营运",
+      usingNature: "请选择",
       usingNatureList: [
         { code: "8A", text: "非营运" },
         { code: "9A", text: "营运" }
       ],
       // 车主证件类型
-      certificateType: "",
+      certificateType: "请选择",
       certificateList: [
         { code: "01", text: "身份证" },
         { code: "03", text: "护照" },
@@ -249,7 +249,7 @@ export default {
       //车主姓名
       masterName: "",
       //车主性质
-      masterProperties: "个人",
+      masterProperties: "",
       masterPropertiesList: [
         { code: "1", text: "个人" },
         { code: "2", text: "机构" }
