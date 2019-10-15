@@ -51,7 +51,16 @@
                 type="year-mounth"
               />
             </van-popup>-->
-            <van-field v-model="model" label="品牌型号" />
+            <div style="display:flex;">
+              <van-field
+                v-model="model"
+                label="品牌型号"
+                disabled
+                @click="CarPaiHandle"
+                @change="changeHandle"
+              />
+              <van-icon style="position: absolute; right:17px;" size="16px" name="arrow-down" />
+            </div>
             <van-cell title="一年内过户" value>
               <van-switch-cell v-model="open" class="year" />
             </van-cell>
@@ -1031,6 +1040,10 @@ export default {
   created() {},
   watch: {},
   methods: {
+    // 车辆品牌
+    CarPaiHandle() {
+      this.$router.push({ path: "/Vehicle" });
+    },
     radioBtn() {
       console.log(this.radio);
 
@@ -1481,7 +1494,7 @@ export default {
         //总保费
         this.totalPremium = data.data.sumPermium;
       } else {
-        this.$toast(data.message);
+        // this.$toast(data.message);
       }
     },
 

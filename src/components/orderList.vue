@@ -101,7 +101,7 @@ export default {
       list: [],
       riskInfoList: "",
       id: 66,
-      // orderType: "2",
+      orderType: "",
       active: "1",
       search: "",
       tabList: [
@@ -144,7 +144,8 @@ export default {
   methods: {
     onSearch() {},
     async orderListHandle() {
-      this.active = this.$route.params.orderType;
+      // 这有个问题（核保跳过来）
+      // this.active = this.$route.params.orderType;
       for (var i = 0; i < this.tabList.length; i++) {}
       const data = await orderInfoList({
         id: this.id,
@@ -163,7 +164,7 @@ export default {
         }
       } else if (data.state === "0" || data.state === "1") {
         // this.$router.push({ name: "price" });
-        this.$toast("跳转报价页");
+        // this.$toast("跳转报价页");
       } else {
         this.$toast.fail("失败");
       }

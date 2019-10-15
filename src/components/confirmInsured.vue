@@ -1332,10 +1332,10 @@ export default {
           this.pay();
         }
       } else if (data.state === "1") {
-        this.$toast(data.message);
+        // this.$toast(data.message);
         this.$router.push({ path: "/price" });
       } else {
-        this.$toast(data.message);
+        // this.$toast(data.message);
       }
     },
     checkPicker(current, list) {
