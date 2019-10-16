@@ -1,7 +1,7 @@
 <template>
   <div class="contain"> 
       <header>
-          <van-icon class="iconLeft" name="arrow-left" size="23px"/>
+          <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px"/>
           <p class="Vetit">选择品牌</p>
       </header>
       <div class="content">
@@ -18,7 +18,7 @@
         <div class="Car">
             <p class="cartit"> {{CarBrands}}</p>
             <ul>
-                <li>车辆的类型</li>
+                <router-link :to="{name:'Annual',query:{name:item}}" tag="li" v-for="(item,index) in carPai" :key="index">{{item}}</router-link>
             </ul>
         </div>
 
@@ -28,11 +28,12 @@
 </template>
 
 <script>
-import {SelectBrand} from "@/common/library/api";
+import {CarPai} from "@/common/library/api";
 export default {
     data(){
         return{
-            CarBrands:''
+            CarBrands:'',
+            carPai:[]
         }
     },
     created(){
@@ -45,9 +46,20 @@ export default {
     methods:{
         async Select(){
             this.CarBrands=this.$route.query.name
-           
-            const data=await SelectBrand(this.CarBrands)
-            console.log(data)
+            var brands = this.CarBrands
+            const data=await CarPai(brands)
+            if (data.state === "200") {
+                this.carPai=data.data
+            }
+        },
+        // 点击返回按钮,如果没有上一页,则返回首页
+        backHandle(){
+            if (window.history.length <= 1) {
+                this.$router.push({path:'/'})
+                return false
+            } else {
+                this.$router.go(-1)
+            }
         }
     }
    
@@ -57,7 +69,7 @@ export default {
 <style lang="scss" scope>
 
     .contain{
-        width:100%;
+        // width:100%;
          header{
             width: 100%;
             height:53px;
@@ -70,13 +82,13 @@ export default {
             border-bottom: 1px solid #E5E5E5;
 
             .iconLeft{
-                padding: 13px 0 0 15px;
+                padding: 15px 0 0 15px;
             }
             .Vetit{
                 width:100%;
                 line-height: 53px;
                 text-align: center;
-                margin: 0 20px 0 0;
+                margin: 0 60px 0 0;
                 font-size:17px;
                 font-weight:500;
                 color:rgba(51,51,51,1);
@@ -88,7 +100,6 @@ export default {
             width:100%;
             margin-top: 53px;
                 .search-wrap {
-                    margin-top:50px; 
                     .btn {
                     flex: 34px 0;
                     margin: 0 13px;

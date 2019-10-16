@@ -1518,6 +1518,7 @@ export default {
     color: rgba(70, 70, 70, 1);
     line-height: 31px;
     margin-bottom: 15px;
+    
   }
   .content {
     width: 100%;

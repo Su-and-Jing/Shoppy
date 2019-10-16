@@ -1,7 +1,7 @@
 <template>
   <div class="Vehicle"> 
       <header>
-          <van-icon class="iconLeft" name="arrow-left" size="23px"/>
+          <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px"/>
           <p class="Vetit">选择品牌</p>
       </header>
       <div class="contain">
@@ -34,7 +34,8 @@
                 <p  :id="'anchor-'+index" class="zimuTiT item">{{key}}</p>
                 <ul>
                     <!-- <router-link tag="li" v-for="item in value" :key="item.id" :to="{name:'city',params:{id:item.id}}">{{item.name}}</router-link> -->
-                    <router-link tag="li" v-for="(item,index) of value" :key='index'  :to="{name:'SelectBrand',query:{name:item}}">{{item}}</router-link>
+                    <router-link tag="li" v-for="item of value" :key="item"  :to="{name:'SelectBrand',query:{name:item}}">{{item}}</router-link>
+                    
                 </ul>
         </div>
       </div>
@@ -78,16 +79,17 @@ export default {
         }
     },
     mounted(){
-        this.CarPai()
+        
     },
     methods:{
-        CarPai(){
-            var group=this.group
-            // console.log(group)
-            for(var i of group.A){
-              console.log(i)
+         // 点击返回按钮,如果没有上一页,则返回首页
+        backHandle(){
+            if (window.history.length <= 1) {
+                this.$router.push({path:'/'})
+                return false
+            } else {
+                this.$router.go(-1)
             }
-           
         }
     }
 }
@@ -114,13 +116,13 @@ export default {
             z-index:1;
             border-bottom: 1px solid #E5E5E5;
             .iconLeft{
-                padding: 13px 0 0 15px;
+                padding: 15px 0 0 15px;
             }
             .Vetit{
                 width:100%;
                 line-height: 53px;
                 text-align: center;
-                margin: 0 20px 0 0;
+                margin: 0 60px 0 0;
                 font-size:17px;
                 font-weight:500;
                 color:rgba(51,51,51,1);

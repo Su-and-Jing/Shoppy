@@ -41,8 +41,8 @@ export const TerracePage = orderNo => {
   return axios.get(`/api/quote/platFormMessage/${orderNo}`,
   )
 }
-export const SelectBrand = data=>{
-  return axios.post('/api/car/brand/',data)
+export const SelectBrand = data => {
+  return axios.post('/api/car/brand/', data)
 }
 // 订单列表页
 export const orderInfoList = data => {
@@ -66,6 +66,14 @@ export const addEngage = data => {
 export const edownload = contractNo => {
   return axios.get(`/api/policy/edownload/${contractNo}`,
   )
+}
+// 车辆品牌v
+export const CarPai = data => {
+  return axios.get(`/api/car/brand?carBrand=${data}`)
+}
+// 车辆类型
+export const CarType = data => {
+  return axios.get(`/api/car/series?carSeries=${data}`)
 }
 
 

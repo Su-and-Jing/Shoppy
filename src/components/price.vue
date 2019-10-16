@@ -53,11 +53,13 @@
             </van-popup>-->
             <div style="display:flex;">
               <van-field
+                class="carPai"
+                
                 v-model="model"
                 label="品牌型号"
+                @change="changeHandle"
                 disabled
                 @click="CarPaiHandle"
-                @change="changeHandle"
               />
               <van-icon style="position: absolute; right:17px;" size="16px" name="arrow-down" />
             </div>
@@ -1032,6 +1034,8 @@ export default {
   },
   mounted() {
     this.handle();
+    var car_Name = this.$route.query.name;
+    this.model = car_Name;
     // this.beneficiaryHandle();
 
     // console.log(dayjs().add(1,'day').format("YYYY-MM-DD"))
@@ -1277,6 +1281,11 @@ export default {
     async resetHandle() {
       window.localStorage.getItem("token");
       // console.log([56465])
+      // 特约信息
+      var engageInfo = new Object();
+      console.log(this.engageDetail);
+      engageInfo.engageDetail = this.engageDetail;
+      // engageInfo.clauseType =
       //车辆信息
       var car = new Object();
       car.engine = this.engine;
@@ -1571,6 +1580,11 @@ export default {
 </script>
 <style lang="scss" scope>
 @import "/style/price.scss";
+.carPai{
+  .van-cell__value{
+    overflow: auto !important;
+  }
+}
 #loanCar,
 #AddloanCar {
   .van-cell__title {
