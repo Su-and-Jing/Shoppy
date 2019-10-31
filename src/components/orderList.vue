@@ -22,8 +22,9 @@
     >
       <van-tab v-for="(item,index) in tabList" :key="index" :title="item.title" :name="item.name">
         <!-- 暂存单 -->
-        <div class="list van-hairline--top">
-          <div class="item" v-for="(item,index) in list" :key="index">
+
+        <div class="list van-hairline--top" v-for="(item,index) in list" :key="index">
+          <div class="item">
             <div class="sign">
               <p class="type">{{item.orderStatusName}}</p>
               <p class="times">{{item.createDate}}</p>
@@ -36,30 +37,40 @@
                 <p class="car-owner">{{item.name}}</p>
               </div>
               <div class="right">
-                <div class="ritem" v-for="(item,index) in riskInfoList" :key="index">
+                <div class="ritem" v-for="(item,index) in list[index].riskInfoList" :key="index">
                   <p class="top">
                     <span class="insurance">{{item.riskName}}</span>
                     <span class="amount">{{item.premium}}元</span>
                   </p>
                   <p class="time">{{item.startDate}}-{{item.endDate}}</p>
+                  <span
+                    class="commission"
+                    style="padding-right:22px"
+                    v-show="detailShow"
+                  >手续费{{item.commissionAmount}}元</span>
                 </div>
               </div>
             </div>
             <div class="status van-hairline--top">
               <span class="chassis-number">车架号：{{item.vin}}</span>
-              <span class="type" v-show="!showPay" @click="insert(index)">修改投保方案</span>
+              <span class="type" v-show="changeShow" @click="insert(index)">修改投保方案</span>
               <span class="pay" v-show="showPay" @click="pay(index)">
                 去支付
+                <van-icon name="arrow" />
+              </span>
+              <span class="pay" v-show="detailShow" @click="detail(index)">
+                查看订单详情
                 <van-icon name="arrow" />
               </span>
             </div>
           </div>
         </div>
         <!-- 已完成 -->
-        <div class="list van-hairline--top" v-show="item.name ==4">
+        <!-- <div class="list van-hairline--top" v-show="item.name ==4">
           <div class="item" v-for="(item,index) in list" :key="index">
+            {{item}}
             <div class="sign">
-              <p class="type">{{item.orderStatus}}</p>
+              <p class="type">{{item.orderStatusName}}</p>
               <p class="times">{{item.createDate}}</p>
               <van-button plain color="#2EBE8D">下载投保单</van-button>
             </div>
@@ -82,10 +93,10 @@
             </div>
             <div class="status van-hairline--top">
               <span class="chassis-number">车架号：{{item.vin}}</span>
-              <span class="type">修改投保方案</span>
+              <span class="type">查看订单详情</span>
             </div>
           </div>
-        </div>
+        </div>-->
       </van-tab>
     </van-tabs>
   </div>
@@ -100,7 +111,7 @@ export default {
       orderNo: "",
       list: [],
       riskInfoList: "",
-      id: 66,
+      id: "",
       orderType: "",
       active: "1",
       search: "",
@@ -135,7 +146,9 @@ export default {
         { code: 7, name: "拒保" },
         { code: 8, name: "退保" }
       ],
-      showPay: false
+      showPay: false,
+      detailShow: false,
+      changeShow: false
     };
   },
   mounted() {
@@ -145,12 +158,13 @@ export default {
     onSearch() {},
     async orderListHandle() {
       // 这有个问题（核保跳过来）
-      // this.active = this.$route.params.orderType;
+      // this.active = this.$route.query.orderType;
       for (var i = 0; i < this.tabList.length; i++) {}
       const data = await orderInfoList({
         id: this.id,
         orderType: this.active
       });
+      console.log(data);
       if (data.state === "200") {
         this.list = data.data;
         if (this.active === "3") {
@@ -158,11 +172,24 @@ export default {
         } else {
           this.showPay = false;
         }
-        this.riskInfoList = data.data.riskInfoList;
-        for (var i = 0; i < this.list.length; i++) {
-          this.riskInfoList = this.list[i].riskInfoList;
+        if (this.active == 4) {
+          this.detailShow = true;
+        } else {
+          this.detailShow = false;
         }
-      } else if (data.state === "0" || data.state === "1") {
+        if (this.active == 1 || this.active == 2) {
+          this.changeShow = true;
+        } else {
+          this.changeShow = false;
+        }
+
+        // this.riskInfoList = data.data.riskInfoList;
+        // console.log(this.list);
+        // for (var i = 0; i < this.list.length; i++) {
+        //   this.riskInfoList = this.list[i].riskInfoList;
+        //   console.log(this.riskInfoList);
+        // }
+      } else if (data.state == "0" || data.state == "1") {
         // this.$router.push({ name: "price" });
         // this.$toast("跳转报价页");
       } else {
@@ -176,11 +203,14 @@ export default {
     //这有问题
     async insert(index) {
       this.orderNo = this.list[index].orderNo;
+
       const data = await OfferPage(this.orderNo);
+      window.sessionStorage.setItem("data", JSON.stringify(data));
+      console.log(data);
       if (data.state === "200") {
         this.$router.push({
-          name: "price",
-          params: { datas: data }
+          name: "price"
+          // params: { data: data }
         });
       }
     },
@@ -193,10 +223,22 @@ export default {
         this.$router.push({
           name: "payment",
           params: {
-            imgUrl: data.data
+            imgUrl: data.data,
+            orderNo: this.orderNo
           }
         });
       }
+    },
+    async detail(index) {
+      this.orderNo = this.list[index].orderNo;
+      const data = await OfferPage(this.orderNo);
+      console.log(this.orderNo);
+      this.$router.push({
+        name: "orderDetails",
+        params: {
+          data: data
+        }
+      });
     }
   }
 };
@@ -257,8 +299,9 @@ export default {
           }
         }
         .right {
-          flex: 1;
+          // flex: 1;
           margin-right: 24px;
+          width: 70% !important;
           .ritem {
             padding-top: 14px;
             margin-bottom: 10px;

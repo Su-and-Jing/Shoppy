@@ -3,31 +3,58 @@
     <div class="instr">
       <div class="left">
         <div class="item">
-          <span class="plate">沪A78990</span>
-          <span class="name">黄雪芹</span>
+          <span class="plate">{{this.parentMsg.car.plateNo}}</span>
+          <span class="name">{{ this.parentMsg.customer.name}}</span>
+          <!-- <span class="name">{{ this.parentMsg.tax.sumTax}}</span> -->
         </div>
       </div>
       <div class="right">
-        <div class="item">
+        <div
+          class="item"
+          v-for="(item,index) in this.parentMsg.riskList"
+          :key="index"
+          style="margin-bottom:30px;"
+        >
           <p class="insurance-type">
-            交强险
-            <span>2018.7.30-2019.8.30</span>
+            {{item.riskName}}
+            <span>{{item.startDate}}-{{item.endDate}}</span>
           </p>
-          <p class="insurance-no">保单号：W20175609988</p>
-        </div>
-        <div class="item">
-          <p class="insurance-type">
-            交强险
-            <span>2018.7.30-2019.8.30</span>
+          <p style="padding-top:8px;" class="pre">
+            <span>保费：{{item.premium}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <!-- <span v-show="item.riskCode == '507'">车船税：</span> -->
           </p>
-          <p class="insurance-no">保单号：W20175609988</p>
+          <!-- <p class="insurance-no">保单号：W20175609988</p> -->
         </div>
       </div>
+      <span class="tax">车船税：{{this.parentMsg.tax.sumTax}}</span>
+      <!-- <span class="tax2">车船税：{{this.parentMsg.tax.sumTax}}</span> -->
     </div>
   </div>
 </template>
 
+<script>
+export default {
+  props: ["parentMsg"],
+  watch: {},
+  data() {
+    return {};
+  },
+  created() {}
+};
+</script>
+
+<style>
+</style>
 <style lang="scss" scope>
+.pre {
+  position: relative;
+}
+.tax {
+  position: absolute;
+  float: left;
+  top: 71%;
+  left: 70%;
+}
 .head-containt {
   width: 100%;
   height: 0;
@@ -44,7 +71,7 @@
     display: flex;
     color: #fff;
     .left {
-      flex: 44% 0;
+      flex: 40% 0;
       display: flex;
       justify-content: center;
       .item {
@@ -60,7 +87,7 @@
       }
     }
     .right {
-      flex: 56% 0;
+      flex: 60% 0;
       .item {
         &:last-child {
           margin-top: 15px;

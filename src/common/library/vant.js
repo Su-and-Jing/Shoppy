@@ -27,11 +27,13 @@ import {
   Cell,
   Overlay,
   IndexBar,
-  IndexAnchor
+  IndexAnchor,
+  Loading 
 } from 'vant'
 
 
 export default [
+  Loading ,
   IndexBar,
   IndexAnchor,
   Overlay ,

@@ -1,10 +1,10 @@
 <template>
   <div class="containt-pay">
-    <Head></Head>
+    <Head :parent-msg="this.list"></Head>
     <div class="main">
       <p class="mount-wrap">
         应付金额：
-        <span class="mount">2000.99</span>元
+        <span class="mount">{{sumPermium}}</span>元
       </p>
       <!-- <img class="img" src="../assets/qr.jpg" alt /> -->
       <div class="home-container">
@@ -26,7 +26,7 @@
         </div>
         <p class="text">支持微信/支付宝扫码付款</p>
       </div>
-      <p class="info">温馨提示：支付完成后，稍后可取我的订单查看支付状态</p>
+      <p class="info">温馨提示：支付完成后，稍后可去我的订单查看支付状态</p>
       <div class="confirm">确认支付</div>
     </div>
   </div>
@@ -35,21 +35,30 @@
 var QRCode = require("qrcode");
 var canvas = "";
 import Head from "./module/head";
+import { OfferPage } from "@/common/library/api";
 export default {
   components: {
     Head
   },
+  props:["data"],
   data() {
     return {
-      bannerUrl: ""
+      bannerUrl: "",
+      orderNo: "",
+      // plateNo: "",
+      // name: "",
+      sumPermium: "",
+      list:[]
     };
   },
   created() {
-    console.log(this.$route.params.imgUrl);
     this.bannerUrl = this.$route.params.imgUrl;
+    this.orderNo = this.$route.params.orderNo;
+    console.log(this.orderNo);
     console.log(this.bannerUrl);
     this.createQrc();
     console.log(this.bannerUrl);
+    this.handle();
   },
   mounted() {
     this.$nextTick(function() {
@@ -58,6 +67,16 @@ export default {
     });
   },
   methods: {
+    async handle() {
+      const data = await OfferPage(this.orderNo);
+      if (data.state === "200") {
+        this.sumPermium = data.data.sumPermium;
+        this.list = data.data;
+        console.log(this.list)
+      } else {
+        alert("失败");
+      }
+    },
     createQrc() {
       console.log(12121);
       setTimeout(() => {

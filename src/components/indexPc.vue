@@ -7,7 +7,6 @@
           color="#fff"
           background="rgba(0,0,0,0)"
           text="系统公告：江苏省苏州市因系统维护，10月2日19:00-24:00暂停出单。"
-          
         />
         <div class="content">
           <div class="tab">
@@ -27,16 +26,11 @@
             <p class="title">请上传投保车辆的行驶证、车主身份证</p>
             <div class="upload">
               <Upload @upImgList="upImg"></Upload>
-              <!-- <p class="txt">请拖拽图片到此处上传</p> -->
             </div>
-            <!-- <p class="num">共1张，还能上传1张</p> -->
-            <!-- <div class="img">
-              <img :src="imgUrl" alt :onerror="Img01" />
-            </div>-->
             <div class="btn">
               <van-button color="#568EFC" @click="handle">立即报价</van-button>
               <van-button color="#FEA23B">我的订单</van-button>
-              <p>当日验车码：080913</p>
+              <p>当日验车码：{{this.carVerifyCode}}</p>
             </div>
           </div>
           <!-- 手动输入 -->
@@ -128,10 +122,14 @@ export default {
       )
     ) {
       this.$router.push({ path: "/index" });
+      this.carVerifyCode = window.localStorage.getItem("carVerifyCode");
+      // console.log(this.carVerifyCode)
+      var token = window.localStorage.getItem("token");
     }
   },
   data() {
     return {
+      carVerifyCode:'',
       // Img01: 'this.src="' + require("../assets/sc.png") + '"',
       imgUrl: "",
       // 登陆框
@@ -326,7 +324,7 @@ export default {
     // height: 700px;
     margin-top: 430px;
     padding: 30px 170px;
-    border-radius: 20PX;
+    border-radius: 20px;
     .tab {
       border-bottom: 1px solid rgba(229, 229, 229, 1);
       span {

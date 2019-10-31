@@ -1,7 +1,7 @@
 <template>
   <div class="containt-insured">
     <van-collapse v-model="activeNames">
-      <van-collapse-item class="group" title="人员信息">
+      <van-collapse-item class="group" title="人员信息" name="owner">
         <div
           slot="right-icon"
           class="right-text"
@@ -602,8 +602,8 @@
         <p class="info">提示</p>
         <p class="content">亲，此单自动核保不通过。您可至“我的订单-待处理”进行下一步操作</p>
         <div class="btn">
-          <van-button type="default">查看我的订单</van-button>
-          <van-button type="default">投保其他车辆</van-button>
+          <van-button type="default" @click="lookOrder">查看我的订单</van-button>
+          <van-button type="default" @click="otherCar">投保其他车辆</van-button>
         </div>
       </div>
     </van-popup>
@@ -613,8 +613,8 @@
         <p class="info">提示</p>
         <p class="content">亲，此单需要人工核保，请耐心等待5-10分钟。您可至“我的订单-待处理”进行下一步操作</p>
         <div class="btn">
-          <van-button type="default">查看我的订单</van-button>
-          <van-button type="default">投保其他车辆</van-button>
+          <van-button type="default" @click="lookOrder">查看我的订单</van-button>
+          <van-button type="default" @click="otherCar">投保其他车辆</van-button>
         </div>
       </div>
     </van-popup>
@@ -1100,19 +1100,6 @@ export default {
       //   expressType: "",
       //   //配送类型
       policyType: "",
-      //   addr: "",
-      //   name: "",
-      //   mobile: "",
-      //   // 省
-      //   provinceValue: "",
-      //   province: "",
-      //   // 市
-      //   cityValue: "",
-      //   city: "",
-      //   // 区
-      //   district: "",
-      //   districtValue: ""
-      // },
       addressProps: [],
       OneAddr: "",
       OneAddrCode: "",
@@ -1128,7 +1115,22 @@ export default {
   mounted() {
     this.confimHandle();
   },
+
   methods: {
+    // 投保其他车辆
+    otherCar() {
+      this.$router.push({ path: "/" });
+    },
+    //跳到订单列表
+    lookOrder() {
+      this.orderType = "2";
+      this.$router.push({
+        name: "orderList",
+        params: {
+          orderType: this.orderType
+        }
+      });
+    },
     // 确定选择
     // 车主日期
     confirmDate(picker) {
@@ -1258,7 +1260,6 @@ export default {
     async confimHandle() {
       var orderNo = this.$route.query.orderNo;
       const data = await priceToConfirm(orderNo);
-
       if (data.state === "200") {
         let ownerCar = data.data.customerVoList[0]; //车主
         let PolicyHolder = data.data.customerVoList[1]; //投保人
@@ -1290,7 +1291,6 @@ export default {
         }
       }
     },
-
     // 调用核保接口
     async confirmInsure() {
       if (this.insuredOwner == true) {
@@ -1316,18 +1316,19 @@ export default {
         if (data.data.status === "4" || data.data.status === "10") {
           this.passShow = true;
           this.orderType = "2";
-          this.$router.push({
-            name: "orderList",
-            params: {
-              orderType: this.orderType
-            }
-          });
+          // this.$router.push({
+          //   name: "orderList",
+          //   params: {
+          //     orderType: this.orderType
+          //   }
+          // });
           // alert("下发修改");
-        } else if (data.data.status === "3") {
+        } else if (data.data.status == "3") {
           this.peopleShow = true;
           this.orderType = "1";
+
           // alert("人工核保");
-        } else if (data.data.status === "5") {
+        } else if (data.data.status == "5") {
           // alert("待支付");
           this.pay();
         }
@@ -1518,7 +1519,6 @@ export default {
     color: rgba(70, 70, 70, 1);
     line-height: 31px;
     margin-bottom: 15px;
-    
   }
   .content {
     width: 100%;

@@ -19,16 +19,18 @@ import SelectBrand from '@/components/SelectBrand'
 import SelectCar from '@/components/SelectCar'
 import QRCode from 'qrcodejs2';
 import Annual from '@/components/Annual'
+import Verification from '@/components/verification'
 Vue.use(Router)
 Vue.prototype.$qrCode = QRCode
 export default new Router({
   routes: [
-    
+
     {
       path: '/',
       name: 'index',
       component: Index,
       meta: {
+
         title: '首页'
       }
     },
@@ -133,6 +135,8 @@ export default new Router({
       name: 'price',
       component: Price,
       meta: {
+        keepAlive: true,
+        isBack: true,
         title: '确认报价'
       }
     },
@@ -155,7 +159,7 @@ export default new Router({
     {
       path: '/SelectBrand',
       name: 'SelectBrand',
-      component:SelectBrand,
+      component: SelectBrand,
       meta: {
         title: '车辆品牌'
       }
@@ -163,7 +167,7 @@ export default new Router({
     {
       path: '/SelectCar',
       name: 'SelectCar',
-      component:SelectCar,
+      component: SelectCar,
       meta: {
         title: '车辆品牌'
       }
@@ -172,10 +176,18 @@ export default new Router({
     {
       path: '/Annual',
       name: 'Annual',
-      component:Annual,
+      component: Annual,
       meta: {
         title: '选择年款'
       }
     },
+    {
+      path: '/verification',
+      name: 'verification',
+      component: Verification,
+      meta: {
+        title: '身份验证'
+      }
+    }
   ]
 })

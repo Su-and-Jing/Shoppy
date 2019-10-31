@@ -1,5 +1,5 @@
 <template>
-  <van-popup v-model="showPopup" class="login-popup" :close-on-click-overlay="false">
+  <van-popup v-model="showPopup" class="login-popup" :close-on-click-overlay="false" @close="close">
     <div class="login-wrap">
       <van-tabs
         class="login-tabs"
@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-      username: "41830005",
+      username: "44000020",
       passwd: "0000",
       phone: "13910653201",
       sms: "",
@@ -82,6 +82,11 @@ export default {
     // console.log(login);
   },
   methods: {
+    close() {
+      // this.closeLogin = false;
+      // location.reload()
+      console.log("00000000");
+    },
     // 手机号登录
     async iphoneHandle() {
       const data = await iphoneLogin({
@@ -92,23 +97,21 @@ export default {
       // console.log(data);
       if (data.state === "200") {
         this.$emit("closeLogin");
-        window.localStorage.setItem("token", data.data.token);
+        window.sessionStorage.setItem("token", data.data.token);
       } else {
         this.$toast.fail("手机号或验证码错误");
       }
     },
     // 用户名登录
     async handleLogin() {
-      window.localStorage.removeItem("token");
+      window.sessionStorage.removeItem("token");
       const data = await login({ userCode: this.username, pwd: this.passwd });
-      // console.log(data);
-        console.log(1)
       if (data.state === "200") {
         this.$emit("closeLogin");
-        window.localStorage.setItem("token", data.data.token);
-        window.localStorage.setItem("carVerifyCode", data.data.carVerifyCode);
+        window.sessionStorage.setItem("token", data.data.token);
+        window.sessionStorage.setItem("carVerifyCode", data.data.carVerifyCode);
+        window.sessionStorage.setItem("provinceName", data.data.provinceName);
       } else {
-        console.log(1)
         this.$toast.fail("用户名或密码错误");
       }
     },
@@ -244,3 +247,4 @@ export default {
   }
 }
 </style>
+ 

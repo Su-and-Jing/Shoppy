@@ -31,7 +31,7 @@
           @click="choosePopup(channelList,ownership,'channelType',a = 'c')"
         />
         <van-field
-          label="中介公司"
+          label="代理人"
           readonly
           right-icon="arrow-down"
           v-model="interCompany"
@@ -40,12 +40,12 @@
 
         <van-field
           label="业务员"
-          clearable
+          readonly
           v-model="maintPersonnel"
           right-icon="arrow-down"
           @click="choosePopup(maintPersonnelList,Salesman, 'maintPersonnel',a = 'e')"
         />
-        <van-field label="维护人员" readonly v-model="salesman" />
+        <van-field label="维护人员" v-model="salesman" />
         <span class="confirm" type="info" @click="confirm">确定</span>
       </van-cell-group>
     </van-popup>
@@ -73,6 +73,7 @@ export default {
   },
   data() {
     return {
+      submit: "1",
       // agentName: "永保保险代理有限公司河南分公司",
       Salesman: "",
       interCompanyCode: "",
@@ -92,12 +93,16 @@ export default {
       channelType: "请选择",
       channelCode: "",
       channelList: [
-        { code: "53", text: "专业代理" },
-        { code: "54", text: "经纪业务" },
-        { code: "529", text: "其他兼业代理" },
         { code: "11", text: "传统直销" },
-        { code: "51", text: "个人代理" },
-        { code: "521", text: "车商业务" }
+        { code: "12", text: "新渠道直销" },
+        { code: "13", text: "电话网络直销" },
+        { code: "521", text: "车商业务" },
+        { code: "522", text: "银行邮政代理" },
+        { code: "523", text: "个人代理" },
+        { code: "51", text: "互动业务" },
+        { code: "529", text: "其他兼业代理" },
+        { code: "53", text: "专业代理" },
+        { code: "54", text: "经纪业务" }
       ],
       //中介公司
       interCompany: "",
@@ -137,7 +142,8 @@ export default {
       storagecode: "",
       agentCode: "",
       agreementNo: "",
-      agentPermitNo: ""
+      agentPermitNo: "",
+      certificateNo: ""
       // agentName:''
     };
   },
@@ -155,13 +161,123 @@ export default {
         console.log(this.Channelt);
         if (this.showInsitutionPopup == true) {
           const data = await institution({
+            loginComCode: this.Registrationagency,
             comCode: this.Ownershipagency,
-            producerName: this.channelType,
+            agentCode: this.agency,
+            handlerCode: this.Salesma,
             producerCode: this.channelCode,
-            agentName: this.agentName
+            agreementNo: this.agreementNo,
+            agentPermitNo: this.agentPermitNo,
+            agentName: this.interCompany,
+            handlerName: this.maintPersonnel,
+            producerName: this.channelType,
+            loginComName: this.registrationOrgan,
+            comName: this.ownershipInstitution,
+            defendName: this.salesman
           });
           console.log(data);
           if (data.state === "200") {
+            for (var i = 0; i < this.result.data.producerList.length; i++) {
+              if (this.result.data.producerList[i].isFlag == true) {
+                this.channelCode = this.result.data.producerList[
+                  i
+                ].producerCode;
+                this.channelType = this.result.data.producerList[
+                  i
+                ].producerName;
+              }
+            }
+            for (var i = 0; i < this.result.data.comList.length; i++) {
+              // console.log(this.result.data.comList[i].isFlag == true)
+              if (this.result.data.comList[i].isFlag == true) {
+                this.Ownershipagency = this.result.data.comList[i].comCode;
+                this.ownershipInstitution = this.result.data.comList[i].comName;
+              }
+            }
+            this.agentPermitNo = data.data.agentList[0].agentPermitNo;
+            // console.log(this.agentPermitNo);
+            this.certificateNo = data.data.handlerList[0].certificateNo;
+            this.agreementNo = data.data.handlerList[0].agreementNo;
+            //中介公司
+            this.interCompanyList = data.data.agentList;
+            console.log(data);
+            var inter = this.interCompanyList.map(item => {
+              return item.agentName;
+            });
+            var inte = this.interCompanyList.map(item => {
+              return item;
+            });
+            // 添加code
+            console.log(inte);
+            this.interCompanyList = inter;
+            this.interCompanyCode = inte;
+            this.interCompany = data.data.agentList[0].agentName;
+            this.agency = data.data.agentList[0].agentCode;
+            this.agen = data.data.agentList[0].agentCode;
+
+            this.Channeltyp = data.data.agentList[0].agentName;
+            this.Channelt = data.data.agentList[0].agentName;
+            console.log("==============");
+            console.log(this.Channelt);
+            //业务员
+            this.maintPersonnelList = data.data.handlerList;
+            var main = this.maintPersonnelList.map(item => {
+              return item.handlerName;
+            });
+            console.log(main);
+            this.maintPersonnelList = main;
+            this.maintPersonnel = data.data.handlerList[0].handlerName;
+            this.Salesma = data.data.handlerList[0].handlerCode;
+            this.Sales = data.data.handlerList[0].handlerCode;
+          } else {
+            this.$toast(data.message);
+            
+            // this.$toast.fail("失败");
+          }
+        }
+        for (var i = 0; i < this.channelList.length; i++) {}
+      }
+    },
+    ownershipInstitution: {
+      async handler(newValue, oldValue) {
+        //调用出单机构接口
+
+        if (this.showInsitutionPopup == true) {
+          const data = await institution({
+            loginComCode: this.Registrationagency,
+            comCode: this.Ownershipagency,
+            agentCode: this.agency,
+            handlerCode: this.Salesma,
+            producerCode: this.channelCode,
+            agreementNo: this.agreementNo,
+            agentPermitNo: this.agentPermitNo,
+            agentName: this.interCompany,
+            handlerName: this.maintPersonnel,
+            producerName: this.channelType,
+            loginComName: this.registrationOrgan,
+            comName: this.ownershipInstitution,
+            defendName: this.salesman
+          });
+          console.log(data);
+          if (data.state === "200" ) {
+            for (var i = 0; i < this.result.data.producerList.length; i++) {
+              if (this.result.data.producerList[i].isFlag == true) {
+                this.channelCode = this.result.data.producerList[
+                  i
+                ].producerCode;
+                this.channelType = this.result.data.producerList[
+                  i
+                ].producerName;
+              }
+            }
+            for (var i = 0; i < this.result.data.comList.length; i++) {
+              // console.log(this.result.data.comList[i].isFlag == true)
+              if (this.result.data.comList[i].isFlag == true) {
+                this.Ownershipagency = this.result.data.comList[i].comCode;
+                this.ownershipInstitution = this.result.data.comList[i].comName;
+              }
+            }
+            this.certificateNo = data.data.handlerList[0].certificateNo;
             this.agentPermitNo = data.data.agentList[0].agentPermitNo;
             console.log(this.agentPermitNo);
             this.agreementNo = data.data.handlerList[0].agreementNo;
@@ -197,7 +313,8 @@ export default {
             this.Salesma = data.data.handlerList[0].handlerCode;
             this.Sales = data.data.handlerList[0].handlerCode;
           } else {
-            this.$toast.fail("失败");
+            // this.$toast.fail("失败");
+            this.$toast(data.message);
           }
         }
         for (var i = 0; i < this.channelList.length; i++) {}
@@ -208,7 +325,19 @@ export default {
     //调用出单机构接口
     async Sell() {
       const data = await institution({
-        loginComName: this.registrationOrgan
+        loginComCode: this.Registrationagency,
+        comCode: this.Ownershipagency,
+        agentCode: this.agency,
+        handlerCode: this.Salesma,
+        producerCode: this.channelCode,
+        agreementNo: this.agreementNo,
+        agentPermitNo: this.agentPermitNo,
+        agentName: this.interCompany,
+        handlerName: this.maintPersonnel,
+        producerName: this.channelType,
+        loginComName: this.registrationOrgan,
+        comName: this.ownershipInstitution,
+        defendName: this.salesman
       });
       console.log(2);
       if (data.state === "200") {
@@ -216,7 +345,34 @@ export default {
         this.showInsitutionPopup = true;
         this.result = data;
         console.log(data);
-
+        this.agreementNo = data.data.handlerList[0].agreementNo;
+        this.certificateNo = data.data.handlerList[0].certificateNo;
+        this.agentPermitNo = data.data.agentList[0].agentPermitNo;
+        // 维护人员
+        this.salesman = this.result.data.defendName;
+        for (var i = 0; i < this.result.data.producerList.length; i++) {
+          if (this.result.data.producerList[i].isFlag == true) {
+            this.channelCode = this.result.data.producerList[i].producerCode;
+            this.channelType = this.result.data.producerList[i].producerName;
+          }
+        }
+        for (var i = 0; i < this.result.data.comList.length; i++) {
+          // console.log(this.result.data.comList[i].isFlag == true)
+          if (this.result.data.comList[i].isFlag == true) {
+            this.Ownershipagency = this.result.data.comList[i].comCode;
+            this.ownershipInstitution = this.result.data.comList[i].comName;
+          }
+        }
+        // console.log(this.ownershipInstitution);
+        //业务员
+        this.maintPersonnel = data.data.handlerList[0].handlerName;
+        this.Salesma = data.data.handlerList[0].handlerCode;
+        this.Sales = data.data.handlerList[0].handlerCode;
+        //中介公司
+        for (var i = 0; i < data.data.agentList.length; i++) {
+          this.agency = data.data.agentList[0].agentCode;
+          this.interCompany = data.data.agentList[0].agentName;
+        }
         // this.agentCode = data.data.agentList[0].agentCode;
         //登录机构
         this.registrationOrganList = this.result.data.loginComList;
@@ -239,6 +395,8 @@ export default {
           a.push(this.result.data.loginComList[key].loginComName);
         }
         console.log(a);
+        this.$emit("closeLogin", a);
+
         this.columns = a;
         console.log(this.columns);
         // --------------------------------------
@@ -268,14 +426,75 @@ export default {
 
         this.columns = b;
       } else {
-        this.$toast.fail("失败");
+        this.$toast(data.message);
+        console.log(2);
+        this.showInsitutionPopup = true;
+        this.result = data;
+        console.log(data);
+        for (var i = 0; i < this.result.data.producerList.length; i++) {
+          if (this.result.data.producerList[i].isFlag == true) {
+            this.channelCode = this.result.data.producerList[i].producerCode;
+            this.channelType = this.result.data.producerList[i].producerName;
+          }
+        }
+        // this.agentCode = data.data.agentList[0].agentCode;
+        //登录机构
+        this.registrationOrganList = this.result.data.loginComList;
+        var reg = this.registrationOrganList.map(item => {
+          return item.loginComName;
+        });
+        var code = this.registrationOrganList.map(item => {
+          return item;
+        });
+        // this.agentName = data.date.
+        this.Registrationagency = code[0].loginComCode;
+        this.Registrationagen = code[0].loginComCode;
+        this.registrationOrganList = reg;
+        this.Registrationagencycode = code;
+        this.registrationOrgan = this.result.data.loginComList[0].loginComName;
+        this.data = this.result.data.loginComList;
+        // ----------------------循环------------
+        let a = [];
+        for (let key in this.result.data.loginComList) {
+          a.push(this.result.data.loginComList[key].loginComName);
+        }
+        console.log(a);
+        this.$emit("closeLogin", a);
+
+        this.columns = a;
+        console.log(this.columns);
+        // --------------------------------------
+
+        // 归属机构
+        this.ownershipInstitutionList = this.result.data.comList;
+        // 获取name
+        var own = this.ownershipInstitutionList.map(item => {
+          return item.comName;
+        });
+        // 获取一个对象
+        var code = this.ownershipInstitutionList.map(item => {
+          return item;
+        });
+        console.log(code);
+        this.Ownershipagency = code[0].comCode;
+        this.Ownershipagen = code[0].comCode;
+        this.ownershipInstitutionList = own;
+        this.ownershipInstitutionCode = code;
+        this.ownershipInstitution = this.result.data.comList[0].comName;
+        this.date = this.result.data.comList;
+        // ----------------------循环------------
+        let b = [];
+        for (let key in this.result.data.comList) {
+          b.push(this.result.data.comList[key].comName);
+        }
+
+        this.columns = b;
       }
     },
 
     async confirm() {
       // 关闭弹框
-      this.showInsitutionPopup = false;
-
+      // this.showInsitutionPopup = false;
       // 确定
       const data = await institution({
         loginComCode: this.Registrationagency,
@@ -289,10 +508,16 @@ export default {
         handlerName: this.maintPersonnel,
         producerName: this.channelType,
         loginComName: this.registrationOrgan,
-        comName: this.ownershipInstitution
+        comName: this.ownershipInstitution,
+        defendName: this.salesman,
+        submit: this.submit
       });
       if (data.state === "200") {
         // alert("成功");
+        this.showInsitutionPopup = false;
+      } else {
+        this.showInsitutionPopup = true;
+        this.$toast(data.message);
       }
     },
     // 选择器 共用
@@ -303,6 +528,7 @@ export default {
       this.showPopup = true;
       this.columns = list;
       this.currentPicker = name;
+      // this.Sell();
     },
 
     onChange(picker, value, index) {
@@ -350,6 +576,8 @@ export default {
 
     // 确定选择
     confirmPicker(picker, values) {
+      // this.Sell();
+      console.log(picker, values);
       if (picker.text) {
         this[this.currentPicker] = picker.text;
       } else {
@@ -362,9 +590,6 @@ export default {
           this.channelCode = this.channelList[i].code;
         }
       }
-      console.log("1111111111111111111111");
-      console.log(this.channelType);
-      console.log(this.channelCode);
     },
 
     heihie() {

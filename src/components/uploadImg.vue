@@ -12,13 +12,9 @@
       </div>
       <van-cell-group class="field-group">
         <van-field v-model="name" label="姓名" placeholder="请输入姓名" />
-        <van-field
-          v-model="IDType"
-          readonly
-          label="证件类型"
-          right-icon="arrow-down"
-          @click="choosePopup(typeList, 'IDType')"
-        />
+        <van-field v-model="IDType" readonly label="证件类型" />
+        <!-- right-icon="arrow-down"  -->
+        <!-- @click="choosePopup(typeList, 'IDType')" -->
         <van-field v-model="identifyNumber" label="身份证号" placeholder="请输入身份证号" />
         <van-field v-model="addr" label="地址" placeholder="请输入地址" />
       </van-cell-group>
@@ -36,14 +32,9 @@
         <van-uploader class="disabeld-file" :after-read="afterRead2" :before-read="this.LoadImg" />
       </div>
       <van-cell-group class="field-group">
-        <van-field
-          v-model="daiverIDType"
-          readonly
-          label="证件类型"
-          right-icon="arrow-down"
-          placeholder="请选择"
-          @click="choosePopup(typeList, 'daiverIDType')"
-        />
+        <van-field v-model="daiverIDType" readonly label="证件类型" placeholder="请选择" />
+        <!-- right-icon="arrow-down" -->
+        <!-- @click="choosePopup(typeList, 'IDType')" -->
         <van-field v-model="licensePlateNumber" label="车牌号码" placeholder="请输入车牌号码" />
         <van-field v-model="vin" label="车架号" placeholder="请输入车架号" />
         <van-field
@@ -142,12 +133,12 @@ export default {
       imgList: [],
       identifyNumber: "",
       imgId: "",
-      daiverIDType: "",
+      daiverIDType: "车辆证件-行驶证",
       IDType: "车主证件-身份证正面",
-      typeList: [
-        { code: "01", text: "车主证件-身份证正面" },
-        { code: "02", text: "车辆证件-行驶证" }
-      ],
+      // typeList: [
+      //   { code: "01", text: "车主证件-身份证正面" },
+      //   { code: "02", text: "车辆证件-行驶证" }
+      // ],
       showPopup: false,
       current: "",
       currentColumns: [],
@@ -206,6 +197,11 @@ export default {
 
     // 调用传图投保接口
     async LoadImg() {
+      if (this.imgList.length > 2) {
+        this.$toast("最多上传两张噢");
+        this.imgList = "";
+        return;
+      }
       this.$toast.loading({
         mask: true,
         message: "正在上传..."
@@ -213,14 +209,16 @@ export default {
       console.log("==================");
       this.showupload = true;
       let list = [];
-      console.log(this.imgList[0].content)
+      // console.log(this.imgList[0].content);
       for (let i = 0; i < this.imgList.length; i++) {
         list.push({ img: this.imgList[i].content, imgId: i + "" });
       }
+      console.log(this.imgList.length);
+
       const data = await UploadImg({
         imgList: list
       });
-      console.log(data);
+      // let data = JSON.parse(sessionStorage.getItem("data"));
       if (data.state === "200") {
         // this.$toast.success("上传成功");
         this.showupload = false;
@@ -252,7 +250,7 @@ export default {
           this.vin = data.data.carInfo.vIN;
           this.registration = data.data.carInfo.registerDate;
           this.certification = data.data.carInfo.issueDate;
-          this.motorUsageTypeCode = data.data.carInfo.motorUsageTypeCode;
+          this.PropertiesCode = data.data.carInfo.motorUsageTypeCode;
           if (data.data.carInfo.motorUsageTypeCode === "9A") {
             this.Properties = "家庭自用";
           } else {
@@ -261,10 +259,10 @@ export default {
         }
         for (let i = 0; i < data.data.imgList.length; i++) {
           if (data.data.imgList[i].imgType === "1") {
-            this.IDType = "车主证件-身份证正面";
+            // this.IDType = "车主证件-身份证正面";
             this.imgData = data.data.imgList[i].imgUrl;
           } else if (data.data.imgList[i].imgType === "2") {
-            this.daiverIDType = "车辆证件-行驶证";
+            // this.daiverIDType = "车辆证件-行驶证";
             this.imgUrl = data.data.imgList[i].imgUrl;
           }
         }
@@ -275,14 +273,14 @@ export default {
         }
         for (var i = 0; i < this.cardList.length; i++) {}
       } else {
-        this.$toast.fail("上传失败");
+        // this.$toast.fail("上传失败");
       }
     },
+
     oneHandle() {},
     async afterRead(item) {
       this.list2 = this.list2.concat(JSON.stringify(item));
       this.aaa = item.content;
-      console.log(this.aaa);
       this.list1.push({
         img: this.aaa,
         imgId: 0 + "",
@@ -307,11 +305,11 @@ export default {
           this.name = data.data.customerInfo.name;
           for (let i = 0; i < data.data.imgList.length; i++) {
             if (data.data.imgList[i].imgType === "1") {
-              this.IDType = "车主证件-身份证正面";
+              // this.IDType = "车主证件-身份证正面";
               this.imgData = data.data.imgList[i].imgUrl;
             } else if (data.data.imgList[i].imgType === "2") {
               console.log(this.daiverIDType);
-              this.daiverIDType = "车辆证件-行驶证";
+              // this.daiverIDType = "车辆证件-行驶证";
               this.imgUrl = data.data.imgList[i].imgUrl;
             }
           }
@@ -322,11 +320,9 @@ export default {
         }
       }
     },
-
     async afterRead2(item) {
       this.list3 = this.list3.concat(JSON.stringify(item));
       this.bbb = item.content;
-      console.log(item.content)
       this.list4.push({
         img: this.bbb,
         imgId: 0 + "",
@@ -335,6 +331,8 @@ export default {
       const data = await UploadImg({
         imgList: this.list4
       });
+      window.sessionStorage.setItem("data", JSON.stringify(data));
+
       this.$toast.loading({
         mask: true,
         message: "正在上传..."
@@ -347,7 +345,8 @@ export default {
           this.vin = data.data.carInfo.vIN;
           this.registration = data.data.carInfo.registerDate;
           this.certification = data.data.carInfo.issueDate;
-
+          this.plateType = data.data.carInfo.plateType;
+          this.PropertiesCode = data.data.carInfo.motorUsageTypeCode;
           if (data.data.carInfo.motorUsageTypeCode === "9A") {
             this.Properties = "家庭自用";
           } else {
@@ -355,10 +354,10 @@ export default {
           }
           for (let i = 0; i < data.data.imgList.length; i++) {
             if (data.data.imgList[i].imgType === "1") {
-              this.IDType = "车主证件-身份证正面";
+              // this.IDType = "车主证件-身份证正面";
               this.imgData = data.data.imgList[i].imgUrl;
             } else if (data.data.imgList[i].imgType === "2") {
-              this.daiverIDType = "车辆证件-行驶证";
+              // this.daiverIDType = "车辆证件-行驶证";
               this.imgUrl = data.data.imgList[i].imgUrl;
             }
           }
@@ -368,17 +367,18 @@ export default {
           this.errImg = data.data.imgList[0].imgUrl;
         }
       } else {
-        this.$toast.fail("上传失败");
+        // this.$toast.fail("上传失败");
       }
     },
     async confirmHandle() {
-      window.localStorage.getItem("token");
-      console.log("chuantu");
+      window.sessionStorage.getItem("token");
       var car = {};
+
       car.plateNo = this.licensePlateNumber;
       car.VIN = this.vin;
-      car.motorTypeCode = this.motorTypeCode;
-      car.motorUsageTypeCode = this.motorUsageTypeCode;
+      car.plateType = this.cardCode;
+      car.motorTypeCode = this.carCode;
+      car.motorUsageTypeCode = this.PropertiesCode;
       car.newCarSign = this.newCarSign;
       car.engine = this.engine;
       var customer = {};
@@ -392,7 +392,7 @@ export default {
         customer,
         imgList: this.imgList2
       });
-      window.localStorage.setItem("data", JSON.stringify(data));
+      window.sessionStorage.setItem("data", JSON.stringify(data));
       if (data.state === "200") {
         this.$router.push({
           name: "price",
@@ -424,7 +424,7 @@ export default {
       this.imgData = "";
       this.name = "";
       this.identifyNumber = "";
-      this.addr = ""
+      this.addr = "";
     },
     closes2() {
       this.close2 = false;
@@ -440,7 +440,7 @@ export default {
     closes3() {
       this.close3 = true;
       this.errImg = "";
-      this.errorShow = false
+      this.errorShow = false;
     }
   }
 };

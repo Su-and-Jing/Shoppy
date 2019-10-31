@@ -172,6 +172,7 @@ export default {
   created() {
     this.from = this.$route.query.from;
     this.orderNo = this.$route.params.orderNo;
+    console.log(this.orderNo)
     if (this.from != "copy") {
       this.offerHandle();
     } else {

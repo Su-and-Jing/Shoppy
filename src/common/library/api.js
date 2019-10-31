@@ -75,7 +75,19 @@ export const CarPai = data => {
 export const CarType = data => {
   return axios.get(`/api/car/series?carSeries=${data}`)
 }
+//实名验证-发送验证码
+export const SendCode = data => {
+  return axios.post('/real/auth/send', data)
+}
 
+//实名验证-验证短信
+export const RealCode = data => {
+  return axios.post('/real/auth/code', data)
+}
+// //影像上传
+export const UploadInsureImg = data => {
+  return axios.post('api/imgUpload/uploadInsureImg', data)
+}
 
 
 

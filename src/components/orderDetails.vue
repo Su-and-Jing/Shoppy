@@ -36,13 +36,19 @@
 <script>
 import Head from "./module/head";
 export default {
+  // props: ["parentMsg"],
   components: {
     Head
   },
   data() {
     return {
-      successful: true
+      successful: true,
+      list:''
     };
+  },
+  created() {
+    // this.list= this.$route.params.data;
+    // console.log(this.list);
   }
 };
 </script>
