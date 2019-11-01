@@ -1,5 +1,10 @@
 <template>
-  <div class="containt-elec">
+<div>
+   <header>
+      <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
+      <p class="Vetit">获取电子保单</p>
+    </header>
+   <div class="containt-elec" style="margin-top:53px">
     <Head></Head>
     <div class="main">
       <p class="instr">点击下载pdf格式电子保单</p>
@@ -22,6 +27,8 @@
       <pdf :src="pdfSrc"></pdf>
     </van-popup>
   </div>
+</div>
+ 
 </template>
 <script>
 import pdf from "vue-pdf";

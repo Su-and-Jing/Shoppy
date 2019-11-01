@@ -67,10 +67,9 @@
                 v-model="plateNo"
                 maxlength="8"
                 placeholder="车牌号"
-                :disabled="newCarSign==true"
+                :disabled="noLicenseFlag==true"
               />
-
-              <van-checkbox class="checkbox border-no" v-model="newCarSign" @click="bbb">未上牌</van-checkbox>
+              <van-checkbox class="checkbox border-no" v-model="noLicenseFlag" @click="bbb">未上牌</van-checkbox>
             </div>
             <van-field
               v-model="carlei"
@@ -78,7 +77,7 @@
               label="号牌种类"
               right-icon="arrow-down"
               @click="choosePopup(carleiList, 'carlei')"
-              v-if="!newCarSign"
+              v-if="!noLicenseFlag"
             />
             <van-field
               label="车架号"
@@ -88,15 +87,16 @@
               input="value=value.replace(/[^\d]/g,'')"
               v-model="VIN"
               @input="number(VIN)"
-              v-if="newCarSign"
+              v-if="noLicenseFlag"
             />
             <van-field
-              v-if="newCarSign"
+              v-if="noLicenseFlag"
               v-model="engine"
               label="发动机号"
               placeholder="请输入发动机号"
               input="value=value.replace(/[^\d]/g,'')"
               @input="faNum(engine)"
+              clearable
             />
             <van-field
               v-model="vehicle"
@@ -106,7 +106,7 @@
               @click="choosePopup(vehicleList, 'vehicle')"
             />
             <van-field
-              v-if="!newCarSign"
+              v-if="!noLicenseFlag"
               v-model="usingNature"
               readonly
               label="使用性质"
@@ -214,10 +214,10 @@ export default {
       carleiCode: "02",
       carleiList: [
         { code: "02", text: "小型汽车" },
-        { code: "01", text: "大型汽车" },
-        { code: "52", text: "小型新能源汽车" },
-        { code: "51", text: "大型新能源汽车" },
-        { code: "06", text: "外籍汽车" }
+        // { code: "01", text: "大型汽车" },
+        // { code: "52", text: "小型新能源汽车" },
+        // { code: "51", text: "大型新能源汽车" },
+        // { code: "06", text: "外籍汽车" }
       ],
       engine: "",
       Registrationagency: "",
@@ -232,11 +232,11 @@ export default {
       VIN: "",
 
       // // 是否上牌
-      // newCarSign: 0,
+      // noLicenseFlag: 0,
       //使用性质
 
       //是否新车
-      newCarSign: false,
+      noLicenseFlag: false,
       //身份证号
       identifyNo: "",
 
@@ -259,7 +259,7 @@ export default {
       currentPicker: "",
       currentTab: 1,
       // 是否上牌
-      newCarSign: false,
+      noLicenseFlag: false,
       // 车辆所属城市
       city: "京",
       cityList: [
@@ -328,7 +328,7 @@ export default {
       masterProperties: "个人",
       masterPropertiesList: [
         { code: "1", text: "个人" },
-        { code: "2", text: "机构" }
+        // { code: "2", text: "机构" }
       ]
     };
   },
@@ -393,14 +393,14 @@ export default {
       }
     },
     bbb() {
-      console.log(this.newCarSign);
-      this.newCarSign = !this.newCarSign;
+      console.log(this.noLicenseFlag);
+      this.noLicenseFlag = !this.noLicenseFlag;
       this.VIN = "";
       this.engine = "";
       this.name = "";
       this.identifyNo = "";
       this.plateNo = "";
-      console.log(this.newCarSign);
+      console.log(this.noLicenseFlag);
     },
     //调用报价接口
     async priceHandle() {
@@ -412,7 +412,7 @@ export default {
       car.VIN = this.VIN;
       car.motorTypeCode = this.motorTypeCode;
       car.motorUsageTypeCode = this.motorUsageTypeCode;
-      car.newCarSign = this.newCarSign;
+      car.noLicenseFlag = this.noLicenseFlag;
       car.loanStatus = this.loanCar;
       car.firstBeneMan = this.beneficiary;
       car.engine = this.engine;

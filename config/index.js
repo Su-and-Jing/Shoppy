@@ -18,7 +18,7 @@ module.exports = {
     // host: 'test.h5.chinahuanong.com.cn',
     // hostname:url.parse( 'www.test.h5.chinahuanong.com.cn').hostname,
     port: 80, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    autoOpenBrowser: false,
+    autoOpenBrowser: true,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-

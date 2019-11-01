@@ -1,5 +1,10 @@
 <template>
-  <div class="containt">
+<div>
+  <header>
+      <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
+      <p class="Vetit">车险报价单</p>
+    </header>
+    <div class="containt" style="margin-top:53px">
     <Header :message="headMsg"></Header>
     <div class="content">
       <div class="item">
@@ -115,6 +120,8 @@
       </div>
     </van-popup>
   </div>
+</div>
+
 </template>
 <script>
 import { Offer } from "@/common/library/api";
@@ -182,6 +189,14 @@ export default {
     }
   },
   methods: {
+      backHandle() {
+      if (window.history.length <= 1) {
+        this.$router.push({ path: "/" });
+        return false;
+      } else {
+        this.$router.go(-1);
+      }
+    },
     // // 调用报价单接口
     async offerHandle() {
       const data = await OfferPage(this.orderNo);
@@ -254,6 +269,7 @@ export default {
 </script>
 <style lang="scss" scope>
 @import "/style/share.scss";
+@import "/style/head.scss";
 .containt {
   background: #fff;
   min-height: 100vh;

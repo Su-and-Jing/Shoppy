@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+      zhc:true,
       username: "44000020",
       passwd: "0000",
       phone: "13910653201",
@@ -76,6 +77,10 @@ export default {
   watch: {
     showLogin(val) {
       this.showPopup = val;
+      console.log(this.showPopup)
+      if (this.showPopup == true){
+        this.zhc = true
+      }
     }
   },
   created() {

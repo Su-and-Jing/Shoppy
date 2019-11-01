@@ -1,72 +1,77 @@
 <template>
-  <div class="containt">
-    <van-search
-      class="search-wrap"
-      v-model="search"
-      show-action
-      placeholder="请输入车牌号/车架号/车主姓名"
-      @search="onSearch"
-    >
-      <div class="btn" slot="action" @click="onSearch">搜索</div>
-    </van-search>
-    <van-tabs
-      class="tabs-list"
-      v-model="active"
-      animated
-      swipeable
-      color="#568EFC"
-      title-active-color="#568EFC"
-      title-inactive-color="#464646"
-      line-height="2px"
-      @click="handle"
-    >
-      <van-tab v-for="(item,index) in tabList" :key="index" :title="item.title" :name="item.name">
-        <!-- 暂存单 -->
+  <div>
+    <header>
+      <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
+      <p class="Vetit">我的订单</p>
+    </header>
+    <div class="containt">
+      <van-search
+        class="search-wrap"
+        v-model="search"
+        show-action
+        placeholder="请输入车牌号/车架号/车主姓名"
+        @search="onSearch"
+      >
+        <div class="btn" slot="action" @click="onSearch">搜索</div>
+      </van-search>
+      <van-tabs
+        class="tabs-list"
+        v-model="active"
+        animated
+        swipeable
+        color="#568EFC"
+        title-active-color="#568EFC"
+        title-inactive-color="#464646"
+        line-height="2px"
+        @click="handle"
+      >
+        <van-tab v-for="(item,index) in tabList" :key="index" :title="item.title" :name="item.name">
+          <!-- 暂存单 -->
 
-        <div class="list van-hairline--top" v-for="(item,index) in list" :key="index">
-          <div class="item">
-            <div class="sign">
-              <p class="type">{{item.orderStatusName}}</p>
-              <p class="times">{{item.createDate}}</p>
-              <van-button plain color="#2EBE8D">下载投保单</van-button>
-            </div>
-
-            <div class="content">
-              <div class="left">
-                <p class="plate-number">{{item.plateNo}}</p>
-                <p class="car-owner">{{item.name}}</p>
+          <div class="list van-hairline--top" v-for="(item,index) in list" :key="index">
+            <div class="item">
+              <div class="sign">
+                <p class="type">{{item.orderStatusName}}</p>
+                <p class="times">{{item.createDate}}</p>
+                <van-button plain color="#2EBE8D">下载投保单</van-button>
               </div>
-              <div class="right">
-                <div class="ritem" v-for="(item,index) in list[index].riskInfoList" :key="index">
-                  <p class="top">
-                    <span class="insurance">{{item.riskName}}</span>
-                    <span class="amount">{{item.premium}}元</span>
-                  </p>
-                  <p class="time">{{item.startDate}}-{{item.endDate}}</p>
-                  <span
-                    class="commission"
-                    style="padding-right:22px"
-                    v-show="detailShow"
-                  >手续费{{item.commissionAmount}}元</span>
+
+              <div class="content">
+                <div class="left">
+                  <p class="plate-number">{{item.plateNo}}</p>
+                  <p class="car-owner">{{item.name}}</p>
+                </div>
+                <div class="right">
+                  <div class="ritem" v-for="(item,index) in list[index].riskInfoList" :key="index">
+                    <p class="top">
+                      <span class="insurance">{{item.riskName}}</span>
+                      <span class="amount">{{item.premium}}元</span>
+                    </p>
+                    <p class="time">{{item.startDate}}-{{item.endDate}}</p>
+                    <span
+                      class="commission"
+                      style="padding-right:22px"
+                      v-show="detailShow"
+                    >手续费{{item.commissionAmount}}元</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="status van-hairline--top">
-              <span class="chassis-number">车架号：{{item.vin}}</span>
-              <span class="type" v-show="changeShow" @click="insert(index)">修改投保方案</span>
-              <span class="pay" v-show="showPay" @click="pay(index)">
-                去支付
-                <van-icon name="arrow" />
-              </span>
-              <span class="pay" v-show="detailShow" @click="detail(index)">
-                查看订单详情
-                <van-icon name="arrow" />
-              </span>
+              <div class="status van-hairline--top">
+                <span class="chassis-number">车架号：{{item.vin}}</span>
+                <span class="type" v-show="changeShow" @click="insert(index)">修改投保方案</span>
+                <span class="pay" v-show="showPay" @click="pay(index)">
+                  去支付
+                  <van-icon name="arrow" />
+                </span>
+                <span class="pay" v-show="detailShow" @click="detail(index)">
+                  查看订单详情
+                  <van-icon name="arrow" />
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- 已完成 -->
-        <!-- <div class="list van-hairline--top" v-show="item.name ==4">
+          <!-- 已完成 -->
+          <!-- <div class="list van-hairline--top" v-show="item.name ==4">
           <div class="item" v-for="(item,index) in list" :key="index">
             {{item}}
             <div class="sign">
@@ -96,14 +101,16 @@
               <span class="type">查看订单详情</span>
             </div>
           </div>
-        </div>-->
-      </van-tab>
-    </van-tabs>
+          </div>-->
+        </van-tab>
+      </van-tabs>
+    </div>
   </div>
 </template>
 <script>
 import { orderInfoList, OfferPage, apply } from "@/common/library/api";
 import { async } from "q";
+
 export default {
   data() {
     return {
@@ -155,6 +162,14 @@ export default {
     this.orderListHandle();
   },
   methods: {
+    backHandle() {
+      if (window.history.length <= 1) {
+        this.$router.push({ path: "/" });
+        return false;
+      } else {
+        this.$router.go(-1);
+      }
+    },
     onSearch() {},
     async orderListHandle() {
       // 这有个问题（核保跳过来）
@@ -244,7 +259,9 @@ export default {
 };
 </script>
 <style lang="scss">
+@import "/style/head.scss";
 .containt {
+  margin-top: 53px;
   background: #f3f3f3;
   min-height: 100vh;
   .search-wrap {

@@ -1,111 +1,120 @@
 <template>
-  <div class="containt">
-    <!-- 身份证识别 -->
-    <div class="id-wrap">
-      <van-icon name="close" v-show="close1" class="close1" @click="closes1"></van-icon>
-      <div class="img-wrap" @click="oneHandle">
-        <div class="img">
-          <img class="img" :src="imgData" alt :onerror="errorImg01" />
+  <div>
+    <header>
+      <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
+      <p class="Vetit">传图投保</p>
+    </header>
+    <div class="containt">
+      <!-- 身份证识别 -->
+      <div class="id-wrap">
+        <van-icon name="close" v-show="close1" class="close1" @click="closes1"></van-icon>
+        <div class="img-wrap" @click="oneHandle">
+          <div class="img">
+            <img class="img" :src="imgData" alt :onerror="errorImg01" />
+          </div>
+          <!-- <div >上传照片</div> -->
+          <van-uploader class="disabeld-file" :after-read="afterRead" />
         </div>
-        <!-- <div >上传照片</div> -->
-        <van-uploader class="disabeld-file" :after-read="afterRead" />
+        <van-cell-group class="field-group">
+          <van-field v-model="name" label="姓名" placeholder="请输入姓名" />
+          <van-field v-model="IDType" readonly label="证件类型" />
+          <!-- right-icon="arrow-down"  -->
+          <!-- @click="choosePopup(typeList, 'IDType')" -->
+          <van-field v-model="identifyNumber" label="身份证号" placeholder="请输入身份证号" />
+          <van-field v-model="addr" label="地址" placeholder="请输入地址" />
+        </van-cell-group>
       </div>
-      <van-cell-group class="field-group">
-        <van-field v-model="name" label="姓名" placeholder="请输入姓名" />
-        <van-field v-model="IDType" readonly label="证件类型" />
-        <!-- right-icon="arrow-down"  -->
-        <!-- @click="choosePopup(typeList, 'IDType')" -->
-        <van-field v-model="identifyNumber" label="身份证号" placeholder="请输入身份证号" />
-        <van-field v-model="addr" label="地址" placeholder="请输入地址" />
-      </van-cell-group>
-    </div>
-    <!-- 间隔样式 -->
-    <div class="line-wrapper"></div>
-    <!-- 驾驶证识别 -->
-    <div class="driver-license-wrap">
-      <van-icon name="close" v-show="close2" class="close2" @click="closes2"></van-icon>
-      <div class="img-wrap">
-        <div class="img">
-          <img class="img" :src="imgUrl" alt :onerror="errorImg02" />
+      <!-- 间隔样式 -->
+      <div class="line-wrapper"></div>
+      <!-- 驾驶证识别 -->
+      <div class="driver-license-wrap">
+        <van-icon name="close" v-show="close2" class="close2" @click="closes2"></van-icon>
+        <div class="img-wrap">
+          <div class="img">
+            <img class="img" :src="imgUrl" alt :onerror="errorImg02" />
+          </div>
+          <!-- <div class="center" >上传照片</div> -->
+          <van-uploader class="disabeld-file" :after-read="afterRead2" :before-read="this.LoadImg" />
         </div>
-        <!-- <div class="center" >上传照片</div> -->
-        <van-uploader class="disabeld-file" :after-read="afterRead2" :before-read="this.LoadImg" />
+        <van-cell-group class="field-group">
+          <van-field v-model="daiverIDType" readonly label="证件类型" placeholder="请选择" />
+          <!-- right-icon="arrow-down" -->
+          <!-- @click="choosePopup(typeList, 'IDType')" -->
+          <van-field v-model="licensePlateNumber" label="车牌号码" placeholder="请输入车牌号码" />
+          <van-field v-model="vin" label="车架号" placeholder="请输入车架号" />
+          <van-field
+            v-model="car"
+            readonly
+            label="车辆类型"
+            right-icon="arrow-down"
+            @click="choosePopup(carList, 'car')"
+            placeholder="请选择"
+          />
+          <van-field
+            v-model="card"
+            readonly
+            label="号牌种类"
+            right-icon="arrow-down"
+            @click="choosePopup(cardList, 'card')"
+            placeholder="请选择"
+          />
+          <van-field
+            v-model="Properties"
+            readonly
+            label="使用性质"
+            right-icon="arrow-down"
+            @click="choosePopup(PropertiesList, 'Properties')"
+            placeholder="请选择"
+          />
+          <van-field v-model="registration" label="注册日期" />
+          <van-field v-model="certification" label="发证日期" />
+        </van-cell-group>
       </div>
-      <van-cell-group class="field-group">
-        <van-field v-model="daiverIDType" readonly label="证件类型" placeholder="请选择" />
-        <!-- right-icon="arrow-down" -->
-        <!-- @click="choosePopup(typeList, 'IDType')" -->
-        <van-field v-model="licensePlateNumber" label="车牌号码" placeholder="请输入车牌号码" />
-        <van-field v-model="vin" label="车架号" placeholder="请输入车架号" />
-        <van-field
-          v-model="car"
-          readonly
-          label="车辆类型"
-          right-icon="arrow-down"
-          @click="choosePopup(carList, 'car')"
-          placeholder="请选择"
-        />
-        <van-field
-          v-model="card"
-          readonly
-          label="号牌种类"
-          right-icon="arrow-down"
-          @click="choosePopup(cardList, 'card')"
-          placeholder="请选择"
-        />
-        <van-field
-          v-model="Properties"
-          readonly
-          label="使用性质"
-          right-icon="arrow-down"
-          @click="choosePopup(PropertiesList, 'Properties')"
-          placeholder="请选择"
-        />
-        <van-field v-model="registration" label="注册日期" />
-        <van-field v-model="certification" label="发证日期" />
-      </van-cell-group>
-    </div>
-    <!-- 间隔样式 -->
-    <div class="line-wrapper"></div>
-    <!-- 识别失败 -->
-    <div class="failure-wrap" v-show="errorShow">
-      <van-icon class="close3" name="close" v-show="close3" @click="closes3"></van-icon>
-      <div class="img-wrap">
-        <div class="img">
-          <img class="img" :src="errImg" alt :onerror="errorImg03" />
+      <!-- 间隔样式 -->
+      <div class="line-wrapper"></div>
+      <!-- 识别失败 -->
+      <div class="failure-wrap" v-show="errorShow">
+        <van-icon class="close3" name="close" v-show="close3" @click="closes3"></van-icon>
+        <div class="img-wrap">
+          <div class="img">
+            <img class="img" :src="errImg" alt :onerror="errorImg03" />
+          </div>
+          <p class="remind" v-show="errorShow">
+            <van-icon class="icon" name="warning" />小农暂时无法识别此类图片，再试试看哟！
+          </p>
         </div>
-        <p class="remind" v-show="errorShow">
-          <van-icon class="icon" name="warning" />小农暂时无法识别此类图片，再试试看哟！
-        </p>
+        <van-cell-group class="field-group">
+          <van-field
+            v-model="daiverIDType"
+            readonly
+            label="证件类型"
+            right-icon="arrow-down"
+            @click="choosePopup(typeList, 'IDType')"
+          />
+        </van-cell-group>
       </div>
-      <van-cell-group class="field-group">
-        <van-field
-          v-model="daiverIDType"
-          readonly
-          label="证件类型"
-          right-icon="arrow-down"
-          @click="choosePopup(typeList, 'IDType')"
+      <div class="submit">
+        <van-button class="btn" type="info" size="large" @click="confirmHandle">确认报价</van-button>
+      </div>
+      <!-- 选择器 公用-->
+      <van-popup v-model="showPopup" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="currentColumns"
+          @confirm="confirm"
+          @cancel="showPopup = false"
         />
-      </van-cell-group>
-    </div>
-    <div class="submit">
-      <van-button class="btn" type="info" size="large" @click="confirmHandle">确认报价</van-button>
-    </div>
-    <!-- 选择器 公用-->
-    <van-popup v-model="showPopup" position="bottom">
-      <van-picker
-        show-toolbar
-        :columns="currentColumns"
-        @confirm="confirm"
-        @cancel="showPopup = false"
-      />
-    </van-popup>
-
-    <!-- 显示遮罩层 -->
-    <!-- <van-overlay :show="showupload">
+      </van-popup>
+      <van-popup v-model="showsc" class="showIcon" :close-on-click-overlay="false">
+        <img src="../assets/fenlei.png" alt />
+        <!-- <p>正在上传</p> -->
+      </van-popup>
+      <!-- 显示遮罩层 -->
+      <!-- <van-overlay :show="showupload">
       <div>cklsfj;lask</div>
       <img src="../assets/fenlei.png" alt="">
-    </van-overlay>-->
+      </van-overlay>-->
+    </div>
   </div>
 </template>
 <script>
@@ -114,9 +123,10 @@ import { stringify } from "querystring";
 export default {
   data() {
     return {
+      showsc: false,
       addr: "",
       engine: "",
-      newCarSign: "1",
+      noLicenseFlag: "1",
       close1: false,
       close2: false,
       close3: false,
@@ -188,6 +198,14 @@ export default {
     // this.confirmHandle();
   },
   methods: {
+    backHandle() {
+      if (window.history.length <= 1) {
+        this.$router.push({ path: "/" });
+        return false;
+      } else {
+        this.$router.go(-1);
+      }
+    },
     // onChange(picker, value, index) {
     //   //此时返回的value就是个对象了
     //   var carCode = value.carCode;
@@ -202,10 +220,7 @@ export default {
         this.imgList = "";
         return;
       }
-      this.$toast.loading({
-        mask: true,
-        message: "正在上传..."
-      });
+      this.showsc = true;
       console.log("==================");
       this.showupload = true;
       let list = [];
@@ -220,6 +235,7 @@ export default {
       });
       // let data = JSON.parse(sessionStorage.getItem("data"));
       if (data.state === "200") {
+        this.showsc = false;
         // this.$toast.success("上传成功");
         this.showupload = false;
         this.imgList2 = data.data.imgList;
@@ -279,6 +295,7 @@ export default {
 
     oneHandle() {},
     async afterRead(item) {
+      this.showsc = true;
       this.list2 = this.list2.concat(JSON.stringify(item));
       this.aaa = item.content;
       this.list1.push({
@@ -289,11 +306,12 @@ export default {
       const data = await UploadImg({
         imgList: this.list1
       });
-      this.$toast.loading({
-        mask: true,
-        message: "正在上传..."
-      });
+      // this.$toast.loading({
+      //   mask: true,
+      //   message: "正在上传..."
+      // });
       if (data.state === "200") {
+        this.showsc = false;
         // this.$toast.success("上传成功");
         if (data.data.customerInfo) {
           this.close1 = true;
@@ -333,13 +351,11 @@ export default {
       });
       window.sessionStorage.setItem("data", JSON.stringify(data));
 
-      this.$toast.loading({
-        mask: true,
-        message: "正在上传..."
-      });
+      this.showsc = true;
       if (data.state === "200") {
         // this.$toast.success("上传成功88888");
         if (data.data.carInfo) {
+          this.showsc = false;
           this.close2 = true;
           this.licensePlateNumber = data.data.carInfo.plateNo;
           this.vin = data.data.carInfo.vIN;
@@ -379,7 +395,7 @@ export default {
       car.plateType = this.cardCode;
       car.motorTypeCode = this.carCode;
       car.motorUsageTypeCode = this.PropertiesCode;
-      car.newCarSign = this.newCarSign;
+      car.noLicenseFlag = this.noLicenseFlag;
       car.engine = this.engine;
       var customer = {};
       customer.name = this.name;
@@ -447,7 +463,19 @@ export default {
 </script>
 <style lang="scss" scope>
 @import "/style/share.scss";
+@import "/style/head.scss";
+.showIcon {
+  background: rgba(0, 0, 0, 0.1);
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 140%;
+  // opacity: 0;
+  // color: #fff;
+  // opacity: ;
+}
 .containt {
+  margin-top: 53px;
   min-height: 100vh;
   background: #fff;
   .id-wrap {

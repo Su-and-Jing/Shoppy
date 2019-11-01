@@ -1,5 +1,10 @@
 <template>
-  <div class="containt-insured">
+<div>
+   <header>
+      <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
+      <p class="Vetit">确认投保</p>
+    </header>
+   <div class="containt-insured" style="margin-top:53px">
     <van-collapse v-model="activeNames">
       <van-collapse-item class="group" title="人员信息" name="owner">
         <div
@@ -624,6 +629,8 @@
       <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
     </van-popup>-->
   </div>
+</div>
+ 
 </template>
 
 <script>
@@ -1117,6 +1124,14 @@ export default {
   },
 
   methods: {
+       backHandle() {
+      if (window.history.length <= 1) {
+        this.$router.push({ path: "/" });
+        return false;
+      } else {
+        this.$router.go(-1);
+      }
+    },
     // 投保其他车辆
     otherCar() {
       this.$router.push({ path: "/" });
@@ -1501,6 +1516,7 @@ export default {
 };
 </script>
 <style lang="scss">
+@import "/style/head.scss";
 .people {
   width: 90%;
   padding: 20px 20px 30px;

@@ -1,33 +1,39 @@
 <template>
-  <div class="containt-pay">
-    <Head :parent-msg="this.list"></Head>
-    <div class="main">
-      <p class="mount-wrap">
-        应付金额：
-        <span class="mount">{{sumPermium}}</span>元
-      </p>
-      <!-- <img class="img" src="../assets/qr.jpg" alt /> -->
-      <div class="home-container">
-        <div class="banner-box">
-          <canvas id="qrccode-canvas"></canvas>
-        </div>
-        <div class="btn-wrap">
-          <img :src="this.bannerUrl" class="image" style="display:none" />
+  <div>
+    <header>
+      <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
+      <p class="Vetit">华农统一收费</p>
+    </header>
+    <div class="containt-pay" style="margin-top:53px">
+      <Head :parent-msg="this.list"></Head>
+      <div class="main">
+        <p class="mount-wrap">
+          应付金额：
+          <span class="mount">{{sumPermium}}</span>元
+        </p>
+        <!-- <img class="img" src="../assets/qr.jpg" alt /> -->
+        <div class="home-container">
+          <div class="banner-box">
+            <canvas id="qrccode-canvas"></canvas>
+          </div>
+          <div class="btn-wrap">
+            <img :src="this.bannerUrl" class="image" style="display:none" />
 
-          <!-- <img class="img" :src="this.imgUrl" alt /> -->
-          <!-- <button @click="createQrc">点击</button> -->
+            <!-- <img class="img" :src="this.imgUrl" alt /> -->
+            <!-- <button @click="createQrc">点击</button> -->
+          </div>
         </div>
-      </div>
-      <p class="instr">当地为支付实名制地区，请使用投保人本人账户支付</p>
-      <div class="method">
-        <div class="types">
-          <span class="wx"></span>
-          <span class="zfb"></span>
+        <p class="instr">当地为支付实名制地区，请使用投保人本人账户支付</p>
+        <div class="method">
+          <div class="types">
+            <span class="wx"></span>
+            <span class="zfb"></span>
+          </div>
+          <p class="text">支持微信/支付宝扫码付款</p>
         </div>
-        <p class="text">支持微信/支付宝扫码付款</p>
+        <p class="info">温馨提示：支付完成后，稍后可去我的订单查看支付状态</p>
+        <div class="confirm">确认支付</div>
       </div>
-      <p class="info">温馨提示：支付完成后，稍后可去我的订单查看支付状态</p>
-      <div class="confirm">确认支付</div>
     </div>
   </div>
 </template>
@@ -40,7 +46,7 @@ export default {
   components: {
     Head
   },
-  props:["data"],
+  props: ["data"],
   data() {
     return {
       bannerUrl: "",
@@ -48,7 +54,7 @@ export default {
       // plateNo: "",
       // name: "",
       sumPermium: "",
-      list:[]
+      list: []
     };
   },
   created() {
@@ -67,12 +73,20 @@ export default {
     });
   },
   methods: {
+    backHandle() {
+      if (window.history.length <= 1) {
+        this.$router.push({ path: "/" });
+        return false;
+      } else {
+        this.$router.go(-1);
+      }
+    },
     async handle() {
       const data = await OfferPage(this.orderNo);
       if (data.state === "200") {
         this.sumPermium = data.data.sumPermium;
         this.list = data.data;
-        console.log(this.list)
+        console.log(this.list);
       } else {
         alert("失败");
       }
@@ -97,6 +111,7 @@ export default {
 };
 </script>
 <style lang="scss" scope>
+@import "/style/head.scss";
 .containt-pay {
   background: #fff;
   min-height: 100vh;
