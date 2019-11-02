@@ -37,7 +37,7 @@
       </div>
     </div>
     <!-- 间隔样式 -->
-    <div class="line-wrapper"></div>
+    <div class="line-wrapper" style="height:5px;"></div>
     <div class="business-risks">
       <p class="title">商业险报价单</p>
       <div class="group">
@@ -70,7 +70,7 @@
       </div>
     </div>
     <!-- 间隔样式 -->
-    <div class="line-wrapper"></div>
+    <div class="line-wrapper" style="height:5px;"></div>
     <div class="statistical">
       <div class="total">
         <span class="text">您需要支付的保费及税款合计</span>
@@ -78,27 +78,27 @@
       </div>
       <div class="instr">
         <div class="item">
-          <span class="label">商业保险费</span>
-          <span>{{this.insurance}}元</span>
+          <span class="label" style="font-size:12px">商业保险费</span>
+          <span style="font-size:12px">{{this.insurance}}元</span>
         </div>
         <div class="item">
-          <span class="label">交强险保费</span>
-          <span>{{this.compulsory}}元</span>
+          <span class="label" style="font-size:12px">交强险保费</span>
+          <span style="font-size:12px">{{this.compulsory}}元</span>
         </div>
         <div class="item">
-          <span class="label">车船税税款</span>
-          <span>{{this.sumTax}}元</span>
+          <span class="label" style="font-size:12px">车船税税款</span>
+          <span style="font-size:12px">{{this.sumTax}}元</span>
         </div>
       </div>
     </div>
     <div class="btn-group" v-if="from != 'copy'">
-      <span class="back" @click="goBack">返回</span>
-      <span class="copy" @click="copyUrl">复制报价单链接</span>
+      <span class="back" @click="goBack" style="font-size:12px">返回</span>
+      <span class="copy" @click="copyUrl" style="font-size:12px">复制报价单链接</span>
     </div>
     <input type="text" :value="copycode" id="copy" />
 
     <div
-      class="remind"
+      class="remind" style="font-size:12px"
     >友情提示：此报价试算结果为根据您提供的各项信息生成，生成时间为{{this.createDate }}。正式投保时的报价结果可能会根据车辆、车主和保险方案等的情况产生变化。此报价试算结果仅供参考，您投保时需要支付的保费及税款等均应当以正式投保时的报价结果为准。</div>
     <!-- 复制链接 -->
     <van-popup v-model="showShare" class="popup-wrap" :close-on-click-overlay="false">
@@ -276,8 +276,8 @@ export default {
   .content {
     padding: 0 16px;
     .item {
-      padding: 10px 0;
-      font-size: 14px;
+      padding: 2px 0;
+      font-size: 12px;
       line-height: 20px;
       display: flex;
       align-items: center;
@@ -302,21 +302,21 @@ export default {
   }
   .business-risks {
     .title {
-      font-size: 17px;
-      line-height: 45px;
+      font-size: 12px;
+      line-height: 30px;
       color: #4a4a4a;
       font-weight: 600;
       padding-left: 16px;
     }
     .group {
-      font-size: 14px;
+      font-size: 12px;
       color: #4a4a4a;
       line-height: 20px;
       .t-head {
         border-top: 1px solid #f0f2f4;
         display: flex;
         text-align: center;
-        padding: 10px 16px;
+        padding: 5px 16px;
       }
       .span3 {
         flex: 31% 0;
@@ -353,30 +353,30 @@ export default {
     margin-bottom: 16px;
     .total {
       text-align: center;
-      padding: 20px 0;
+      padding: 10px 0;
       display: flex;
       flex-direction: column;
       .text {
-        font-size: 16px;
+        font-size: 12px;
         color: #000;
-        margin-bottom: 12px;
+        margin-bottom: 5px;
       }
       .mount {
-        font-size: 18px;
+        font-size: 12px;
         font-weight: 600;
         color: #f68900;
       }
     }
     .instr {
-      padding-top: 16px;
+      padding-top: 8px;
       border-top: 1px solid #f0f2f4;
       border-bottom: 1px solid #f0f2f4;
       .item {
         display: flex;
         justify-content: space-between;
-        font-size: 14x;
+        // font-size: 12x;
         color: #999;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
         .label {
           color: #4a4a4a;
         }
@@ -391,13 +391,13 @@ export default {
     .back,
     .copy {
       flex: 48% 0;
-      height: 38px;
+      height: 30px;
       text-align: center;
-      line-height: 38px;
+      line-height: 30px;
       border: 1px solid #568efc;
       color: #568efc;
       border-radius: 5px;
-      font-size: 16px;
+      // font-size: 16px;
       &.copy {
         background: #568efc;
         color: #fff;
@@ -405,10 +405,10 @@ export default {
     }
   }
   .remind {
-    margin: 32px 16px 42px;
+    margin: 10px 16px 10px;
     font-size: 12px;
     color: #568efc;
-    line-height: 21px;
+    line-height: 16px;
   }
   #copy {
     opacity: 0;

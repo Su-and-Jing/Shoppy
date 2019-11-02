@@ -54,13 +54,16 @@
                 maxlength="17"
                 @change="changeHandle"
                 @input="number(VIN)"
+                @blur="tipC"
               ></van-field>
+
               <!-- <van-icon name="close" /> -->
               <van-field
                 v-model="engine"
                 label="发动机号"
                 @change="changeHandle"
                 @input="faNum(engine)"
+                @blur="tipF"
               />
               <van-field
                 label="初登日期"
@@ -179,7 +182,7 @@
             <van-button class="btn" v-show="isShowCarMaster" @click="isShowCarMaster=false">收起</van-button>
           </van-cell>
           <div class="carMaster-msgInfo cells">
-            <van-field v-model="carName" label="车主姓名" />
+            <van-field v-model="carName" label="车主姓名" @blur="tipN" />
             <div v-show="isShowCarMaster">
               <van-cell
                 title="证件类型"
@@ -189,7 +192,12 @@
                 @click="choosePopup(cardList,'card')"
                 @changeHandle="changeHandle"
               />
-              <van-field v-model="identifyNo" label="身份证号" @changeHandle="changeHandle" />
+              <van-field
+                v-model="identifyNo"
+                label="身份证号"
+                @changeHandle="changeHandle"
+                @blur="tipCarno"
+              />
             </div>
           </div>
         </div>
@@ -456,8 +464,8 @@
             <div class="second">
               <span class="s2">{{this.typesList[0].text}}</span>
               <!-- <van-field class="s2" readonly label="{{this.typesList.text}}"></van-field> -->
-              <van-checkbox v-model="carChecked" shape="squre" @change="changeHandle">不计免赔</van-checkbox>
-              <van-switch v-model="carSwitch" size="24px" @change="changeHandle" />
+              <van-checkbox v-model="carChecked" shape="squre" @change="changeHandle" @click="handleToast">不计免赔</van-checkbox>
+              <van-switch v-model="carSwitch" size="24px" @change="changeHandle"  />
             </div>
             <van-divider />
             <div class="coverage">
@@ -528,6 +536,15 @@
                 <div class="import-btn">
                   <span>{{import1}}</span>
                   <van-icon name="arrow-down" @click="choosePopup(importList,'import1')"></van-icon>
+                </div>
+                <!-- 百分比 -->
+                <div class="import-btn" v-show="isShow">
+                  <span>{{percent}}</span>
+                  <van-icon name="arrow-down" @click="choosePopup(importList1,'percent')"></van-icon>
+                </div>
+                <div class="import-btn" v-show="!isShow">
+                  <span>{{percent1}}</span>
+                  <van-icon name="arrow-down" @click="choosePopup(importList2,'percent1')"></van-icon>
                 </div>
                 <van-switch v-model="domesticSwitch" size="24px" @change="changeHandle" />
               </div>
@@ -1100,7 +1117,81 @@ export default {
       ],
       // 玻璃单独破碎险
       import1: "进口",
+      percent: "10%",
+      percent1: "15%",
       importList: [{ code: 1, text: "进口" }, { code: 1, text: "国产" }],
+      importList1: [
+        "10%",
+        "11%",
+        "12%",
+        "13%",
+        "14%",
+        "15%",
+        "16%",
+        "17%",
+        "18%",
+        "19%",
+        "20%",
+        "21%",
+        "22%",
+        "23%",
+        "24%",
+        "25%",
+        "26%",
+        "27%",
+        "28%",
+        "29%",
+        "30%"
+      ],
+      isShow: true,
+      importList2: [
+        "15%",
+        "16%",
+        "17%",
+        "18%",
+        "19%",
+        "20%",
+        "21%",
+        "22%",
+        "23%",
+        "24%",
+        "25%",
+        "26%",
+        "27%",
+        "28%",
+        "29%",
+        "30%",
+        "31%",
+        "32%",
+        "33%",
+        "34%",
+        "35%",
+        "36%",
+        "37%",
+        "38%",
+        "39%",
+        "40%",
+        "41%",
+        "42%",
+        "43%",
+        "44%",
+        "45%",
+        "46%",
+        "47%",
+        "48%",
+        "49%",
+        "50%",
+        "51%",
+        "52%",
+        "53%",
+        "54%",
+        "55%",
+        "56%",
+        "57%",
+        "58%",
+        "59%",
+        "60%"
+      ],
       spiritMount: "",
       //划痕险
       scratch: "不投保",
@@ -1214,6 +1305,7 @@ export default {
       // isOk: false
     };
   },
+
   // /修改列表页的meta值，false时再次进入页面会重新请求数据。
   beforeRouteLeave(to, from, next) {
     from.meta.keepAlive = false;
@@ -1244,6 +1336,34 @@ export default {
     }
   },
   methods: {
+    handleToast(){
+      if(this.carSwitch==false){
+       this.$toast(
+          "此险为车辆损失险（主险）的附加险，请投保车辆损失险（主险）再选择此险！"
+        );
+        this.carChecked = false;
+      }
+    },
+    tipC() {
+      if (this.VIN == "") {
+        this.$toast("车架号不能为空");
+      }
+    },
+    tipF() {
+      if (this.engine == "") {
+        this.$toast("发动机号不能为空");
+      }
+    },
+    tipN() {
+      if (this.carName == "") {
+        this.$toast("车主姓名不能为空");
+      }
+    },
+    tipCarno() {
+      if (this.identifyNo == "") {
+        this.$toast("身份证号不能为空");
+      }
+    },
     backHandle() {
       this.$router.push({ path: "/" });
       return false;
@@ -1337,10 +1457,7 @@ export default {
         );
         this.wadeChecked = false;
       }
-      if (this.carSwitch == false && this.carChecked == true) {
-        this.$toast(
-          "此险为车辆损失险（主险）的附加险，请投保车辆损失险（主险）再选择此险！"
-        );
+      if (this.carSwitch == false) {
         this.carChecked = false;
       }
       if (this.secondChecked == false) {
@@ -2151,6 +2268,11 @@ export default {
       // this.motorTypeCode = this.carList[values].code;
       console.log(bbb);
       this.showPopup = false;
+      if (this[this.currentPicker] == "国产") {
+        this.isShow = false;
+      } else if (this[this.currentPicker] == "进口") {
+        this.isShow = true;
+      }
     },
     //显示注册日期
     dateShow(name) {
