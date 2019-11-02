@@ -20,17 +20,21 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title
   }
-  
+
   next()
 })
+router.afterEach((to, from, next) => {
 
-Vue.directive('anchor',{
-  inserted : function(el,binding){
-  el.onclick = function(){
-    document.documentElement.scrollTop = $('#anchor-'+binding.value).offset().top
+  window.scrollTo(0, 0)
+
+})
+Vue.directive('anchor', {
+  inserted: function (el, binding) {
+    el.onclick = function () {
+      document.documentElement.scrollTop = $('#anchor-' + binding.value).offset().top
+    }
   }
-  }
-  })
+})
 Vue.config.productionTip = false;
 Vue.use(VueCookies)
 //拖拽上传

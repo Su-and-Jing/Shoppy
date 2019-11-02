@@ -297,7 +297,7 @@
                     label="完税凭证填发日期"
                     v-model="taxDocumentDate"
                     right-icon="notes-o"
-                    @click-right-icon="dateShow('taxDocumentDate')"
+                    @click-right-icon="dateShow4('taxDocumentDate')"
                     readonly
                     @changeHandle="changeHandle"
                   ></van-field>
@@ -385,7 +385,12 @@
           <div class="buss-insurance cells">
             <div class="com-title">
               <div class="left">
-                <van-checkbox v-model="bussines" shape="squre" @change="changeHandle">商业险</van-checkbox>
+                <van-checkbox
+                  v-model="bussines"
+                  shape="squre"
+                  @change="changeHandle"
+                  @click="businessBtn"
+                >商业险</van-checkbox>
               </div>
               <div class="right">
                 <span>合计</span>
@@ -443,10 +448,20 @@
                 <van-datetime-picker
                   @cancel="showPopupDate=false"
                   v-model="currentDate"
-                  type="datetime"
+                  type="date"
                   @confirm="confirmDate"
                   @change="changeHandle"
                   :min-date="minDate"
+                />
+              </van-popup>
+              <!-- 完税凭证填发日期 -->
+              <van-popup v-model="showPopupDate5" position="bottom">
+                <van-datetime-picker
+                  @cancel="showPopupDate5=false"
+                  v-model="currentDate"
+                  type="date"
+                  @confirm="confirmDate5"
+                  @change="changeHandle"
                 />
               </van-popup>
               <!-- 初登日期 -->
@@ -464,8 +479,13 @@
             <div class="second">
               <span class="s2">{{this.typesList[0].text}}</span>
               <!-- <van-field class="s2" readonly label="{{this.typesList.text}}"></van-field> -->
-              <van-checkbox v-model="carChecked" shape="squre" @change="changeHandle" @click="handleToast">不计免赔</van-checkbox>
-              <van-switch v-model="carSwitch" size="24px" @change="changeHandle"  />
+              <van-checkbox
+                v-model="carChecked"
+                shape="squre"
+                @change="changeHandle"
+                @click="handleToast"
+              >不计免赔</van-checkbox>
+              <van-switch v-model="carSwitch" size="24px" @change="changeHandle" />
             </div>
             <van-divider />
             <div class="coverage">
@@ -690,7 +710,7 @@
       </van-popup>
       <van-popup
         v-model="showIcon"
-        class="showIcon"
+        class="showIcon11"
         :overlay-style="{opacity : '0'}"
         :close-on-click-overlay="false"
       >
@@ -713,6 +733,10 @@ import {
 export default {
   data() {
     return {
+      jf: "",
+      xj: "",
+      ld: "",
+      zb: "",
       minDate: new Date(),
       noLicenseFlag: false,
       //新增设备损失险
@@ -1038,6 +1062,7 @@ export default {
       // 默认不显示日期组件
       showPopupDate: false,
       showPopupDate2: false,
+      showPopupDate5: false,
       //车主信息-证件类型
       card: "身份证",
       cardList: [
@@ -1058,14 +1083,14 @@ export default {
       second: "不投保",
       secondList: [
         "不投保",
-        "50000",
-        "100000",
-        "150000",
-        "200000",
-        "300000",
-        "500000",
-        "1000000",
-        "1500000",
+        "5万元",
+        "10万元",
+        "15万元",
+        "20万元",
+        "30万元",
+        "50万元",
+        "100万元",
+        "150万元",
         "200万元",
         "250万元",
         "300万元",
@@ -1082,38 +1107,38 @@ export default {
         "850万元",
         "900万元",
         "950万元",
-        "1000万元"
+        "100万元"
       ],
       //司机座位险
       driver: "不投保",
       driverList: [
         "不投保",
-        "5000",
-        "10000",
-        "20000",
-        "30000",
-        "40000",
-        "50000",
-        "10000",
-        "150000",
-        "200000",
-        "300000"
+        "0.5万元",
+        "1万元",
+        "2万元",
+        "3万元",
+        "4万元",
+        "5万元",
+        "10万元",
+        "15万元",
+        "20万元",
+        "30万元"
       ],
       //乘客座位险
       farePremium: "",
       fare: "不投保",
       fareList: [
         "不投保",
-        "5000",
-        "10000",
-        "20000",
-        "30000",
-        "40000",
-        "50000",
-        "100000",
-        "150000",
-        "200000",
-        "300000"
+        "0.5万元",
+        "1万元",
+        "2万元",
+        "3万元",
+        "4万元",
+        "5万元",
+        "10万元",
+        "15万元",
+        "20万元",
+        "30万元"
       ],
       // 玻璃单独破碎险
       import1: "进口",
@@ -1318,6 +1343,7 @@ export default {
   created() {
     var data = JSON.parse(sessionStorage.getItem("data"));
     var abc = data.car;
+    console.log(data);
     if (data.state == 200) {
       this.handle();
       this.msgShow = true;
@@ -1336,9 +1362,19 @@ export default {
     }
   },
   methods: {
-    handleToast(){
-      if(this.carSwitch==false){
-       this.$toast(
+    businessBtn() {
+      if (!this.bussines == false) {
+        this.carChecked = false;
+        this.carSwitch = false;
+        this.carPremium = "";
+        this.carAmount = "";
+        this.minAmount = "";
+        this.maxAmount = "";
+      }
+    },
+    handleToast() {
+      if (this.carSwitch == false) {
+        this.$toast(
           "此险为车辆损失险（主险）的附加险，请投保车辆损失险（主险）再选择此险！"
         );
         this.carChecked = false;
@@ -1488,6 +1524,37 @@ export default {
           this.wadeSwitch = false;
         }
       }
+      //   if (this.carSwitch == true) {
+      //   this.carChecked = true;
+      // }
+      // if (this.second !== "不投保") {
+      //   this.secondChecked = true;
+      // }
+      // if (this.driver !== "不投保") {
+      //   this.driverChecked = true;
+      // }
+
+      // if (this.fare !== "不投保") {
+      //   this.fareChecked == true;
+      // }
+      // if (this.robbingSwitch == true) {
+      //   this.robbingChecked == true;
+      // }
+      // if (this.scratch !== "不投保") {
+      //   this.scratchChecked = true;
+      // }
+      // if (this.natureSwitch == true) {
+      //   this.natureChecked == true;
+      // }
+      // if (this.natureSwitch == true) {
+      //   this.natureChecked == true;
+      // }
+      // if (this.spiritMount !== "") {
+      //   this.spiritChecked == true;
+      // }
+      // if (this.wadeSwitch == true) {
+      //   this.wadeChecked == true;
+      // }
     },
     // 车辆品牌
     CarPaiHandle() {
@@ -1511,35 +1578,45 @@ export default {
       }
     },
     quick1() {
-      this.bussjiActive = true;
-      this.busRegisterDate = new Date();
-      console.log(this.busRegisterDate);
-      var date = this.busRegisterDate;
-      this.busRegisterDate = dayjs(date)
-        .add(1, "hour")
-        .format("YYYY-MM-DD HH");
-      this.RegDate = dayjs(date)
-        .add(1, "year")
-        .format("YYYY-MM-DD 24");
-      // this.RegDate = dayjs(this.RegDate)
-      //   .add(-1, "day")
-      //   .format("YYYY-MM-DD 24");
+      this.bussjiActive = !this.bussjiActive;
+      if (this.bussjiActive == true) {
+        this.busRegisterDate = new Date();
+        console.log(this.busRegisterDate);
+        var date = this.busRegisterDate;
+        this.busRegisterDate = dayjs(date)
+          .add(1, "hour")
+          .format("YYYY-MM-DD HH");
+        this.RegDate = dayjs(date)
+          .add(1, "year")
+          .format("YYYY-MM-DD 24");
+        // this.RegDate = dayjs(this.RegDate)
+        // .add(-1, "day")
+        // .format("YYYY-MM-DD 24");
+      } else {
+        this.busRegisterDate = this.ld;
+        this.RegDate = this.zb;
+      }
     },
     quick2() {
-      this.islijiActive = true;
+      this.islijiActive = !this.islijiActive;
       // this.$refs.button2.color = "#3F7CF5";
-      this.insRegDate = new Date();
-      console.log(this.insRegDate);
-      var date = this.insRegDate;
-      this.insRegDate = dayjs(date)
-        .add(1, "hour")
-        .format("YYYY-MM-DD HH");
-      this.endDate = dayjs(date)
-        .add(1, "year")
-        .format("YYYY-MM-DD HH");
-      this.endDate = dayjs(this.endDate)
-        .add(1, "hour")
-        .format("YYYY-MM-DD HH");
+      if (this.islijiActive == true) {
+        this.insRegDate = new Date();
+        console.log(this.insRegDate);
+        var date = this.insRegDate;
+        this.insRegDate = dayjs(date)
+          .add(1, "hour")
+          .format("YYYY-MM-DD HH");
+        this.endDate = dayjs(date)
+          .add(1, "year")
+          .format("YYYY-MM-DD HH");
+        this.endDate = dayjs(this.endDate)
+          .add(1, "hour")
+          .format("YYYY-MM-DD HH");
+      } else {
+        this.endDate = this.xj;
+        this.insRegDate = this.jf;
+      }
     },
     check(index) {},
     // 显示手动添加特约框
@@ -1598,6 +1675,7 @@ export default {
         this.$refs.confirmSale.style.width = "150px";
         this.$refs.confirmSale.style.background = "#568efc";
         this.isShowArt = false;
+        this.isShowCar = true;
         // this.isActives = false;
       }
       if (data.state == 200) {
@@ -1691,9 +1769,11 @@ export default {
             //这有个问题
             this.insuranceMoney = data.data.riskList[i].premium;
             //这有个问题
+
             this.insRegDate = data.data.riskList[i].startDate;
+            this.jf = this.insRegDate;
             this.endDate = data.data.riskList[i].endDate;
-            console.log(this.endDate);
+            this.xj = this.endDate;
             //车船税
             for (var i = 0; i < this.payTaxList.length; i++) {
               if (this.payTaxList[i].code === data.data.tax.taxConditionCode) {
@@ -1752,7 +1832,9 @@ export default {
             this.bussines = true;
             this.bussinesNum = data.data.riskList[i].premium;
             this.busRegisterDate = data.data.riskList[i].startDate;
+            this.ld = this.busRegisterDate;
             this.RegDate = data.data.riskList[i].endDate;
+            this.zb = this.RegDate;
           }
         }
         //车辆损失险
@@ -1772,6 +1854,7 @@ export default {
           if (data.data.kindList[i].kindCode == "B") {
             console.log(data.data.kindList[i].coveragePremium);
             this.second = data.data.kindList[i].amount;
+            this.second = this.second / 10000 + "万元";
             this.secondPremium = data.data.kindList[i].coveragePremium;
             this.secondChecked = data.data.kindList[i].notDeductibleFlag;
             console.log(this.secondPremium);
@@ -1779,12 +1862,16 @@ export default {
           //司机座位
           else if (data.data.kindList[i].kindCode == "D3") {
             this.driver = data.data.kindList[i].amount;
+            this.driver = this.driver / 10000 + "万元";
+
             this.driverPremium = data.data.kindList[i].coveragePremium;
             this.driverChecked = data.data.kindList[i].notDeductibleFlag;
             console.log(this.driverPremium);
           } //乘客座位险
           else if (data.data.kindList[i].kindCode == "D4") {
             this.fare = data.data.kindList[i].amount;
+
+            this.fare = this.fare / 10000 + "万元";
             this.farePremium = data.data.kindList[i].coveragePremium;
             this.fareChecked = data.data.kindList[i].notDeductibleFlag;
           }
@@ -1919,6 +2006,7 @@ export default {
       //第三者险
       if (this.second !== "不投保") {
         var kind2 = {};
+        this.second = this.second.replace("万元", "0000");
         kind2.amount = this.second;
         kind2.coveragePremium = this.secondAmount;
         kind2.kindCode = this.typesList[1].code;
@@ -1931,6 +2019,11 @@ export default {
         var kind3 = {};
         kind3.kindCode = this.typesList[2].code;
         kind3.notDeductibleFlag = this.driverChecked;
+        if (this.driver == "0.5万元") {
+          this.driver = "5000";
+        } else {
+          this.driver = this.driver.replace("万元", "0000");
+        }
         kind3.amount = this.driver;
         kind3.coveragePremium = this.driverPremium;
         kind3.kindName = this.typesList[2].text;
@@ -1942,6 +2035,11 @@ export default {
         var kind4 = {};
         kind4.kindCode = this.typesList[3].code;
         kind4.notDeductibleFlag = this.fareChecked;
+        if (this.fare == "0.5万元") {
+          this.fare = "5000";
+        } else {
+          this.fare = this.fare.replace("万元", "0000");
+        }
         kind4.amount = this.fare;
         kind4.coveragePremium = this.farePremium;
         kind4.kindName = this.typesList[3].text;
@@ -2285,6 +2383,11 @@ export default {
       this.currentDateName = name;
       console.log(this.currentDateName);
     },
+    dateShow4(name) {
+      this.showPopupDate5 = true;
+      this.currentDateName = name;
+      console.log(this.currentDateName);
+    },
     dateShow3(name) {
       // this.registerDate = new Date();
       // console.log(name)
@@ -2301,6 +2404,13 @@ export default {
       console.log(this.currentDateName);
       this.showPopupDate = false;
       this.issueDate = dayjs(picker).format("YYYY-MM-DD");
+    },
+    //完税凭证填发日期
+    confirmDate5(picker) {
+      let date = dayjs(picker).format("YYYY-MM-DD HH");
+      this[this.currentDateName] = date;
+      this.showPopupDate5 = false;
+      this.taxDocumentDate = dayjs(picker).format("YYYY-MM-DD");
     },
     // 初登日期确定选择
     confirmDate2(picker) {
@@ -2338,7 +2448,7 @@ export default {
   }
 }
 
-.showIcon {
+.showIcon11 {
   width: 170px;
   height: 110px;
   background: rgba(0, 0, 0, 0.6);

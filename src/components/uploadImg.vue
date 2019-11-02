@@ -186,7 +186,7 @@ export default {
       list3: [],
       list4: [],
       bbb: "",
-      showupload: true,
+      // showupload: true,
       identifyType: "",
       imgList2: []
     };
@@ -221,8 +221,8 @@ export default {
         return;
       }
       this.showsc = true;
-      console.log("==================");
-      this.showupload = true;
+      // console.log("==================");
+      // this.showupload = true;
       let list = [];
       // console.log(this.imgList[0].content);
       for (let i = 0; i < this.imgList.length; i++) {
@@ -237,7 +237,7 @@ export default {
       if (data.state === "200") {
         this.showsc = false;
         // this.$toast.success("上传成功");
-        this.showupload = false;
+        // this.showupload = false;
         this.imgList2 = data.data.imgList;
         if (data.data.customerInfo) {
           this.close1 = true;

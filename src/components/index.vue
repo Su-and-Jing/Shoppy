@@ -396,8 +396,8 @@ export default {
       this.noLicenseFlag = !this.noLicenseFlag;
       this.VIN = "";
       this.engine = "";
-      this.name = "";
-      this.identifyNo = "";
+      // this.name = "";
+      // this.identifyNo = "";
       this.plateNo = "";
       console.log(this.noLicenseFlag);
     },

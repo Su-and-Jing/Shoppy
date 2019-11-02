@@ -1,17 +1,17 @@
 export default {
-  displ:function(){
+  displ: function () {
     // document.getElementsByClassName('b1').style.display='block'
     // document.getElementsByClassName('b2').style.display='none'
     // $('.b1').css('display','none')
-    $('.b2').css('display','none')
-    $('.b1').css('display','block')
+    $('.b2').css('display', 'none')
+    $('.b1').css('display', 'block')
   },
-  displ2:function(){
+  displ2: function () {
     // document.getElementsByClassName('b1').style.display='block'
     // document.getElementsByClassName('b2').style.display='none'
     // $('.b1').css('display','none')
-    $('.b1').css('display','none')
-    $('.b2').css('display','block')
+    $('.b1').css('display', 'none')
+    $('.b2').css('display', 'block')
   },
   province_list: {
     110000: '北京市',
