@@ -20,6 +20,7 @@ import SelectCar from '@/components/SelectCar'
 import QRCode from 'qrcodejs2';
 import Annual from '@/components/Annual'
 import Verification from '@/components/verification'
+import Payment2 from '@/components/payment2'
 Vue.use(Router)
 Vue.prototype.$qrCode = QRCode
 export default new Router({
@@ -187,6 +188,14 @@ export default new Router({
       component: Verification,
       meta: {
         title: '身份验证'
+      }
+    },
+    {
+      path: '/payment2',
+      name: 'payment2',
+      component: Payment2,
+      meta: {
+        title: '支付'
       }
     }
   ]

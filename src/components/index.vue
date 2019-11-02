@@ -76,9 +76,9 @@
               readonly
               label="号牌种类"
               right-icon="arrow-down"
-              @click="choosePopup(carleiList, 'carlei')"
               v-if="!noLicenseFlag"
             />
+              <!-- @click="choosePopup(carleiList, 'carlei')" -->
             <van-field
               label="车架号"
               clearable
@@ -103,23 +103,23 @@
               readonly
               label="车辆类型"
               right-icon="arrow-down"
-              @click="choosePopup(vehicleList, 'vehicle')"
             />
+              <!-- @click="choosePopup(vehicleList, 'vehicle')" -->
             <van-field
               v-if="!noLicenseFlag"
               v-model="usingNature"
               readonly
               label="使用性质"
               right-icon="arrow-down"
-              @click="choosePopup(usingNatureList, 'usingNature')"
             />
+              <!-- @click="choosePopup(usingNatureList, 'usingNature')" -->
             <van-field
               readonly
               v-model="masterProperties"
               label="车主性质"
               right-icon="arrow-down"
-              @click="choosePopup(masterPropertiesList, 'masterProperties')"
             />
+              <!-- @click="choosePopup(masterPropertiesList, 'masterProperties')" -->
 
             <van-field label="车主姓名" clearable placeholder="请输入车主姓名" v-model="name" />
             <van-field
@@ -189,7 +189,7 @@
           <span class="wc" @click="success">完成</span>
         </p>
         <ul>
-          <li v-for="(item,index) in cityList" :key="index" @click="country(item)" >{{item}}</li>
+          <li v-for="(item,index) in cityList" :key="index" @click="country(item)">{{item}}</li>
         </ul>
       </div>
     </van-popup>
@@ -213,7 +213,7 @@ export default {
       carlei: "小型汽车",
       carleiCode: "02",
       carleiList: [
-        { code: "02", text: "小型汽车" },
+        { code: "02", text: "小型汽车" }
         // { code: "01", text: "大型汽车" },
         // { code: "52", text: "小型新能源汽车" },
         // { code: "51", text: "大型新能源汽车" },
@@ -301,14 +301,14 @@ export default {
       //车辆类型
       motorTypeCode: "A0",
       vehicle: "小型普通客车",
-      vehicleList: [{ code: "A0", text: "小型普通客车" }],
+      // vehicleList: [{ code: "A0", text: "小型普通客车" }],
       // 使用性质
       usingNature: "非营运",
       motorUsageTypeCode: "8A",
-      usingNatureList: [
-        { code: "8A", text: "非营运" },
-        { code: "9A", text: "营运" }
-      ],
+      // usingNatureList: [
+      //   // { code: "8A", text: "非营运" },
+      //   // { code: "9A", text: "营运" }
+      // ],
       // 车主证件类型
       certificateType: "身份证",
       // /证件类型
@@ -326,10 +326,10 @@ export default {
       //车主性质
       type: "1",
       masterProperties: "个人",
-      masterPropertiesList: [
-        { code: "1", text: "个人" },
+      // masterPropertiesList: [
+        // { code: "1", text: "个人" }
         // { code: "2", text: "机构" }
-      ]
+      // ]
     };
   },
   components: {
@@ -361,7 +361,6 @@ export default {
     country(item) {
       this.city = item;
       this.showPopupCity = false;
-      
     },
     // plateNo(value) {
     //   value = value.toUpperCase();
@@ -495,6 +494,7 @@ export default {
     },
     // 传图投保
     afterRead(item) {
+      // console.log(121)
       console.log(item);
       this.$router.push({
         name: "uploadImg",

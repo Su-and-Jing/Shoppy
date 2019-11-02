@@ -63,14 +63,22 @@ export default {
         token: this.token,
         orderNo:this.orderNo
       });
-      if(data.state == 200){
-          alert('成功')
+      if(data.state == '200'){
+        console.log(data)
+           var imgUrl = data.data;
+      console.log(imgUrl)
+         this.$router.push({
+          name: "payment",
+          params: {
+            imgUrl: imgUrl
+          }
+        });
       }else{
           this.$toast.fail("失败")
       }
       },
       //发送验证码
-       sendVCode() {
+    async   sendVCode() {
       if (this.codeDisabled) {
         return;
       }
@@ -86,20 +94,25 @@ export default {
         this.codeDisabled = false;
         return;
       }
-       const data = SendCode({
+      const  data =   await SendCode({
         mobile: this.phone,
         token: this.token,
         orderNo: this.orderNo
       });
       console.log(data)
-      this.setCodeInterval();
+      if (data.state == "200"){
+        this.setCodeInterval();
+     
+      }else{
+        this.$toast("失败")
+      }
     },
     // 发送验证码
     setCodeInterval() {
       const that = this;
       that.codeMessage = `${that.times}s`;
       that.timer = setInterval(() => {
-          console.log(that.times)
+          // console.log(that.times)
         that.times--;
         that.codeMessage = `${that.times}s`;
         if (that.times <= 0) {

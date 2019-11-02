@@ -1,636 +1,401 @@
 <template>
-<div>
-   <header>
+  <div>
+    <header>
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">确认投保</p>
     </header>
-   <div class="containt-insured" style="margin-top:53px">
-    <van-collapse v-model="activeNames">
-      <van-collapse-item class="group" title="人员信息" name="owner">
-        <div
-          slot="right-icon"
-          class="right-text"
-          v-text="activeNames.indexOf('owner') > -1 ? '收起' : '展开'"
-        ></div>
-        <!-- 车主--个人 -->
-        <van-cell-group v-if="one.type== '1'" class="item">
-          <van-field v-model="one.name" label="车主姓名" placeholder="请输入车主姓名" />
-          <van-field
-            v-model="dentify"
-            readonly
-            label="证件类型"
-            right-icon="arrow-down"
-            @click="checkPicker('车主的证件类型',dentifyList)"
-          />
-          <van-field v-model="one.identifyNo" label="身份证号" placeholder="请输入身份证号" />
-          <div class="Zjdate">
-            <div class="datetit">证件有效期</div>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.cervalidDate"
-              @click="times=true"
-            ></van-field>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.creendDate"
-              @click="times=true"
-            ></van-field>
-          </div>
-
-          <van-popup v-model="times" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate"
-              @cancel="times=false"
-              v-model="currentDate"
-              type="date"
-            />
-          </van-popup>
-          <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
-
-          <!-- <van-cell v-if="dizhi"   title="地址" @click="shows=true,dizhi=false"   v-model="" //> -->
-
-          <Area :current-area="OneAddr,OneAddrCode" @checkedArea="checkedArea1" label="地址" />
-          <van-field
-            label
-            type="textarea"
-            v-model="one.addr"
-            rows="1"
-            autosize
-            placeholder="请填写具体路名、门牌地址"
-          />
-
-          <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
-          <van-field
-            v-model="OneOccupation"
-            readonly
-            label="职业"
-            right-icon="arrow-down"
-            @click="checkPicker('OneOccupation',occupationList)"
-          />
-        </van-cell-group>
-
-        <!--车主-- 机构    客户名称 -->
-
-        <van-cell-group v-if="one.type=='2'" class="item">
-          <van-field v-model="one.name" label="客户名称" placeholder="华农财产" />
-          <van-field
-            v-model="dentify"
-            readonly
-            label="证件类型"
-            right-icon="arrow-down"
-            @click="checkPicker('dentify',dentifyList)"
-          />
-          <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
-          <van-field v-model="one.identifyNo" label="证件号码" placeholder="请输入身份证号" />
-          <div class="Zjdate">
-            <div class="datetit">证件有效期</div>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.cervalidDate"
-              @click="times=true"
-            ></van-field>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.creendDate"
-              @click="times=true"
-            ></van-field>
-          </div>
-
-          <van-popup v-model="times" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate"
-              @cancel="times=false"
-              v-model="currentDate"
-              type="date"
-            />
-          </van-popup>
-          <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
-
-          <Area :current-area="OneAddr,OneAddrCode" @checkedArea="checkedArea1" label="地址" />
-          <van-field
-            label
-            type="textarea"
-            v-model="one.addr"
-            rows="1"
-            autosize
-            placeholder="请填写具体路名、门牌地址"
-          />
-
-          <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
-
-          <van-field v-model="one.chargeName" label="经办人姓名" placeholder="请输入" />
-          <van-field
-            v-model="chargeNationality"
-            readonly
-            label="经办人国籍"
-            right-icon="arrow-down"
-            @click="checkPicker('chargeNationality',chargeNationalityList)"
-          />
-          <van-field
-            v-model="OneOccupation"
-            readonly
-            label="职业"
-            right-icon="arrow-down"
-            @click="checkPicker('OneOccupation',occupationList)"
-          />
-          <van-field
-            v-model="dentify"
-            readonly
-            label="经办人证件类型"
-            right-icon="arrow-down"
-            @click="checkPicker('经办人证件类型',dentifyList)"
-          />
-          <van-field v-model="one.chargeIdentifyNo" label="经办人证件号码" placeholder="请输入身份证号" />
-          <!-- <van-field v-model="one.chargeIdentifyDate" label="经办人证件有效期" placeholder="请输入身份证号" /> -->
-
-          <div class="Zjdate">
-            <div class="datetit">经办人证件有效期</div>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.chargeIdentifyDate"
-              @click="times4=true"
-            ></van-field>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.chargeIdentifyEndDate"
-            ></van-field>
-          </div>
-
-          <van-popup v-model="times4" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate4"
-              @cancel="times4=false"
-              v-model="currentDate"
-              type="date"
-            />
-          </van-popup>
-
-          <!-- <van-field v-model="one.corpIdentifyStartDate" label="营业执照证件有效期" placeholder="请输入" /> -->
-
-          <div class="Zjdate">
-            <div class="datetit">营业执照证件有效期</div>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.corpIdentifyStartDate"
-              @click="times5=true"
-            ></van-field>
-            <van-field
-              class="field"
-              readonly
-              right-icon="notes-o"
-              v-model="one.corpIdentifyEndDate"
-            ></van-field>
-          </div>
-
-          <van-popup v-model="times5" position="bottom">
-            <van-datetime-picker
-              @confirm="confirmDate5"
-              @cancel="times5=false"
-              v-model="currentDate"
-              type="date"
-            />
-          </van-popup>
-        </van-cell-group>
-        <!-- ———————————————————————————————————————————————————————————————————————————————— -->
-        <!-- 投保人---个人 -->
-        <van-cell-group class="item">
-          <div class="check-wrap">
-            <van-field value="同车主" label="投保人" readonly />
-            <van-switch v-model="insuredOwner" size="24px" />
-            <div>
-              <span class="every-btn">{{oneEvery}}</span>
-              <van-icon name="arrow-down" @click="checkPicker('oneEvery',oneEveryList)"></van-icon>
-            </div>
-          </div>
-
-          <van-cell-group v-show="!insuredOwner && two.type =='1'" class="b1">
-            <van-field v-model="two.name" label="车主姓名" placeholder="请输入车主姓名" />
+    <div class="containt-insured" style="margin-top:53px">
+      <van-collapse v-model="activeNames">
+        <van-collapse-item class="group" title="人员信息" name="owner">
+          <div
+            slot="right-icon"
+            class="right-text"
+            v-text="activeNames.indexOf('owner') > -1 ? '收起' : '展开'"
+          ></div>
+          <!-- 车主--个人 -->
+          <van-cell-group v-if="one.type== '1'" class="item">
+            <van-field v-model="one.name" label="车主姓名" placeholder="请输入车主姓名" />
             <van-field
               v-model="dentify"
               readonly
               label="证件类型"
               right-icon="arrow-down"
-              @click="checkPicker('dentify',dentifyList)"
+              @click="checkPicker('车主的证件类型',dentifyList)"
             />
-            <van-field v-model="two.identifyNo" label="身份证号" placeholder="请输入身份证号" />
-
+            <van-field v-model="one.identifyNo" label="身份证号" placeholder="请输入身份证号" />
             <div class="Zjdate">
               <div class="datetit">证件有效期</div>
               <van-field
                 class="field"
                 readonly
                 right-icon="notes-o"
-                v-model="two.cervalidDate"
-                @click="times2=true"
+                v-model="one.cervalidDate"
+                @click="times=true"
               ></van-field>
-              <van-field class="field" readonly right-icon="notes-o" v-model="two.creendDate"></van-field>
+              <van-field
+                class="field"
+                readonly
+                right-icon="notes-o"
+                v-model="one.creendDate"
+                @click="times=true"
+              ></van-field>
             </div>
 
-            <van-popup v-model="times2" position="bottom">
+            <van-popup v-model="times" position="bottom">
               <van-datetime-picker
-                @confirm="confirmDate2"
-                @cancel="times2=false"
+                @confirm="confirmDate"
+                @cancel="times=false"
                 v-model="currentDate"
                 type="date"
               />
             </van-popup>
+            <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
 
-            <van-field v-model="two.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
-            <Area :current-area="TwoAddr,TwoAddrCode" @checkedArea="checkedArea(3)" label="地址" />
+            <!-- <van-cell v-if="dizhi"   title="地址" @click="shows=true,dizhi=false"   v-model="" //> -->
 
+            <Area :current-area="OneAddr,OneAddrCode" @checkedArea="checkedArea1" label="地址" />
             <van-field
               label
               type="textarea"
-              v-model="two.addr"
+              v-model="one.addr"
               rows="1"
               autosize
               placeholder="请填写具体路名、门牌地址"
             />
-            <van-field v-model="two.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+
+            <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
             <van-field
-              v-model="TwoOccupation"
+              v-model="OneOccupation"
               readonly
               label="职业"
               right-icon="arrow-down"
-              @click="checkPicker('TwoOccupation',occupationList)"
+              @click="checkPicker('OneOccupation',occupationList)"
             />
           </van-cell-group>
-
-          <!--投保人-- 机构 -->
-          <!-- {{two.type==='2' || this.type == '2'}} -->
-          <van-cell-group class="item b2" v-show="!insuredOwner && two.type == '2' " ref="blockone">
-            <van-field v-model="two.name" label="客户名称" placeholder="华农财产" />
-            <van-field
-              v-model="dentify"
-              readonly
-              label="证件类型"
-              right-icon="arrow-down"
-              @click="checkPicker('dentify',dentifyList)"
-            />
-            <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
-            <van-field v-model="two.identifyNo" label="证件号码" placeholder="请输入身份证号" />
-            <van-field v-model="two.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
-            <Area :current-area="TwoAddr,TwoAddrCode" @checkedArea="checkedArea(3)" label="地址" />
-            <van-field
-              label
-              type="textarea"
-              v-model="two.addr"
-              rows="1"
-              autosize
-              placeholder="请填写具体路名、门牌地址"
-            />
-            <van-field v-model="two.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
-            <van-field v-model="two.chargeName" label="经办人姓名" placeholder="请输入" />
-            <van-field
-              v-model="chargeNationality"
-              readonly
-              label="经办人国籍"
-              right-icon="arrow-down"
-              @click="checkPicker('chargeNationality',chargeNationalityList)"
-            />
-            <van-field
-              v-model="TwoOccupation"
-              readonly
-              label="职业"
-              right-icon="arrow-down"
-              @click="checkPicker('TwoOccupation',occupationList)"
-            />
-            <van-field
-              v-model="dentify"
-              readonly
-              label="经办人证件类型"
-              right-icon="arrow-down"
-              @click="checkPicker('dentify',dentifyList)"
-            />
-            <van-field v-model="two.chargeIdentifyNo" label="经办人证件号码" placeholder="请输入身份证号" />
-
-            <div class="Zjdate">
-              <div class="datetit">经办人证件有效期</div>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="two.chargeIdentifyDate"
-                @click="times6=true"
-              ></van-field>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="two.chargeIdentifyEndDate"
-              ></van-field>
+          <!-- 投保人---个人 -->
+          <van-cell-group class="item">
+            <div class="check-wrap">
+              <van-field value="同车主" label="投保人" readonly />
+              <van-switch v-model="insuredOwner" size="24px" />
+             
             </div>
 
-            <van-popup v-model="times6" position="bottom">
-              <van-datetime-picker
-                @confirm="confirmDate6"
-                @cancel="times6=false"
-                v-model="currentDate"
-                type="date"
-              />
-            </van-popup>
-
-            <div class="Zjdate">
-              <div class="datetit">营业执照证件有效期</div>
+            <van-cell-group v-show="!insuredOwner" class="b1">
+              <van-field v-model="two.name" label="车主姓名" placeholder="请输入车主姓名" />
               <van-field
-                class="field"
+                v-model="dentify"
                 readonly
-                right-icon="notes-o"
-                v-model="two.corpIdentifyStartDate"
-                @click="times7=true"
-              ></van-field>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="two.corpIdentifyEndDate"
-              ></van-field>
-            </div>
-
-            <van-popup v-model="times7" position="bottom">
-              <van-datetime-picker
-                @confirm="confirmDate7"
-                @cancel="times7=false"
-                v-model="currentDate"
-                type="date"
+                label="证件类型"
+                right-icon="arrow-down"
+                @click="checkPicker('dentify',dentifyList)"
               />
-            </van-popup>
-            <!-- <van-field v-model="two.chargeIdentifyDate" label="经办人证件有效期" placeholder="请输入身份证号" /> -->
-            <!-- <van-field v-model="two.corpIdentifyStartDate" label="营业执照证件有效期" placeholder="请输入" /> -->
+              <van-field v-model="two.identifyNo" label="身份证号" placeholder="请输入身份证号" />
+
+              <div class="Zjdate">
+                <div class="datetit">证件有效期</div>
+                <van-field
+                  class="field"
+                  readonly
+                  right-icon="notes-o"
+                  v-model="two.cervalidDate"
+                  @click="times2=true"
+                ></van-field>
+                <van-field class="field" readonly right-icon="notes-o" v-model="two.creendDate"></van-field>
+              </div>
+
+              <van-popup v-model="times2" position="bottom">
+                <van-datetime-picker
+                  @confirm="confirmDate2"
+                  @cancel="times2=false"
+                  v-model="currentDate"
+                  type="date"
+                />
+              </van-popup>
+
+              <van-field v-model="two.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+              <Area :current-area="TwoAddr,TwoAddrCode" @checkedArea="checkedArea(3)" label="地址" />
+
+              <van-field
+                label
+                type="textarea"
+                v-model="two.addr"
+                rows="1"
+                autosize
+                placeholder="请填写具体路名、门牌地址"
+              />
+              <van-field v-model="two.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+              <van-field
+                v-model="TwoOccupation"
+                readonly
+                label="职业"
+                right-icon="arrow-down"
+                @click="checkPicker('TwoOccupation',occupationList)"
+              />
+            </van-cell-group>
           </van-cell-group>
-        </van-cell-group>
-        <!-- 被保人---个人 -->
-        <van-cell-group class="item">
-          <div class="check-wrap">
-            <van-field value="同车主" label="被保人" readonly />
-            <van-switch v-model="assuredOwner" size="24px" />
-            <div>
-              <span class="every-btn">{{oneEvery2}}</span>
-              <van-icon name="arrow-down" @click="checkPicker('oneEvery2',oneEveryList2)"></van-icon>
+          <!-- 被保人---个人 -->
+          <van-cell-group class="item">
+            <div class="check-wrap">
+              <van-field value="同车主" label="被保险人" readonly />
+              <van-switch v-model="assuredOwner" size="24px" />
+              <div>
+                <span class="every-btn">{{oneEvery2}}</span>
+                <van-icon name="arrow-down" @click="checkPicker('oneEvery2',oneEveryList2)"></van-icon>
+              </div>
             </div>
+            <van-cell-group v-show="!assuredOwner">
+              <van-field v-model="three.name" label="车主姓名" placeholder="请输入车主姓名" />
+              <van-field
+                v-model="dentify"
+                readonly
+                label="证件类型"
+                right-icon="arrow-down"
+                @click="checkPicker('dentify',dentifyList)"
+              />
+              <van-field v-model="three.identifyNo" label="身份证号" placeholder="请输入身份证号" />
+              <div class="Zjdate">
+                <div class="datetit">证件有效期</div>
+                <van-field
+                  class="field"
+                  readonly
+                  right-icon="notes-o"
+                  v-model="three.cervalidDate"
+                  @click="times3=true"
+                ></van-field>
+                <van-field class="field" readonly right-icon="notes-o" v-model="three.creendDate"></van-field>
+              </div>
+              <van-popup v-model="times3" position="bottom">
+                <van-datetime-picker
+                  @confirm="confirmDate3"
+                  @cancel="times3=false"
+                  v-model="currentDate"
+                  type="date"
+                />
+              </van-popup>
+              <van-field v-model="three.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+              <Area
+                :current-area="ThreeAddr,ThreeAddrCode"
+                @checkedArea="checkedArea(5)"
+                label="地址"
+              />
+              <van-field
+                label
+                type="textarea"
+                v-model="three.addr"
+                rows="1"
+                autosize
+                placeholder="请填写具体路名、门牌地址"
+              />
+              <van-field v-model="three.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+              <van-field
+                v-model="occupation"
+                readonly
+                label="职业"
+                right-icon="arrow-down"
+                @click="checkPicker('occupation',occupationList)"
+              />
+            </van-cell-group>
+            <!-- 机构 -->
+            <van-cell-group v-show="!assuredOwner && this.type=='2'" class="item">
+              <van-field v-model="three.name" label="客户名称" placeholder="华农财产" />
+              <van-field
+                v-model="dentify"
+                readonly
+                label="证件类型"
+                right-icon="arrow-down"
+                @click="checkPicker('dentify',dentifyList)"
+              />
+              <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
+              <van-field v-model="three.identifyNo" label="证件号码" placeholder="请输入身份证号" />
+              <van-field v-model="three.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+              <Area
+                :current-area="ThreeAddr,ThreeAddrCode"
+                @checkedArea="checkedArea(5)"
+                label="地址"
+              />
+              <van-field
+                label
+                type="textarea"
+                v-model="three.addr"
+                rows="1"
+                autosize
+                placeholder="请填写具体路名、门牌地址"
+              />
+              <van-field v-model="three.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+
+              <van-field v-model="three.chargeName" label="经办人姓名" placeholder="请输入" />
+              <van-field
+                v-model="chargeNationality"
+                readonly
+                label="经办人国籍"
+                right-icon="arrow-down"
+                @click="checkPicker('chargeNationality',chargeNationalityList)"
+              />
+              <van-field
+                v-model="occupation"
+                readonly
+                label="职业"
+                right-icon="arrow-down"
+                @click="checkPicker('occupation',occupationList)"
+              />
+              <van-field
+                v-model="dentify"
+                readonly
+                label="经办人证件类型"
+                right-icon="arrow-down"
+                @click="checkPicker('dentify',dentifyList)"
+              />
+              <van-field v-model="three.chargeIdentifyNo" label="经办人证件号码" placeholder="请输入身份证号" />
+              <!-- <van-field v-model="three.chargeIdentifyDate" label="经办人证件有效期" placeholder="请输入身份证号" />
+              <van-field v-model="three.corpIdentifyStartDate" label="营业执照证件有效期" placeholder="请输入" />-->
+
+              <div class="Zjdate">
+                <div class="datetit">经办人证件有效期</div>
+                <van-field
+                  class="field"
+                  readonly
+                  right-icon="notes-o"
+                  v-model="three.chargeIdentifyDate"
+                  @click="times8=true"
+                ></van-field>
+                <van-field
+                  class="field"
+                  readonly
+                  right-icon="notes-o"
+                  v-model="three.chargeIdentifyEndDate"
+                ></van-field>
+              </div>
+
+              <van-popup v-model="times8" position="bottom">
+                <van-datetime-picker
+                  @confirm="confirmDate8"
+                  @cancel="times8=false"
+                  v-model="currentDate"
+                  type="date"
+                />
+              </van-popup>
+
+              <div class="Zjdate">
+                <div class="datetit">营业执照证件有效期</div>
+                <van-field
+                  class="field"
+                  readonly
+                  right-icon="notes-o"
+                  v-model="three.corpIdentifyStartDate"
+                  @click="times9=true"
+                ></van-field>
+                <van-field
+                  class="field"
+                  readonly
+                  right-icon="notes-o"
+                  v-model="three.corpIdentifyEndDate"
+                ></van-field>
+              </div>
+
+              <van-popup v-model="times9" position="bottom">
+                <van-datetime-picker
+                  @confirm="confirmDate9"
+                  @cancel="times9=false"
+                  v-model="currentDate"
+                  type="date"
+                />
+              </van-popup>
+            </van-cell-group>
+          </van-cell-group>
+        </van-collapse-item>
+        <van-collapse-item class="group" title="影像上传" name="upload">
+          <div
+            slot="right-icon"
+            class="right-text"
+            v-text="activeNames.indexOf('upload') > -1 ? '收起' : '展开'"
+          ></div>
+          <Screenage :imgs="imgs" @emitImgList="emitImgs"></Screenage>
+        </van-collapse-item>
+        <van-collapse-item class="group" title="保单获取方式" name="access">
+          <div
+            slot="right-icon"
+            class="right-text"
+            v-text="activeNames.indexOf('access') > -1 ? '收起' : '展开'"
+          ></div>
+          <van-cell-group class="item">
+            <van-field
+              v-model="insurancePolicy"
+              label="保单形式"
+              readonly
+              @click="checkPicker('insurancePolicy', insurancePolicyList)"
+              right-icon="arrow-down"
+            />
+            <van-field
+              v-if="insurancePolicy == '纸质'"
+              v-model="distribution"
+              readonly
+              label="配送方式"
+              @click="checkPicker('distribution', distributionList)"
+              right-icon="arrow-down"
+            />
+            <van-field
+              v-if="insurancePolicy == '电子'"
+              v-model="mailAddr.email"
+              label="邮箱地址"
+              placeholder="请输入邮箱地址"
+            />
+            <van-cell-group v-if="insurancePolicy == '纸质' && distribution == '邮寄'">
+              <van-field v-model="mailAddr.name" label="收件人" placeholder="请输入收件人" />
+              <van-field v-model="mailAddr.mobile" label="手机号" placeholder="请输入手机号" />
+              <Area :current-area="mail" @checkedArea="checkedArea7" />
+              <van-field
+                label
+                type="textarea"
+                v-model="mailAddr.addr"
+                rows="1"
+                autosize
+                placeholder="请填写具体路名、门牌地址"
+              />
+            </van-cell-group>
+          </van-cell-group>
+        </van-collapse-item>
+      </van-collapse>
+      <div class="btn-group">
+        <span class="confirm" @click="confirmInsure">确认投保</span>
+      </div>
+      <!-- 选择框统一 -->
+      <van-popup position="bottom" v-model="showPopup">
+        <van-picker
+          show-toolbar
+          :columns="columns"
+          @cancel="showPopup = false"
+          @confirm="confirmPopup"
+        />
+      </van-popup>
+      <van-popup v-model="passShow" class="people">
+        <div>
+          <van-icon name="cross" class="icon" @click="peopleClose" />
+          <p class="info">提示</p>
+          <p class="content">亲，此单自动核保不通过。您可至“我的订单-待处理”进行下一步操作</p>
+          <div class="btn">
+            <van-button type="default" @click="lookOrder">查看我的订单</van-button>
+            <van-button type="default" @click="otherCar">投保其他车辆</van-button>
           </div>
-
-          <van-cell-group v-show="!assuredOwner && three.type=='1'">
-            <van-field v-model="three.name" label="车主姓名" placeholder="请输入车主姓名" />
-            <van-field
-              v-model="dentify"
-              readonly
-              label="证件类型"
-              right-icon="arrow-down"
-              @click="checkPicker('dentify',dentifyList)"
-            />
-            <van-field v-model="three.identifyNo" label="身份证号" placeholder="请输入身份证号" />
-
-            <div class="Zjdate">
-              <div class="datetit">证件有效期</div>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="three.cervalidDate"
-                @click="times3=true"
-              ></van-field>
-              <van-field class="field" readonly right-icon="notes-o" v-model="three.creendDate"></van-field>
-            </div>
-            <van-popup v-model="times3" position="bottom">
-              <van-datetime-picker
-                @confirm="confirmDate3"
-                @cancel="times3=false"
-                v-model="currentDate"
-                type="date"
-              />
-            </van-popup>
-            <van-field v-model="three.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
-            <Area :current-area="ThreeAddr,ThreeAddrCode" @checkedArea="checkedArea(5)" label="地址" />
-            <van-field
-              label
-              type="textarea"
-              v-model="three.addr"
-              rows="1"
-              autosize
-              placeholder="请填写具体路名、门牌地址"
-            />
-            <van-field v-model="three.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
-            <van-field
-              v-model="occupation"
-              readonly
-              label="职业"
-              right-icon="arrow-down"
-              @click="checkPicker('occupation',occupationList)"
-            />
-          </van-cell-group>
-          <!-- 机构 -->
-          <van-cell-group v-show="!assuredOwner && three.type=='2'" class="item">
-            <van-field v-model="three.name" label="客户名称" placeholder="华农财产" />
-            <van-field
-              v-model="dentify"
-              readonly
-              label="证件类型"
-              right-icon="arrow-down"
-              @click="checkPicker('dentify',dentifyList)"
-            />
-            <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
-            <van-field v-model="three.identifyNo" label="证件号码" placeholder="请输入身份证号" />
-            <van-field v-model="three.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
-            <Area :current-area="ThreeAddr,ThreeAddrCode" @checkedArea="checkedArea(5)" label="地址" />
-            <van-field
-              label
-              type="textarea"
-              v-model="three.addr"
-              rows="1"
-              autosize
-              placeholder="请填写具体路名、门牌地址"
-            />
-            <van-field v-model="three.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
-
-            <van-field v-model="three.chargeName" label="经办人姓名" placeholder="请输入" />
-            <van-field
-              v-model="chargeNationality"
-              readonly
-              label="经办人国籍"
-              right-icon="arrow-down"
-              @click="checkPicker('chargeNationality',chargeNationalityList)"
-            />
-            <van-field
-              v-model="occupation"
-              readonly
-              label="职业"
-              right-icon="arrow-down"
-              @click="checkPicker('occupation',occupationList)"
-            />
-            <van-field
-              v-model="dentify"
-              readonly
-              label="经办人证件类型"
-              right-icon="arrow-down"
-              @click="checkPicker('dentify',dentifyList)"
-            />
-            <van-field v-model="three.chargeIdentifyNo" label="经办人证件号码" placeholder="请输入身份证号" />
-            <!-- <van-field v-model="three.chargeIdentifyDate" label="经办人证件有效期" placeholder="请输入身份证号" />
-            <van-field v-model="three.corpIdentifyStartDate" label="营业执照证件有效期" placeholder="请输入" />-->
-
-            <div class="Zjdate">
-              <div class="datetit">经办人证件有效期</div>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="three.chargeIdentifyDate"
-                @click="times8=true"
-              ></van-field>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="three.chargeIdentifyEndDate"
-              ></van-field>
-            </div>
-
-            <van-popup v-model="times8" position="bottom">
-              <van-datetime-picker
-                @confirm="confirmDate8"
-                @cancel="times8=false"
-                v-model="currentDate"
-                type="date"
-              />
-            </van-popup>
-
-            <div class="Zjdate">
-              <div class="datetit">营业执照证件有效期</div>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="three.corpIdentifyStartDate"
-                @click="times9=true"
-              ></van-field>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="three.corpIdentifyEndDate"
-              ></van-field>
-            </div>
-
-            <van-popup v-model="times9" position="bottom">
-              <van-datetime-picker
-                @confirm="confirmDate9"
-                @cancel="times9=false"
-                v-model="currentDate"
-                type="date"
-              />
-            </van-popup>
-          </van-cell-group>
-        </van-cell-group>
-      </van-collapse-item>
-      <van-collapse-item class="group" title="影像上传" name="upload">
-        <div
-          slot="right-icon"
-          class="right-text"
-          v-text="activeNames.indexOf('upload') > -1 ? '收起' : '展开'"
-        ></div>
-        <Screenage :imgs="imgs" @emitImgList="emitImgs"></Screenage>
-      </van-collapse-item>
-      <van-collapse-item class="group" title="保单获取方式" name="access">
-        <div
-          slot="right-icon"
-          class="right-text"
-          v-text="activeNames.indexOf('access') > -1 ? '收起' : '展开'"
-        ></div>
-        <van-cell-group class="item">
-          <van-field
-            v-model="insurancePolicy"
-            label="保单形式"
-            readonly
-            @click="checkPicker('insurancePolicy', insurancePolicyList)"
-            right-icon="arrow-down"
-          />
-          <van-field
-            v-if="insurancePolicy == '纸质'"
-            v-model="distribution"
-            readonly
-            label="配送方式"
-            @click="checkPicker('distribution', distributionList)"
-            right-icon="arrow-down"
-          />
-          <van-field
-            v-if="insurancePolicy == '电子'"
-            v-model="mailAddr.email"
-            label="邮箱地址"
-            placeholder="请输入邮箱地址"
-          />
-          <van-cell-group v-if="insurancePolicy == '纸质' && distribution == '邮寄'">
-            <van-field v-model="mailAddr.name" label="收件人" placeholder="请输入收件人" />
-            <van-field v-model="mailAddr.mobile" label="手机号" placeholder="请输入手机号" />
-            <Area :current-area="mail" @checkedArea="checkedArea7" />
-            <van-field
-              label
-              type="textarea"
-              v-model="mailAddr.addr"
-              rows="1"
-              autosize
-              placeholder="请填写具体路名、门牌地址"
-            />
-          </van-cell-group>
-        </van-cell-group>
-      </van-collapse-item>
-    </van-collapse>
-    <div class="btn-group">
-      <span class="confirm" @click="confirmInsure">确认投保</span>
-    </div>
-    <!-- 选择框统一 -->
-    <van-popup position="bottom" v-model="showPopup">
-      <van-picker
-        show-toolbar
-        :columns="columns"
-        @cancel="showPopup = false"
-        @confirm="confirmPopup"
-      />
-    </van-popup>
-    <van-popup v-model="passShow" class="people">
-      <div>
-        <van-icon name="cross" class="icon" @click="peopleClose" />
-        <p class="info">提示</p>
-        <p class="content">亲，此单自动核保不通过。您可至“我的订单-待处理”进行下一步操作</p>
-        <div class="btn">
-          <van-button type="default" @click="lookOrder">查看我的订单</van-button>
-          <van-button type="default" @click="otherCar">投保其他车辆</van-button>
         </div>
-      </div>
-    </van-popup>
-    <van-popup v-model="peopleShow" class="people">
-      <div>
-        <van-icon name="cross" class="icon" @click="peopleClose" />
-        <p class="info">提示</p>
-        <p class="content">亲，此单需要人工核保，请耐心等待5-10分钟。您可至“我的订单-待处理”进行下一步操作</p>
-        <div class="btn">
-          <van-button type="default" @click="lookOrder">查看我的订单</van-button>
-          <van-button type="default" @click="otherCar">投保其他车辆</van-button>
+      </van-popup>
+      <van-popup v-model="peopleShow" class="people">
+        <div>
+          <van-icon name="cross" class="icon" @click="peopleClose" />
+          <p class="info">提示</p>
+          <p class="content">亲，此单需要人工核保，请耐心等待5-10分钟。您可至“我的订单-待处理”进行下一步操作</p>
+          <div class="btn">
+            <van-button type="default" @click="lookOrder">查看我的订单</van-button>
+            <van-button type="default" @click="otherCar">投保其他车辆</van-button>
+          </div>
         </div>
-      </div>
-    </van-popup>
-    <!-- <van-popup v-model="show" class="showPopupPrice">
+      </van-popup>
+      <!-- <van-popup v-model="show" class="showPopupPrice">
       <p>返回报价</p>
       <van-button plain color="#95c4fe" @click="cannelPrice">取消</van-button>
       <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
-    </van-popup>-->
+      </van-popup>-->
+    </div>
   </div>
-</div>
- 
 </template>
 
 <script>
@@ -1080,10 +845,10 @@ export default {
       },
       //车主性质
       oneEvery: "个人",
-      oneEvery2: "个人",
-      type: "",
+      // oneEvery2: "个人",
+      type: "1",
       oneEveryList: [{ code: 1, text: "个人" }, { code: 2, text: "机构" }],
-      oneEveryList2: [{ code: 1, text: "个人" }, { code: 2, text: "机构" }],
+      // oneEveryList2: [{ code: 1, text: "个人" }, { code: 2, text: "机构" }],
       insuredOwner: true,
       assuredOwner: true,
       showPopup: false,
@@ -1124,7 +889,7 @@ export default {
   },
 
   methods: {
-       backHandle() {
+    backHandle() {
       if (window.history.length <= 1) {
         this.$router.push({ path: "/" });
         return false;
