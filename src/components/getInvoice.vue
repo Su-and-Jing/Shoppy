@@ -4,7 +4,7 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">获取发票</p>
     </header>
-    <div class="containt-invoice" style="margin-top:53px">
+    <div class="containt-invoice" style="margin-top:38px">
       <Head></Head>
       <div class="main">
         <div class="item">

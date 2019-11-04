@@ -4,7 +4,7 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">订单详情</p>
     </header>
-    <div class="containt" style="margin-top:53px">
+    <div class="containt" style="margin-top:38px">
       <Head></Head>
       <!-- 支付成功 -->
       <div class="success" v-if="successful">

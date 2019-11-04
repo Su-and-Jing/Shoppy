@@ -4,7 +4,7 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">确认投保</p>
     </header>
-    <div class="containt-insured" style="margin-top:53px">
+    <div class="containt-insured" style="margin-top:38px">
       <van-collapse v-model="activeNames">
         <van-collapse-item class="group" title="人员信息" name="owner">
           <div

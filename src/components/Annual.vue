@@ -69,32 +69,8 @@ export default {
 </script>
 
 <style lang="scss"  scope>
+@import "/style/head.scss";
 .contain {
-  width: 100%;
-  header {
-    width: 100%;
-    height: 53px;
-    background: #fff;
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    border-bottom: 1px solid #e5e5e5;
-    .iconLeft {
-      padding: 15px 0 0 15px;
-    }
-    .Vetit {
-      width: 100%;
-      line-height: 53px;
-      text-align: center;
-      margin: 0 60px 0 0;
-      font-size: 17px;
-      font-weight: 500;
-      color: rgba(51, 51, 51, 1);
-    }
-  }
-
   .content {
     width: 100%;
     // margin-top:53px;

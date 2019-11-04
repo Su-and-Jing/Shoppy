@@ -68,7 +68,7 @@ export default {
            var imgUrl = data.data;
       console.log(imgUrl)
          this.$router.push({
-          name: "payment",
+          name: "payment2",
           params: {
             imgUrl: imgUrl
           }
@@ -126,35 +126,12 @@ export default {
   }}
 </script> 
 <style lang="scss" scope>
-  header{
-width: 100%;
- height:53px;
-   background: #fff;
-            display: flex;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index:1;
-            border-bottom: 1px solid #E5E5E5;
-
-            .iconLeft{
-                padding: 13px 0 0 15px;
-            }
-            .Vetit{
-                width:100%;
-                line-height: 53px;
-                text-align: center;
-                margin: 0 20px 0 0;
-                font-size:17px;
-                font-weight:500;
-                color:rgba(51,51,51,1);
-            }
-        }
+@import "/style/head.scss";
 .title{
-    margin-top: 53px;
+    margin-top: 38px;
     background: #E5EEFF;
     text-align: center;
-    height: 40px;
+    height: 38px;
     width: 110%;
 font-size:13px;
 font-weight:400;
@@ -168,7 +145,7 @@ padding: 0 !important;
   width: 100%;
   height: 100vh;
   padding: 0 15px;
-  padding-top: 53px;
+  padding-top:38px;
 }
 .code-btn {
   color: #568efc;

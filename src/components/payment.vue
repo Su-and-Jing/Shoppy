@@ -4,7 +4,7 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">华农统一收费</p>
     </header>
-    <div class="containt-pay" style="margin-top:53px">
+    <div class="containt-pay" style="margin-top:38px">
       <Head :parent-msg="this.list"></Head>
       <div class="main">
         <p class="mount-wrap">

@@ -1,6 +1,6 @@
 header {
     width: 100%;
-    height: 53px;
+    height: 38px;
     // margin-bottom: 53px !important;
     background: #fff;
     display: flex;
@@ -10,13 +10,14 @@ header {
     z-index: 1;
     border-bottom: 1px solid #e5e5e5;
     .iconLeft {
-      padding: 15px 0 0 15px;
+      padding: 8px 0 0 8px;
     }
     .Vetit {
       width: 100%;
-      line-height: 53px;
+      line-height: 38px;
+      height: 38px;
       text-align: center;
-      margin: 0 60px 0 0;
+      margin: 0 60px 0 30px;
       font-size: 17px;
       font-weight: 500;
       color: rgba(51, 51, 51, 1);

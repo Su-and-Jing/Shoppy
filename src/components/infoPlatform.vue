@@ -4,7 +4,7 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">平台信息参考</p>
     </header>
-    <div class="info-containt" style="margin-top:53px">
+    <div class="info-containt" style="margin-top:38px">
       <van-tabs
         v-model="active"
         color="#568EFC"

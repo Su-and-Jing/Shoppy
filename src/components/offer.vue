@@ -4,7 +4,7 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">车险报价单</p>
     </header>
-    <div class="containt" style="margin-top:53px">
+    <div class="containt" style="margin-top:38px">
     <Header :message="headMsg"></Header>
     <div class="content">
       <div class="item">
@@ -59,8 +59,8 @@
           </div>-->
           <div class="tr" v-for="(item,index) in this.kindList" :key="index">
             <span class="td span3">{{item.kindName}}</span>
-            <span class="td span2">{{item.coveragePremium}}</span>
             <span class="td span2">{{item.amount}}</span>
+            <span class="td span2">{{item.coveragePremium}}</span>
             <span class="td span2">
               <span class="reg-fran" v-show="notDeductibleFlag">不计免赔</span>
               <!-- <span>175.65元</span> -->

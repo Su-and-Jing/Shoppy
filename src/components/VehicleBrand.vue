@@ -96,6 +96,7 @@ export default {
 </script>
 
 <style lang="scss" scope>
+@import "/style/head.scss";
      body,html{
         width: 100%;
         height: 100%;
@@ -105,29 +106,29 @@ export default {
     .Vehicle{
         width:100%;
         
-        header{
-            width: 100%;
-            height:53px;
-            background: #fff;
-            display: flex;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index:1;
-            border-bottom: 1px solid #E5E5E5;
-            .iconLeft{
-                padding: 15px 0 0 15px;
-            }
-            .Vetit{
-                width:100%;
-                line-height: 53px;
-                text-align: center;
-                margin: 0 60px 0 0;
-                font-size:17px;
-                font-weight:500;
-                color:rgba(51,51,51,1);
-            }
-        }
+        // header{
+        //     width: 100%;
+        //     height:53px;
+        //     background: #fff;
+        //     display: flex;
+        //     position: fixed;
+        //     top: 0;
+        //     left: 0;
+        //     z-index:1;
+        //     border-bottom: 1px solid #E5E5E5;
+        //     .iconLeft{
+        //         padding: 15px 0 0 15px;
+        //     }
+        //     .Vetit{
+        //         width:100%;
+        //         line-height: 53px;
+        //         text-align: center;
+        //         margin: 0 60px 0 0;
+        //         font-size:17px;
+        //         font-weight:500;
+        //         color:rgba(51,51,51,1);
+        //     }
+        // }
 
         .contain{
             // flex:1;

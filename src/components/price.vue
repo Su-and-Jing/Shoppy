@@ -4,7 +4,7 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">确认报价</p>
     </header>
-    <div class="price" style="margin-top:53px;">
+    <div class="price" style="margin-top:38px;">
       <div @change="changeHandle">
         <!-- 人工核保意见 -->
         <div class="art-Nuclear container" v-show="UWNotionShow">
@@ -1578,6 +1578,9 @@ export default {
       }
     },
     quick1() {
+      this.$refs.confirmSale.innerHTML = "重新算价";
+      this.$refs.confirmSale.style.width = "150px";
+      this.$refs.confirmSale.style.background = "#568efc";
       this.bussjiActive = !this.bussjiActive;
       if (this.bussjiActive == true) {
         this.busRegisterDate = new Date();
@@ -1598,6 +1601,9 @@ export default {
       }
     },
     quick2() {
+      this.$refs.confirmSale.innerHTML = "重新算价";
+      this.$refs.confirmSale.style.width = "150px";
+      this.$refs.confirmSale.style.background = "#568efc";
       this.islijiActive = !this.islijiActive;
       // this.$refs.button2.color = "#3F7CF5";
       if (this.islijiActive == true) {
