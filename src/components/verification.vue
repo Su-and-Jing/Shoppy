@@ -56,25 +56,24 @@ export default {
   },
   methods: {
       //验证身份
-      confirmHandle(){
-          const data = RealCode({
+     async confirmHandle(){
+          const data =await RealCode({
         mobile: this.phone,
         code: this.sms,
         token: this.token,
         orderNo:this.orderNo
       });
+      console.log(data)
       if(data.state == '200'){
-        console.log(data)
-           var imgUrl = data.data;
-      console.log(imgUrl)
+        var res = data.data;
          this.$router.push({
           name: "payment2",
           params: {
-            imgUrl: imgUrl
+            res: res
           }
         });
       }else{
-          this.$toast.fail("失败")
+          this.$toast(data.message)
       }
       },
       //发送验证码
@@ -104,7 +103,7 @@ export default {
         this.setCodeInterval();
      
       }else{
-        this.$toast("失败")
+        this.$toast(data.message)
       }
     },
     // 发送验证码

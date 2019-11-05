@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-      zhc:true,
+      zhc: true,
       username: "44000020",
       passwd: "0000",
       phone: "13910653201",
@@ -71,15 +71,16 @@ export default {
       currentType: "1",
       timer: null,
       times: 60,
-      interval: 1000
+      interval: 1000,
+      res: ""
     };
   },
   watch: {
     showLogin(val) {
       this.showPopup = val;
-      console.log(this.showPopup)
-      if (this.showPopup == true){
-        this.zhc = true
+      console.log(this.showPopup);
+      if (this.showPopup == true) {
+        this.zhc = true;
       }
     }
   },
@@ -101,8 +102,12 @@ export default {
       });
       // console.log(data);
       if (data.state === "200") {
-        this.$emit("closeLogin");
+        this.res = data;
+        this.$emit("closeLogin", this.res);
         window.sessionStorage.setItem("token", data.data.token);
+        window.sessionStorage.setItem("carVerifyCode", data.data.carVerifyCode);
+        window.sessionStorage.setItem("provinceName", data.data.provinceName);
+        window.sessionStorage.setItem("carPlateSimple", data.data.carPlateSimple);
       } else {
         this.$toast.fail("手机号或验证码错误");
       }
@@ -112,10 +117,14 @@ export default {
       window.sessionStorage.removeItem("token");
       const data = await login({ userCode: this.username, pwd: this.passwd });
       if (data.state === "200") {
-        this.$emit("closeLogin");
+        this.res = data;
+        this.$emit("closeLogin", this.res);
+        console.log(data.data);
+
         window.sessionStorage.setItem("token", data.data.token);
         window.sessionStorage.setItem("carVerifyCode", data.data.carVerifyCode);
         window.sessionStorage.setItem("provinceName", data.data.provinceName);
+        window.sessionStorage.setItem("carPlateSimple", data.data.carPlateSimple);
       } else {
         this.$toast.fail("用户名或密码错误");
       }

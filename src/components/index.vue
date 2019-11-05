@@ -55,7 +55,7 @@
             <div class="license-number van-hairline--bottom">
               <van-field
                 class="city border-no"
-                v-model="city"
+                v-model="carPlateSimple"
                 readonly
                 label="车牌号"
                 maxlength="6"
@@ -64,21 +64,17 @@
               />
               <van-field
                 class="plate-number border-no"
-                v-model="plateNo"
-                maxlength="8"
+                v-model="plateNumber"
+                maxlength="6"
                 placeholder="车牌号"
                 :disabled="noLicenseFlag==true"
+                @input="carPaiNum"
               />
               <van-checkbox class="checkbox border-no" v-model="noLicenseFlag" @click="bbb">未上牌</van-checkbox>
             </div>
-            <van-field
-              v-model="carlei"
-              readonly
-              label="号牌种类"
-              right-icon="arrow-down"
-              v-if="!noLicenseFlag"
-            />
-              <!-- @click="choosePopup(carleiList, 'carlei')" -->
+            <van-field v-model="carlei" readonly label="号牌种类" v-if="!noLicenseFlag" />
+            <!-- right-icon="arrow-down" -->
+            <!-- @click="choosePopup(carleiList, 'carlei')" -->
             <van-field
               label="车架号"
               clearable
@@ -98,45 +94,22 @@
               @input="faNum(engine)"
               clearable
             />
-            <van-field
-              v-model="vehicle"
-              readonly
-              label="车辆类型"
-              right-icon="arrow-down"
-            />
-              <!-- @click="choosePopup(vehicleList, 'vehicle')" -->
-            <van-field
-              v-if="!noLicenseFlag"
-              v-model="usingNature"
-              readonly
-              label="使用性质"
-              right-icon="arrow-down"
-            />
-              <!-- @click="choosePopup(usingNatureList, 'usingNature')" -->
-            <van-field
-              readonly
-              v-model="masterProperties"
-              label="车主性质"
-              right-icon="arrow-down"
-            />
-              <!-- @click="choosePopup(masterPropertiesList, 'masterProperties')" -->
+            <van-field v-model="vehicle" readonly label="车辆类型" />
+            <!-- right-icon="arrow-down" -->
+            <!-- @click="choosePopup(vehicleList, 'vehicle')" -->
+            <van-field v-if="!noLicenseFlag" v-model="usingNature" readonly label="使用性质" />
+            <!-- right-icon="arrow-down" -->
+            <!-- @click="choosePopup(usingNatureList, 'usingNature')" -->
+            <van-field readonly v-model="masterProperties" label="车主性质" />
+            <!-- right-icon="arrow-down" -->
+            <!-- @click="choosePopup(masterPropertiesList, 'masterProperties')" -->
 
             <van-field label="车主姓名" clearable placeholder="请输入车主姓名" v-model="name" />
-            <van-field
-              v-model="certificateType"
-              readonly
-              label="车主证件类型"
-              right-icon="arrow-down"
-              @click="choosePopup(certificateList, 'certificateType')"
-              v-show="type == 1"
-            />
-            <van-field
-              v-model="certificateType2"
-              v-show="type == 2"
-              readonly
-              label="车主证件类型"
-              right-icon="arrow-down"
-            />
+            <van-field v-model="certificateType" readonly label="车主证件类型" v-show="type == 1" />
+            <!-- right-icon="arrow-down" -->
+            <!-- @click="choosePopup(certificateList, 'certificateType')" -->
+            <van-field v-model="certificateType2" v-show="type == 2" readonly label="车主证件类型" />
+            <!-- right-icon="arrow-down" -->
             <van-field
               label="证件号码"
               maxlength="18"
@@ -261,7 +234,7 @@ export default {
       // 是否上牌
       noLicenseFlag: false,
       // 车辆所属城市
-      city: "京",
+      carPlateSimple: "",
       cityList: [
         "京",
         "津",
@@ -326,9 +299,11 @@ export default {
       //车主性质
       type: "1",
       masterProperties: "个人",
+      res: "",
+      plateNumber: ""
       // masterPropertiesList: [
-        // { code: "1", text: "个人" }
-        // { code: "2", text: "机构" }
+      // { code: "1", text: "个人" }
+      // { code: "2", text: "机构" }
       // ]
     };
   },
@@ -336,7 +311,7 @@ export default {
     Login,
     Institution
   },
-  mounted() {
+  created() {
     if (
       !(
         navigator.userAgent &&
@@ -348,18 +323,18 @@ export default {
       this.$router.push({ path: "/indexPc" });
     }
     var token = window.sessionStorage.getItem("token");
+    console.log(token);
     if (token) {
       this.onLogin = true;
-      console.log(1111111111);
       this.carVerifyCode = window.sessionStorage.getItem("carVerifyCode");
       this.provinceName = window.sessionStorage.getItem("provinceName");
-      console.log(this.carVerifyCode);
+      this.carPlateSimple = window.sessionStorage.getItem("carPlateSimple");
     }
   },
   methods: {
     //选择城市
     country(item) {
-      this.city = item;
+      this.carPlateSimple = item;
       this.showPopupCity = false;
     },
     // plateNo(value) {
@@ -377,6 +352,18 @@ export default {
         this.VIN = value;
       } else {
         this.VIN = "";
+      }
+    },
+    carPaiNum(value) {
+      value = value.toUpperCase();
+      var q = new RegExp(/[^]/g);
+      value = value.match(q);
+      if (value !== null) {
+        value = value.join("");
+        value = value.replace(/[^\w\.\/]/gi, "");
+        this.plateNumber = value;
+      } else {
+        this.plateNumber = "";
       }
     },
     faNum(value) {
@@ -404,7 +391,8 @@ export default {
     //调用报价接口
     async priceHandle() {
       window.sessionStorage.getItem("token");
-
+      this.plateNo = this.carPlateSimple + this.plateNumber;
+      console.log(this.plateNo);
       var car = {};
       car.plateType = this.carleiCode;
       car.plateNo = this.plateNo;
@@ -541,14 +529,20 @@ export default {
       this.motorUsageTypeCode = this.usingNatureList[values].code;
     },
     // 关闭登录框 登录成功
-    async closeLogin() {
+    async closeLogin(res) {
       this.onLogin = true;
       this.showInsitution = true;
       this.showLoginPop = false;
       var token = window.sessionStorage.getItem("token");
+      console.log(token);
       if (token) {
-        this.carVerifyCode = window.sessionStorage.getItem("carVerifyCode");
-        this.provinceName = window.sessionStorage.getItem("provinceName");
+        // alert("eyruwir")
+        this.res = res;
+        console.log(this.res);
+        // this.carVerifyCode =data.carVerifyCode
+        this.provinceName = this.res.data.provinceName;
+        this.carPlateSimple = this.res.data.carPlateSimple;
+        this.carVerifyCode = this.res.data.carVerifyCode;
       }
     }
   }

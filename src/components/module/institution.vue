@@ -166,14 +166,14 @@ export default {
             agentCode: this.agency,
             handlerCode: this.Salesma,
             producerCode: this.channelCode,
-            agreementNo: this.agreementNo,
-            agentPermitNo: this.agentPermitNo,
-            agentName: this.interCompany,
-            handlerName: this.maintPersonnel,
-            producerName: this.channelType,
-            loginComName: this.registrationOrgan,
-            comName: this.ownershipInstitution,
-            defendName: this.salesman
+            // agreementNo: this.agreementNo,
+            // agentPermitNo: this.agentPermitNo,
+            // agentName: this.interCompany,
+            // handlerName: this.maintPersonnel,
+            // producerName: this.channelType,
+            // loginComName: this.registrationOrgan,
+            // comName: this.ownershipInstitution,
+            // defendName: this.salesman
           });
           console.log(data);
           if (data.state === "200") {
@@ -249,14 +249,14 @@ export default {
             agentCode: this.agency,
             handlerCode: this.Salesma,
             producerCode: this.channelCode,
-            agreementNo: this.agreementNo,
-            agentPermitNo: this.agentPermitNo,
-            agentName: this.interCompany,
-            handlerName: this.maintPersonnel,
-            producerName: this.channelType,
-            loginComName: this.registrationOrgan,
-            comName: this.ownershipInstitution,
-            defendName: this.salesman
+            // agreementNo: this.agreementNo,
+            // agentPermitNo: this.agentPermitNo,
+            // agentName: this.interCompany,
+            // handlerName: this.maintPersonnel,
+            // producerName: this.channelType,
+            // loginComName: this.registrationOrgan,
+            // comName: this.ownershipInstitution,
+            // defendName: this.salesman
           });
           console.log(data);
           if (data.state === "200" ) {
@@ -330,14 +330,14 @@ export default {
         agentCode: this.agency,
         handlerCode: this.Salesma,
         producerCode: this.channelCode,
-        agreementNo: this.agreementNo,
-        agentPermitNo: this.agentPermitNo,
-        agentName: this.interCompany,
-        handlerName: this.maintPersonnel,
-        producerName: this.channelType,
-        loginComName: this.registrationOrgan,
-        comName: this.ownershipInstitution,
-        defendName: this.salesman
+        // agreementNo: this.agreementNo,
+        // agentPermitNo: this.agentPermitNo,
+        // agentName: this.interCompany,
+        // handlerName: this.maintPersonnel,
+        // producerName: this.channelType,
+        // loginComName: this.registrationOrgan,
+        // comName: this.ownershipInstitution,
+        // defendName: this.salesman
       });
       console.log(2);
       if (data.state === "200") {
@@ -502,14 +502,14 @@ export default {
         agentCode: this.agency,
         handlerCode: this.Salesma,
         producerCode: this.channelCode,
-        agreementNo: this.agreementNo,
-        agentPermitNo: this.agentPermitNo,
-        agentName: this.interCompany,
-        handlerName: this.maintPersonnel,
-        producerName: this.channelType,
-        loginComName: this.registrationOrgan,
-        comName: this.ownershipInstitution,
-        defendName: this.salesman,
+        // agreementNo: this.agreementNo,
+        // agentPermitNo: this.agentPermitNo,
+        // agentName: this.interCompany,
+        // handlerName: this.maintPersonnel,
+        // producerName: this.channelType,
+        // loginComName: this.registrationOrgan, 
+        // comName: this.ownershipInstitution,
+        // defendName: this.salesman,
         submit: this.submit
       });
       if (data.state === "200") {

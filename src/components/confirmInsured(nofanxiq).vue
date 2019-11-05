@@ -23,31 +23,6 @@
               @click="checkPicker('车主的证件类型',dentifyList)"
             />
             <van-field v-model="one.identifyNo" label="身份证号" placeholder="请输入身份证号" />
-            <div class="Zjdate">
-              <div class="datetit">证件有效期</div>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="one.cervalidDate"
-                @click="times=true"
-              ></van-field>
-              <van-field
-                class="field"
-                readonly
-                right-icon="notes-o"
-                v-model="one.creendDate"
-                @click="times=true"
-              ></van-field>
-            </div>
-            <van-popup v-model="times" position="bottom">
-              <van-datetime-picker
-                @confirm="confirmDate"
-                @cancel="times=false"
-                v-model="currentDate"
-                type="date"
-              />
-            </van-popup>
             <van-field v-model="one.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
             <Area :current-area="OneAddr,OneAddrCode" @checkedArea="checkedArea1" label="地址" />
             <van-field
@@ -58,26 +33,16 @@
               autosize
               placeholder="请填写具体路名、门牌地址"
             />
-
             <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
-            <van-field
-              v-model="OneOccupation"
-              readonly
-              label="职业"
-              right-icon="arrow-down"
-              @click="checkPicker('OneOccupation',occupationList)"
-            />
           </van-cell-group>
           <!-- 投保人---个人 -->
           <van-cell-group class="item">
             <div class="check-wrap">
               <van-field value="同车主" label="投保人" readonly />
               <van-switch v-model="insuredOwner" size="24px" />
-            
             </div>
-
             <van-cell-group v-show="!insuredOwner">
-              <van-field v-model="two.name" label="投保人" placeholder="请输入投保人姓名" />
+              <van-field v-model="two.name" label="车主姓名" placeholder="请输入车主姓名" />
               <van-field
                 v-model="dentify"
                 readonly
@@ -86,28 +51,6 @@
                 @click="checkPicker('dentify',dentifyList)"
               />
               <van-field v-model="two.identifyNo" label="身份证号" placeholder="请输入身份证号" />
-
-              <div class="Zjdate">
-                <div class="datetit">证件有效期</div>
-                <van-field
-                  class="field"
-                  readonly
-                  right-icon="notes-o"
-                  v-model="two.cervalidDate"
-                  @click="times2=true"
-                ></van-field>
-                <van-field class="field" readonly right-icon="notes-o" v-model="two.creendDate"></van-field>
-              </div>
-
-              <van-popup v-model="times2" position="bottom">
-                <van-datetime-picker
-                  @confirm="confirmDate2"
-                  @cancel="times2=false"
-                  v-model="currentDate"
-                  type="date"
-                />
-              </van-popup>
-
               <van-field v-model="two.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
               <Area :current-area="TwoAddr,TwoAddrCode" @checkedArea="checkedArea(3)" label="地址" />
 
@@ -120,13 +63,6 @@
                 placeholder="请填写具体路名、门牌地址"
               />
               <van-field v-model="two.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
-              <van-field
-                v-model="TwoOccupation"
-                readonly
-                label="职业"
-                right-icon="arrow-down"
-                @click="checkPicker('TwoOccupation',occupationList)"
-              />
             </van-cell-group>
           </van-cell-group>
           <!-- 被保人---个人 -->
@@ -134,11 +70,13 @@
             <div class="check-wrap">
               <van-field value="同车主" label="被保险人" readonly />
               <van-switch v-model="assuredOwner" size="24px" />
-           
+              <div>
+                <span class="every-btn">{{oneEvery}}</span>
+                <van-icon name="arrow-down" @click="checkPicker('oneEvery',oneEveryList)"></van-icon>
+              </div>
             </div>
-
-            <van-cell-group v-show="!assuredOwner">
-              <van-field v-model="three.name" label="被保险人" placeholder="请输入被保险人姓名" />
+            <van-cell-group v-show="!assuredOwner && this.type=='1'">
+              <van-field v-model="three.name" label="车主姓名" placeholder="请输入车主姓名" />
               <van-field
                 v-model="dentify"
                 readonly
@@ -147,18 +85,6 @@
                 @click="checkPicker('dentify',dentifyList)"
               />
               <van-field v-model="three.identifyNo" label="身份证号" placeholder="请输入身份证号" />
-
-              <div class="Zjdate">
-                <div class="datetit">证件有效期</div>
-                <van-field
-                  class="field"
-                  readonly
-                  right-icon="notes-o"
-                  v-model="three.cervalidDate"
-                  @click="times3=true"
-                ></van-field>
-                <van-field class="field" readonly right-icon="notes-o" v-model="three.creendDate"></van-field>
-              </div>
               <van-popup v-model="times3" position="bottom">
                 <van-datetime-picker
                   @confirm="confirmDate3"
@@ -189,7 +115,34 @@
                 right-icon="arrow-down"
                 @click="checkPicker('occupation',occupationList)"
               />
-            </van-cell-group>   
+            </van-cell-group>
+            <!-- 机构 -->
+            <van-cell-group v-show="!assuredOwner && this.type=='2'" class="item">
+              <van-field v-model="three.name" label="客户名称" placeholder="华农财产" />
+              <van-field
+                v-model="dentify2"
+                readonly
+                label="证件类型"
+                right-icon="arrow-down"
+                @click="checkPicker('dentify2',dentifyList2)"
+              />
+              <!-- @click="checkPicker('dentify',owner.dentifyType)" -->
+              <van-field v-model="three.identifyNo" label="证件号码" placeholder="请输入身份证号" />
+              <van-field v-model="three.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
+              <Area
+                :current-area="ThreeAddr,ThreeAddrCode"
+                @checkedArea="checkedArea(5)"
+                label="地址"
+              />
+              <van-field
+                label
+                type="textarea"
+                v-model="three.addr"
+                rows="1"
+                autosize
+                placeholder="请填写具体路名、门牌地址"
+              />
+              <van-field v-model="three.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
             </van-cell-group>
           </van-cell-group>
         </van-collapse-item>
@@ -326,39 +279,28 @@ export default {
       // 订单号:''
       orderNo: "",
       activeNames: ["owner", "upload", "access"],
-      OneOccupation: "工人",
       occupation: "",
-      TwoOccupation: "工人",
-      occupationList: [
-        { code: "000101", text: "公务员．职员" },
-        { code: "0402005", text: "工人" },
-        { code: "1201002", text: "教师" },
-        { code: "2103", text: "个体经营员" },
-        { code: "210302", text: "无固定职业人员" },
-        { code: "2105", text: "现役军人" },
-        { code: "31", text: "学生" },
-        { code: "410001", text: "文员白领" },
-        { code: "410002", text: "农民" },
-        { code: "410003", text: "公共服务" },
-        { code: "410004", text: "专业技术人员" },
-        { code: "410005", text: "商业、服务业人员" },
-        { code: "410006", text: "生产、运输人员" },
-        { code: "410007", text: "其他从业人员" }
-      ],
+
       // 车主
       dentify: "身份证",
       dentifyList: [
-        { code: "01", text: "身份证" },
-        { code: "03", text: "护照" },
-        { code: "553", text: "外国人永久拘留身份证" },
+        { code: "01", text: "身份证" }
+        // { code: "03", text: "护照" },
+        // { code: "553", text: "外国人永久拘留身份证" },
+        // { code: "10", text: "组织机构证" },
+        // { code: "B", text: "统一信用证" }
+      ],
+      dentify2: "组织机构证",
+      dentifyList2: [
+        // { code: "01", text: "身份证" }
+        // { code: "03", text: "护照" },
+        // { code: "553", text: "外国人永久拘留身份证" },
         { code: "10", text: "组织机构证" },
         { code: "B", text: "统一信用证" }
       ],
       type: "",
       role: "",
       owner: {
-        // 证件有效期
-        cervalidDate: "2019-09-19",
         creendDate: "",
         cardDate: "",
         name: "",
@@ -377,17 +319,10 @@ export default {
         provinceValue: "",
         // 区code
         district: "",
-        districtValue: "",
-        //职业
-        // 职业code
-        job: "",
-
-       
+        districtValue: ""
       },
       // 投保人
       insured: {
-        // 证件有效期
-        cervalidDate: "2019-09-19",
         creendDate: "",
         cardDate: "",
         name: "",
@@ -408,10 +343,7 @@ export default {
         provinceValue: "",
         // 区code
         district: "",
-        districtValue: "",
-        //职业
-        // 职业code
-        job: "",
+        districtValue: ""
       },
       // 被保险人
       assured: {
@@ -445,7 +377,9 @@ export default {
         otherImgs: []
       },
       //车主性质
-      type: "",
+      oneEvery: "个人",
+      type: "1",
+      oneEveryList: [{ code: 1, text: "个人" }, { code: 2, text: "机构" }],
       insuredOwner: true,
       assuredOwner: true,
       showPopup: false,
@@ -508,49 +442,50 @@ export default {
         }
       });
     },
-    // 确定选择
-    // 车主日期
-    confirmDate(picker) {
-    
-      if (this.one.role == "3") {
-
-        let date1 = dayjs(picker).format("YYYY-MM-DD");
-        // 车主
-        this.one.cervalidDate = date1;
-        console.log(date1, "1111111111");
-        let dayy1 = new Date(this.one.cervalidDate); //日期
-        dayy1.setFullYear(dayy1.getFullYear() + 20);
-        let oneDate = dayjs(dayy1).format("YYYY-MM-DD");
-        this.one.creendDate = oneDate;
-      }
-      this.times = false;
-    },
-    //    投保人日期
-    confirmDate2(picker) {
-      if (this.two.role == "1") {
-        let date2 = dayjs(picker).format("YYYY-MM-DD");
-        // 投保人
-        this.two.cervalidDate = date2;
-        let dayy2 = new Date(this.two.cervalidDate); //日期
-        dayy2.setFullYear(dayy2.getFullYear() + 20);
-        let twoDate = dayjs(dayy2).format("YYYY-MM-DD");
-        this.two.creendDate = twoDate;
-      }
-      this.times2 = false;
-    },
     //  被保人日期
     confirmDate3(picker) {
       if (this.three.role == "2") {
         let date3 = dayjs(picker).format("YYYY-MM-DD");
         this.three.cervalidDate = date3;
         let dayy3 = new Date(this.three.cervalidDate);
-        console.log(dayy3)
         dayy3.setFullYear(dayy3.getFullYear() + 20);
         let threeDate = dayjs(dayy3).format("YYYY-MM-DD");
         this.three.creendDate = threeDate;
       }
       this.times3 = false;
     },
+
+    // 被保人 经办人证件日期
+    confirmDate8(picker) {
+      if (this.three.role == "2") {
+        let date8 = dayjs(picker).format("YYYY-MM-DD");
+        // 投保人
+        this.three.chargeIdentifyDate = date8;
+        let dayy8 = new Date(this.three.chargeIdentifyDate); //日期
+        dayy8.setFullYear(dayy8.getFullYear() + 20);
+        let eigDate = dayjs(dayy8).format("YYYY-MM-DD");
+        this.three.chargeIdentifyEndDate = eigDate;
+      }
+      this.times8 = false;
+    },
+
+    //    被保人  机构营业执照日期
+    confirmDate9(picker) {
+      if (this.three.role == "2") {
+        let date9 = dayjs(picker).format("YYYY-MM-DD");
+        // 投保人
+        this.three.corpIdentifyStartDate = date9;
+        let dayy9 = new Date(this.three.corpIdentifyStartDate); //日期
+        dayy9.setFullYear(dayy9.getFullYear() + 20);
+        let nineDate = dayjs(dayy9).format("YYYY-MM-DD");
+        this.three.corpIdentifyEndDate = nineDate;
+      }
+      this.times9 = false;
+    },
+
+    // showPopupDate(name){
+    //     this.times=true
+    // },
     // 确认报价
     async confimHandle() {
       var orderNo = this.$route.query.orderNo;
@@ -644,7 +579,6 @@ export default {
     },
     async pay() {
       var orderNo = this.$route.query.orderNo;
-      console.log(orderNo)
       const data = await apply(orderNo);
       console.log(orderNo);
       if (data.state === "200") {
@@ -654,8 +588,7 @@ export default {
         this.$router.push({
           name: "payment",
           params: {
-            imgUrl: imgUrl,
-            orderNo:orderNo
+            imgUrl: imgUrl
           }
         });
       }
@@ -680,20 +613,6 @@ export default {
         this[this.currentPop] = picker;
         console.log(picker);
       }
-      //职业
-      for (var i = 0; i < this.occupationList.length; i++) {
-        if (this.occupationList[i].text === picker.text) {
-          if (this.one.role == "3") {
-            console.log();
-            this.OneOccupation = this.occupationList[i].text;
-            this.one.job = this.occupationList[i].code;
-          }
-          if (this.two.role == "1") {
-            this.TwoOccupation = this.occupationList[i].text;
-            this.two.job = this.occupationList[i].code;
-          }
-        }
-      }
       //证件类型
       for (var i = 0; i < this.dentifyList.length; i++) {
         if (this.dentifyList[i].text === picker.text) {
@@ -702,17 +621,21 @@ export default {
           console.log(this.owner.dentifyType);
         }
       }
-      //国籍
-      for (var i = 0; i < this.chargeNationalityList.length; i++) {
-        if (this.chargeNationalityList[i].text === picker.text) {
-          this.chargeNationality = this.chargeNationalityList[i].text;
-          this.owner.countryCode = this.chargeNationalityList[i].code;
-          console.log(this.owner.countryCode);
+      //车主性质
+      for (var i = 0; i < this.oneEveryList.length; i++) {
+        if (this.oneEveryList[i].text === picker.text) {
+          this.oneEvery = this.oneEveryList[i].text;
+          // this.oneEvery2 = this.oneEveryList2[i].text;
+          this.type = this.oneEveryList[i].code;
+
+          console.log(this.type);
+          if (this.type == "1") {
+            aaaa.displ();
+          } else {
+            aaaa.displ2();
+          }
         }
       }
-
-      //车主性质
- 
       for (var i = 0; i < this.insurancePolicyList.length; i++) {
         if (this.insurancePolicyList[i].text === picker.text) {
           this.insurancePolicy = this.insurancePolicyList[i].text;

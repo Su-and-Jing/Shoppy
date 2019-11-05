@@ -82,6 +82,7 @@ export default {
       }
     },
     async handle() {
+      console.log(this.orderNo)
       const data = await OfferPage(this.orderNo);
       if (data.state === "200") {
         this.sumPermium = data.data.sumPermium;

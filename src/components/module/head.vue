@@ -21,12 +21,12 @@
           </p>
           <p style="padding-top:8px;" class="pre">
             <span>保费：{{item.premium}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <!-- <span v-show="item.riskCode == '507'">车船税：</span> -->
+            <!-- <span class="tax">车船税：</span> -->
+            <span v-show="item.riskCode == '507'">车船税：</span>
           </p>
           <!-- <p class="insurance-no">保单号：W20175609988</p> -->
         </div>
       </div>
-      <span class="tax">车船税：{{this.parentMsg.tax.sumTax}}</span>
       <!-- <span class="tax2">车船税：{{this.parentMsg.tax.sumTax}}</span> -->
     </div>
   </div>

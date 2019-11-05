@@ -490,7 +490,7 @@
             <van-divider />
             <div class="coverage">
               <span>保额</span>
-              <input type="text" v-model="carAmount" />
+              <input type="text" v-model="carAmount" @blur="handleT" />
               <span class="money">￥{{carPremium}}</span>
               <span
                 style="float:left;color:red;font-size:12px"
@@ -733,6 +733,7 @@ import {
 export default {
   data() {
     return {
+      count: "0",
       jf: "",
       xj: "",
       ld: "",
@@ -1362,6 +1363,12 @@ export default {
     }
   },
   methods: {
+    handleT() {
+      this.carAmount = Number(this.carAmount);
+      if (this.carAmount < this.minAmount || this.carAmount > this.maxAmount) {
+        this.$toast("请输入区间额度");
+      }
+    },
     businessBtn() {
       if (!this.bussines == false) {
         this.carChecked = false;
@@ -1440,7 +1447,6 @@ export default {
       this.isActives = true;
       this.$refs.confirmSale.innerHTML = "重新算价";
       this.$refs.confirmSale.style.width = "150px";
-
       if (this.second == "不投保" && this.secondChecked == true) {
         this.$toast(
           "此险为第三者责任险（主险）的附加险，请投保第三者责任险（主险）再选择此险！"
@@ -1673,6 +1679,8 @@ export default {
     },
     //渲染页面
     handle() {
+      // this.count++;
+      // console.log(this.count)
       console.log(2222222);
       var data = JSON.parse(sessionStorage.getItem("data"));
       console.log(data);
@@ -1850,7 +1858,9 @@ export default {
             this.carSwitch = true;
             this.carChecked = true;
             this.carPremium = data.data.kindList[i].coveragePremium;
+
             this.carAmount = data.data.kindList[i].amount;
+            console.log(this.carAmount);
             this.maxAmount = data.data.maxAmount;
             this.minAmount = data.data.minAmount;
           }

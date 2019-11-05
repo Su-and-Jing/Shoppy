@@ -78,16 +78,16 @@
       </div>
       <div class="instr">
         <div class="item">
-          <span class="label" style="font-size:12px">商业保险费</span>
-          <span style="font-size:12px">{{this.insurance}}元</span>
+          <span class="label" style="font-size:8px">商业保险费</span>
+          <span style="font-size:8px">{{this.insurance}}元</span>
         </div>
         <div class="item">
-          <span class="label" style="font-size:12px">交强险保费</span>
-          <span style="font-size:12px">{{this.compulsory}}元</span>
+          <span class="label" style="font-size:8px">交强险保费</span>
+          <span style="font-size:8px">{{this.compulsory}}元</span>
         </div>
         <div class="item">
-          <span class="label" style="font-size:12px">车船税税款</span>
-          <span style="font-size:12px">{{this.sumTax}}元</span>
+          <span class="label" style="font-size:8px">车船税税款</span>
+          <span style="font-size:8px">{{this.sumTax}}元</span>
         </div>
       </div>
     </div>
@@ -98,7 +98,7 @@
     <input type="text" :value="copycode" id="copy" />
 
     <div
-      class="remind" style="font-size:12px"
+      class="remind" style="font-size:8px"
     >友情提示：此报价试算结果为根据您提供的各项信息生成，生成时间为{{this.createDate }}。正式投保时的报价结果可能会根据车辆、车主和保险方案等的情况产生变化。此报价试算结果仅供参考，您投保时需要支付的保费及税款等均应当以正式投保时的报价结果为准。</div>
     <!-- 复制链接 -->
     <van-popup v-model="showShare" class="popup-wrap" :close-on-click-overlay="false">
@@ -277,8 +277,8 @@ export default {
     padding: 0 16px;
     .item {
       padding: 2px 0;
-      font-size: 12px;
-      line-height: 20px;
+      font-size: 8px;
+      line-height: 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -302,21 +302,21 @@ export default {
   }
   .business-risks {
     .title {
-      font-size: 12px;
-      line-height: 30px;
+      font-size: 8px;
+      line-height: 22px;
       color: #4a4a4a;
       font-weight: 600;
       padding-left: 16px;
     }
     .group {
-      font-size: 12px;
+      font-size: 8px;
       color: #4a4a4a;
-      line-height: 20px;
+      line-height: 12px;
       .t-head {
         border-top: 1px solid #f0f2f4;
         display: flex;
         text-align: center;
-        padding: 5px 16px;
+        padding: 5px 8px;
       }
       .span3 {
         flex: 31% 0;
@@ -353,16 +353,16 @@ export default {
     margin-bottom: 16px;
     .total {
       text-align: center;
-      padding: 10px 0;
+      padding: 6px 0;
       display: flex;
       flex-direction: column;
       .text {
-        font-size: 12px;
+        font-size: 8px;
         color: #000;
         margin-bottom: 5px;
       }
       .mount {
-        font-size: 12px;
+        font-size: 8px;
         font-weight: 600;
         color: #f68900;
       }
@@ -384,20 +384,20 @@ export default {
     }
   }
   .btn-group {
-    margin: 0 16px 16px;
+    margin: 0 8px 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     .back,
     .copy {
       flex: 48% 0;
-      height: 30px;
+      height: 20px;
       text-align: center;
-      line-height: 30px;
+      line-height: 20px;
       border: 1px solid #568efc;
       color: #568efc;
       border-radius: 5px;
-      // font-size: 16px;
+      font-size: 8px;
       &.copy {
         background: #568efc;
         color: #fff;
@@ -405,8 +405,7 @@ export default {
     }
   }
   .remind {
-    margin: 10px 16px 10px;
-    font-size: 12px;
+    margin: 8px 12px 8px;    
     color: #568efc;
     line-height: 16px;
   }
