@@ -68,7 +68,7 @@
                 maxlength="6"
                 placeholder="车牌号"
                 :disabled="noLicenseFlag==true"
-                @input="carPaiNum"
+                @input="carPaiNum(plateNumber)"
               />
               <van-checkbox class="checkbox border-no" v-model="noLicenseFlag" @click="bbb">未上牌</van-checkbox>
             </div>
@@ -438,6 +438,12 @@ export default {
           }
         });
         this.$toast("请手动把信息补全");
+      // } else if (data.state === "3") {
+      //   // var token = window.sessionStorage.getItem("token");
+      //   // token = "";
+      //   this.$router.push({
+      //     name: "index"
+      //   });
       } else {
         this.$toast(data.message);
       }
@@ -536,10 +542,8 @@ export default {
       var token = window.sessionStorage.getItem("token");
       console.log(token);
       if (token) {
-        // alert("eyruwir")
         this.res = res;
         console.log(this.res);
-        // this.carVerifyCode =data.carVerifyCode
         this.provinceName = this.res.data.provinceName;
         this.carPlateSimple = this.res.data.carPlateSimple;
         this.carVerifyCode = this.res.data.carVerifyCode;

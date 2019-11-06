@@ -166,7 +166,12 @@ export default {
       }
       this.emitImgList();
       // 调用影响上传接口
-      const data = await UploadInsureImg(file);
+      let list = [];
+      for (let i = 0; i < file.length; i++) {
+        list.push({ img: file[i].content });
+      }
+      const data = await UploadInsureImg({ imgList: list });
+      console.log(data);
       if (data.state == 200) {
         this.$toast.success("成功");
       }

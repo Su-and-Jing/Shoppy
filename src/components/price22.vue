@@ -31,17 +31,29 @@
           <div class="car-msgInfo cells">
             <van-cell class="carNumber" title="车牌号码">
               <span>{{city}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(cityList,'city')"></van-icon>
+              <van-icon name="arrow-down" @click="choose(city)"></van-icon>
               <input
                 type="text"
-                maxlength="6"
                 v-model="carNum"
                 placeholder="请输入车牌号"
                 :disabled="noLicenseFlag==true"
                 style="background:#fff"
-                @input="carnumzz(carNum)"
+                maxlength="6"
+                @input="carPaiNum(carNum)"
               />
             </van-cell>
+            <!-- 城市选择框 -->
+            <van-popup v-model="showPopupCity" position="bottom" :style="{ height: '48%' }">
+              <div class="chooseCity">
+                <p>
+                  <span>选择省份</span>
+                  <span class="wc" @click="success">完成</span>
+                </p>
+                <ul>
+                  <li v-for="(item,index) in cityList" :key="index" @click="country(item)">{{item}}</li>
+                </ul>
+              </div>
+            </van-popup>
             <div v-show="isShowCar">
               <van-cell
                 title="车辆类型"
@@ -314,8 +326,8 @@
                     is-link
                     v-model="taxLocation"
                     arrow-direction="down"
-                    @click="choosePopup(taxLocationList,'taxLocation')"
                     @changeHandle="changeHandle"
+                    @click="choosePopupcity(taxLocationList,'taxLocation')"
                   />
                 </van-cell-group>
                 <!-- 免税 -->
@@ -411,7 +423,7 @@
                 label="起保日期"
                 v-model="busRegisterDate"
                 right-icon="notes-o"
-                @click-right-icon="dateShow('busRegisterDate')"
+                @click-right-icon="dateShow11('busRegisterDate')"
                 readonly
                 @changeHandle="changeHandle"
               >
@@ -461,7 +473,7 @@
                   :min-date="minDate"
                 />
               </van-popup>
-              <!-- <van-popup v-model="showPopupDate11" position="bottom">
+              <van-popup v-model="showPopupDate11" position="bottom">
                 <van-datetime-picker
                   @cancel="showPopupDate11=false"
                   v-model="currentDate"
@@ -470,7 +482,7 @@
                   @change="changeHandle"
                   :min-date="minDate"
                 />
-              </van-popup>-->
+              </van-popup>
               <!-- 完税凭证填发日期 -->
               <van-popup v-model="showPopupDate5" position="bottom">
                 <van-datetime-picker
@@ -616,11 +628,11 @@
                 </div>
                 <!-- 百分比 -->
                 <div class="import-btn" v-show="isShow">
-                  <span>{{percent}}%</span>
+                  <span>{{percent}}</span>
                   <van-icon name="arrow-down" @click="choosePopup(importList1,'percent')"></van-icon>
                 </div>
                 <div class="import-btn" v-show="!isShow">
-                  <span>{{percent1}}%</span>
+                  <span>{{percent1}}</span>
                   <van-icon name="arrow-down" @click="choosePopup(importList2,'percent1')"></van-icon>
                 </div>
                 <van-switch
@@ -676,7 +688,7 @@
                   @change="changeHandle"
                   @click="handleToast3"
                 >不计免赔</van-checkbox>
-                <van-switch
+                <van-switchs
                   v-model="natureSwitch"
                   size="24px"
                   @change="changeHandle"
@@ -721,15 +733,14 @@
             <div class="insures">
               <p>
                 商业险 ￥{{bussinesNum}}
-                <span
+                <!-- <span
                   class="money"
                   v-show="this.saleDiscount!=0"
-                >{{this.saleDiscount}}折</span>
+                >{{this.saleDiscount}}折</span>-->
               </p>
               <p>交强险 ￥{{insuranceMoney}}</p>
               <p>车船税 ￥{{shipNum}}</p>
-
-              <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
+              <!-- <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon> -->
             </div>
             <van-icon></van-icon>
           </div>
@@ -745,11 +756,11 @@
               <div class="insures">
                 <p>
                   商业险 ￥--
-                  <span class="money" v-show="this.saleDiscount!=0">{{this.saleDiscount}}折</span>
+                  <!-- <span class="money" v-show="this.saleDiscount!=0">{{this.saleDiscount}}折</span> -->
                 </p>
                 <p>交强险 ￥--</p>
                 <p>车船税 ￥--</p>
-                <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
+                <!-- <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon> -->
               </div>
             </div>
 
@@ -773,7 +784,7 @@
             <!-- v-show="this.aaa === true" -->
           </div>
         </div>
-        <van-popup v-model="show" class="showPopupSale">
+        <!-- <van-popup v-model="show" class="showPopupSale">
           <h2>修改商业折扣</h2>
           <p>请确保输入值在{{this.lowestDiscount}}-{{this.policyDiscount}}范围之内</p>
           <input type="text" v-model="Discount" />
@@ -785,7 +796,7 @@
           </span>
           <van-button plain color="#95c4fe" @click="cannelSale">取消</van-button>
           <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
-        </van-popup>
+        </van-popup>-->
       </div>
       <!-- <van-loading vertical v-show="loadingShow" slot="">亲，报价中...
       <!-- <img src="../assets/baijia.png" alt="">-->
@@ -797,6 +808,17 @@
           :columns="columns"
           @confirm="confirmPicker"
           @cancel="showPopup = false"
+          @change="changeHandle"
+        />
+      </van-popup>
+
+      <!-- 完税地址 -->
+      <van-popup v-model="showCity" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="columns"
+          @confirm="confirmCity"
+          @cancel="showCity = false"
           @change="changeHandle"
         />
       </van-popup>
@@ -825,8 +847,9 @@ import {
 export default {
   data() {
     return {
-      carNum: "",
       showPopupDate11: false,
+      modelcode: "",
+      carNum: "",
       count: "0",
       jf: "",
       xj: "",
@@ -839,7 +862,7 @@ export default {
       bussjiActive: false,
       islijiActive: false,
       long: ["car", "VIN", "engine", "registerDate"],
-      city: "京",
+      city: "",
       showIcon: false,
       msgShow: false,
       //人工核保意见
@@ -884,7 +907,7 @@ export default {
       //总保费
       totalPremium: "",
       //折扣
-      Discount: "",
+      // Discount: "",
       //一年内过户
       open: false,
       // 往年补缴
@@ -1120,6 +1143,7 @@ export default {
       //第三者责任险
       secondChecked: false,
       secondPremium: "",
+
       //车辆损失保险
       carChecked: false,
       carSwitch: false,
@@ -1175,6 +1199,7 @@ export default {
         { code: "5", text: "拒缴", disabled: true },
         { code: "6", text: "不征" }
       ],
+      showCity: false,
       //第三者责任险
       second: "不投保",
       secondList: [
@@ -1205,6 +1230,7 @@ export default {
         "950万元",
         "100万元"
       ],
+      showPopupCity: false,
       //司机座位险
       driver: "不投保",
       driverList: [
@@ -1238,10 +1264,10 @@ export default {
       ],
       // 玻璃单独破碎险
       import1: "进口",
-      percent1: "10",
-      percent: "15",
+      percent: "10",
+      percent1: "15",
       importList: [{ code: 1, text: "进口" }, { code: 1, text: "国产" }],
-      importList2: [
+      importList1: [
         "10",
         "11",
         "12",
@@ -1265,7 +1291,7 @@ export default {
         "30"
       ],
       isShow: true,
-      importList1: [
+      importList2: [
         "15",
         "16",
         "17",
@@ -1353,13 +1379,13 @@ export default {
 
       isActives: false,
       // 折扣
-      secondAmount: "0",
+      // secondAmount: "0",
       // 折扣弹出层
-      show: false,
+      // show: false,
       // 商业险最低折扣
-      lowestDiscount: "",
+      // lowestDiscount: "",
       //商业险最高折扣
-      policyDiscount: "",
+      // policyDiscount: "",
       saleDiscount: "",
       // 预核保信息
       iLogPreUdwMess: "",
@@ -1455,7 +1481,7 @@ export default {
     },
     $route() {
       this.model = this.$route.query.name;
-      this.modelcode = this.$route.query.modelcode;
+      this.modelcode = this.$route.query.code;
     }
   },
   methods: {
@@ -1577,6 +1603,20 @@ export default {
         );
       }
     },
+
+    choose() {
+      // console.log(list, name);
+      this.showPopupCity = true;
+      // alert("12312")
+    },
+    //选择城市
+    country(item) {
+      this.city = item;
+      this.showPopupCity = false;
+    },
+    success() {
+      this.showPopupCity = false;
+    },
     handleT() {
       this.carAmount = Number(this.carAmount);
       if (this.carAmount < this.minAmount || this.carAmount > this.maxAmount) {
@@ -1618,7 +1658,16 @@ export default {
         this.spiritChecked = false;
         this.spiritMount = "";
         this.wadeChecked = false;
-        this.wadeSwitch = false; // this.s
+        this.wadeSwitch = false;
+        // this.s
+      }
+    },
+    handleToast() {
+      if (this.carSwitch == false) {
+        this.$toast(
+          "此险为车辆损失险（主险）的附加险，请投保车辆损失险（主险）再选择此险！"
+        );
+        this.carChecked = false;
       }
     },
     tipC() {
@@ -1645,6 +1694,18 @@ export default {
       this.$router.push({ path: "/" });
       return false;
     },
+    carPaiNum(value) {
+      value = value.toUpperCase();
+      var q = new RegExp(/[^]/g);
+      value = value.match(q);
+      if (value !== null) {
+        value = value.join("");
+        value = value.replace(/[^\w\.\/]/gi, "");
+        this.carNum = value;
+      } else {
+        this.carNum = "";
+      }
+    },
     number(value) {
       value = value.toUpperCase();
       var z = new RegExp(/[^QIO]/g);
@@ -1655,18 +1716,6 @@ export default {
         this.VIN = value;
       } else {
         this.VIN = "";
-      }
-    },
-    carnumzz(value) {
-      value = value.toUpperCase();
-      var a = new RegExp(/[^]/g);
-      value = value.match(a);
-      if (value !== null) {
-        value = value.join("");
-        value = value.replace(/[^\w\.\/]/gi, "");
-        this.carNum = value;
-      } else {
-        this.carNum = "";
       }
     },
     faNum(value) {
@@ -1694,62 +1743,6 @@ export default {
       this.$refs.confirmSale.innerHTML = "重新算价";
       this.$refs.confirmSale.style.width = "150px";
       this.spiritMount = this.$refs.input.value;
-      // if (this.second == "不投保") {
-      //   this.$toast(
-      //     "此险为第三者责任险（主险）的附加险，请投保第三者责任险（主险）再选择此险！"
-      //   );
-      //   this.secondChecked = false;
-      // }
-      // if(this.second=="不投保"){
-      //   this.secondChecked=false
-      //   console.log(this.secondChecked)
-      // }
-      // if (this.driver == "不投保" && this.driverChecked == true) {
-      //   this.$toast(
-      //     "此险为司机座位险（主险）的附加险，请投保司机座位险（主险）再选择此险！"
-      //   );
-      //   this.driverChecked = false;
-      // }
-      // if (this.fare == "不投保" && this.fareChecked == true) {
-      //   this.$toast(
-      //     "此险为乘客座位险（主险）的附加险，请投保乘客座位险（主险）再选择此险！"
-      //   );
-      //   this.fareChecked = false;
-      // }
-      // if (this.robbingSwitch == false && this.robbingChecked == true) {
-      //   this.$toast(
-      //     "此险为全车盗抢险（主险）的附加险，请投保全车盗抢险（主险）再选择此险！"
-      //   );
-      //   this.robbingChecked = false;
-      // }
-      // if (this.scratch == "不投保" && this.scratchChecked == true) {
-      //   this.$toast(
-      //     "此险为划痕损害险（主险）的附加险，请投保划痕损害险（主险）再选择此险！"
-      //   );
-      //   this.scratchChecked = false;
-      // }
-
-      // if (this.natureSwitch == false && this.natureChecked == true) {
-      //   this.$toast(
-      //     "此险为自燃损失险（主险）的附加险，请投保自然损失险（主险）再选择此险！"
-      //   );
-      //   this.natureChecked = false;
-      // }
-      // if (this.spiritMount == "") {
-      //   if (this.spiritChecked == true) {
-      //     this.$toast(
-      //       "此险为精神损害险（主险）的附加险，请投保精神损害险（主险）再选择此险！"
-      //     );
-      //   }
-      //   this.spiritChecked = false;
-      // }
-
-      // if (this.wadeSwitch == false && this.wadeChecked == true) {
-      //   this.$toast(
-      //     "此险为涉水行驶损失险（主险）的附加险，请投保涉水行驶损失险（主险）再选择此险！"
-      //   );
-      //   this.wadeChecked = false;
-      // }      i
       if (this.spiritMount == "") {
         this.spiritChecked = false;
       }
@@ -1793,57 +1786,6 @@ export default {
           this.spiritMount = "";
         }
       }
-      // if (this.carSwitch == false) {
-      //   if (
-      //     this.damageSwitch == true ||
-      //     this.importSwitch == true ||
-      //     this.domesticSwitch == true ||
-      //     this.secondChecked == true ||
-      //     this.natureSwitch == true ||
-      //     this.wadeSwitch == true
-      //   ) {
-      //     this.$toast(
-      //       "此险为车辆损失险（主险）的附加险，请投保车辆损失险（主险）再选择此险！"
-      //     );
-      //     this.domesticSwitch = false;
-      //     this.importSwitch = false;
-      //     this.damageSwitch = false;
-      //     // this.secondChecked = false;
-      //     this.natureSwitch = false;
-      //     this.wadeSwitch = false;
-      //   }
-      // }
-      //   if (this.carSwitch == true) {
-      //   this.carChecked = true;
-      // }
-      // if (this.second !== "不投保") {
-      //   this.secondChecked = true;
-      // }
-      // if (this.driver !== "不投保") {
-      //   this.driverChecked = true;
-      // }
-
-      // if (this.fare !== "不投保") {
-      //   this.fareChecked == true;
-      // }
-      // if (this.robbingSwitch == true) {
-      //   this.robbingChecked == true;
-      // }
-      // if (this.scratch !== "不投保") {
-      //   this.scratchChecked = true;
-      // }
-      // if (this.natureSwitch == true) {
-      //   this.natureChecked == true;
-      // }
-      // if (this.natureSwitch == true) {
-      //   this.natureChecked == true;
-      // }
-      // if (this.spiritMount !== "") {
-      //   this.spiritChecked == true;
-      // }
-      // if (this.wadeSwitch == true) {
-      //   this.wadeChecked == true;
-      // }
     },
     // 车辆品牌
     CarPaiHandle() {
@@ -1904,10 +1846,10 @@ export default {
           .format("YYYY-MM-DD HH");
         this.endDate = dayjs(date)
           .add(1, "year")
-          .format("YYYY-MM-DD HH");
+          .format("YYYY-MM-DD 24");
         this.endDate = dayjs(this.endDate)
           .add(1, "hour")
-          .format("YYYY-MM-DD HH");
+          .format("YYYY-MM-DD 24");
       } else {
         this.endDate = this.xj;
         this.insRegDate = this.jf;
@@ -1956,11 +1898,10 @@ export default {
       console.log(orderNo);
     },
     //折扣弹出层
-    showPopupSale() {
-      this.show = true;
-      this.saleDiscount = "";
-    },
-    //渲染页面
+    // showPopupSale() {
+    //   this.show = true;
+    //   this.saleDiscount = "";
+    // },
     //渲染页面
     handle() {
       // this.count++;
@@ -2193,7 +2134,6 @@ export default {
           } // 指定修理厂险
           else if (data.data.kindList[i].kindCode == "J1") {
             this.domesticSwitch = true;
-            this.percent = data.data.kindList[i].rate;
           } // 划痕险
           else if (data.data.kindList[i].kindCode == "L") {
             this.scratch = data.data.kindList[i].amount;
@@ -2598,20 +2538,20 @@ export default {
       }
     },
 
-    confirmSaleDiscount() {
-      if (
-        this.Discount < this.lowestDiscount ||
-        this.Discount > this.policyDiscount
-      ) {
-        return;
-      }
-      this.show = false;
-      this.saleDiscount = this.Discount;
-      // this.isActives = true;
-      this.$refs.confirmSale.innerHTML = "重新算价";
-      this.$refs.confirmSale.style.width = "150px";
-      console.log(this.$refs.confirmSale.innerHTML);
-    },
+    // confirmSaleDiscount() {
+    //   if (
+    //     this.Discount < this.lowestDiscount ||
+    //     this.Discount > this.policyDiscount
+    //   ) {
+    //     return;
+    //   }
+    //   this.show = false;
+    //   this.saleDiscount = this.Discount;
+    //   // this.isActives = true;
+    //   this.$refs.confirmSale.innerHTML = "重新算价";
+    //   this.$refs.confirmSale.style.width = "150px";
+    //   console.log(this.$refs.confirmSale.innerHTML);
+    // },
     // 确认报价
     async confimHandle() {
       if (this.$refs.confirmSale.innerHTML == "重新算价") {
@@ -2634,7 +2574,19 @@ export default {
       console.log(list, name);
       this.showPopup = true;
       this.columns = list;
+
       this.currentPicker = name;
+    },
+    //完税地区代码
+    choosePopupcity(list, name) {
+      this.showCity = true;
+      this.columns = list;
+    },
+    confirmCity(picker, value) {
+      // console
+      this.taxLocation = this.picker.text;
+      this.taxLocationCode = this.picker.code;
+      console.log(this.taxLocation);
     },
     // 确定选择
     confirmPicker(picker, values) {
@@ -2645,7 +2597,6 @@ export default {
         this[this.currentPicker] = picker;
       }
       var bbb = (this[this.currentPicker.values] = values);
-      // this.motorTypeCode = this.carList[values].code;
       console.log(bbb);
       this.showPopup = false;
       if (this[this.currentPicker] == "正常缴税") {
@@ -2664,21 +2615,6 @@ export default {
       } else if (this[this.currentPicker] == "进口") {
         this.isShow = true;
       }
-      if (this.second == "不投保") {
-        this.secondChecked = false;
-      }
-      if (this.driver == "不投保") {
-        this.driverChecked = false;
-      }
-      if (this.fare == "不投保") {
-        this.fareChecked = false;
-      }
-      if (this.scratch == "不投保") {
-        this.scratchChecked = false;
-      }
-      if (this.scratch == "不投保") {
-        this.scratchChecked = false;
-      }
     },
     //显示注册日期
     dateShow(name) {
@@ -2686,11 +2622,11 @@ export default {
       this.currentDateName = name;
       console.log(this.currentDateName);
     },
-    //        dateShow11(name) {
-    //       this.showPopupDate11 = true;
-    //       this.currentDateName = name;
-    //       console.log(this.currentDateName);
-    //     },
+    dateShow11(name) {
+      this.showPopupDate11 = true;
+      this.currentDateName = name;
+      console.log(this.currentDateName);
+    },
     dateShow2(name) {
       this.showPopupDate = true;
       this.currentDateName = name;
@@ -2708,40 +2644,45 @@ export default {
       this.showPopupDate2 = true;
       // this.currentDateName = name;
       // console.log(this.currentDateName);
-    }, // 确定选择
+    },
     // 确定选择
     confirmDate(picker) {
-      // this.showPopupDate11 = false;
-      let date = dayjs(picker).format("YYYY-MM-DD HH"); // this[this.currentDateName] = date; // console.log(date); // console.log(this.currentDateName);
+      // this.showPopupDate11 = false;
+      let date = dayjs(picker).format("YYYY-MM-DD HH");
+      // this[this.currentDateName] = date;
+      // console.log(date);
+      // console.log(this.currentDateName);
       this.showPopupDate = false;
-      this.insRegDate = dayjs(picker).format("YYYY-MM-DD 00");
+      this.insRegDate = dayjs(picker).format("YYYY-MM-DD 00");
       this.endDate = dayjs(date)
         .add(1, "year")
-        .format("YYYY-MM-DD HH");
+        .format("YYYY-MM-DD HH");
       this.endDate = dayjs(this.endDate)
         .add(-1, "day")
-        .format("YYYY-MM-DD HH");
+        .format("YYYY-MM-DD HH");
       this.endDate = dayjs(this.endDate)
         .add(1, "hour")
-        .format("YYYY-MM-DD 24");
+        .format("YYYY-MM-DD 24");
       console.log(this.endDate);
     },
     confirmDate11(picker) {
-      let date = dayjs(picker).format("YYYY-MM-DD HH"); // this[this.currentDateName] = date; // console.log(date); // console.log(this.currentDateName);
+      let date = dayjs(picker).format("YYYY-MM-DD HH");
+      // this[this.currentDateName] = date;
+      // console.log(date);
+      // console.log(this.currentDateName);
       this.showPopupDate11 = false;
-      this.busRegisterDate = dayjs(picker).format("YYYY-MM-DD 00");
+      this.busRegisterDate = dayjs(picker).format("YYYY-MM-DD 00");
       console.log(this.busRegisterDate);
       this.RegDate = dayjs(date)
         .add(1, "year")
-        .format("YYYY-MM-DD HH");
+        .format("YYYY-MM-DD HH");
       this.RegDate = dayjs(this.RegDate)
         .add(-1, "day")
-        .format("YYYY-MM-DD HH");
+        .format("YYYY-MM-DD HH");
       this.RegDate = dayjs(this.RegDate)
         .add(1, "hour")
-        .format("YYYY-MM-DD 24");
+        .format("YYYY-MM-DD 24");
     },
-
     //完税凭证填发日期
     confirmDate5(picker) {
       let date = dayjs(picker).format("YYYY-MM-DD HH");
@@ -2755,6 +2696,7 @@ export default {
       this.currentDate2 = this[this.currentDateName];
       let date = dayjs(picker).format("YYYY-MM-DD");
       // this[this.currentDateName] = date;
+
       this.showPopupDate2 = false;
       this.registerDate = dayjs(picker).format("YYYY-MM-DD");
     }
@@ -2870,7 +2812,39 @@ export default {
   padding: 3px 5px;
   box-sizing: border-box;
 }
+.chooseCity {
+  // opacity: 0.5;
+  p {
+    margin: 15px 20px 0 !important;
+    .wc {
+      float: right !important;
+      color: #558ffc;
+    }
+  }
+  ul {
+    background: rgba(243, 243, 243, 0.918);
+    display: flex !important;
+    display: -webkit-flex !important;
+    // padding-left:8px;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    margin: 15px 20px !important;
+    padding-bottom: 20px !important;
+
+    li {
+      width: 8%;
+      height: 30px;
+      border-radius: 4px;
+      border: 1px solid rgba(204, 204, 204, 1);
+      color: rgba(51, 51, 51, 1);
+      text-align: center;
+      line-height: 30px;
+      background: #fff;
+      margin: 15px 0 0 11.5px;
+    }
+  }
+}
 .van-checkbox {
-  margin-right: 20px;
+  margin-right: 90px;
 }
 </style>

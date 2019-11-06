@@ -59,6 +59,7 @@
               <div class="status van-hairline--top">
                 <span class="chassis-number">车架号：{{item.vin}}</span>
                 <span class="type" v-show="changeShow" @click="insert(index)">修改投保方案</span>
+                   
                 <span class="pay" v-show="showPay" @click="pay(index)">
                   去支付
                   <van-icon name="arrow" />
@@ -207,7 +208,15 @@ export default {
       } else if (data.state == "0" || data.state == "1") {
         // this.$router.push({ name: "price" });
         // this.$toast("跳转报价页");
-      } else {
+      } 
+      else if (data.state == "3") {
+        var token = window.sessionStorage.getItem("token");
+        token = "";
+        this.$router.push({
+          path: "/"
+        });
+      }
+      else {
         this.$toast.fail("失败");
       }
     },
@@ -248,6 +257,7 @@ export default {
       this.orderNo = this.list[index].orderNo;
       const data = await OfferPage(this.orderNo);
       console.log(this.orderNo);
+      console.log(data)
       this.$router.push({
         name: "orderDetails",
         params: {

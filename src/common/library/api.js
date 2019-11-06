@@ -86,7 +86,7 @@ export const RealCode = data => {
 }
 // //影像上传
 export const UploadInsureImg = data => {
-  return axios.post('api/imgUpload/uploadInsureImg', data)
+  return axios.post('/api/imgUpload/uploadImgForBase64', data)
 }
 
 

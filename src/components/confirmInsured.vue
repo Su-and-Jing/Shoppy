@@ -59,7 +59,7 @@
               placeholder="请填写具体路名、门牌地址"
             />
 
-            <van-field v-model="one.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+            <van-field v-model="one.email" label="邮箱地址" placeholder="请输入邮箱地址" />
             <van-field
               v-model="OneOccupation"
               readonly
@@ -109,7 +109,7 @@
               </van-popup>
 
               <van-field v-model="two.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
-              <Area :current-area="TwoAddr,TwoAddrCode" @checkedArea="checkedArea(3)" label="地址" />
+              <Area :current-area="TwoAddr,TwoAddrCode" @checkedArea="checkedArea3" label="地址" />
 
               <van-field
                 label
@@ -119,7 +119,7 @@
                 autosize
                 placeholder="请填写具体路名、门牌地址"
               />
-              <van-field v-model="two.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+              <van-field v-model="two.email" label="邮箱地址" placeholder="请输入邮箱地址" />
               <van-field
                 v-model="TwoOccupation"
                 readonly
@@ -170,7 +170,7 @@
               <van-field v-model="three.mobile" label="手机号码" maxlength="11" placeholder="请输入手机号码" />
               <Area
                 :current-area="ThreeAddr,ThreeAddrCode"
-                @checkedArea="checkedArea(5)"
+                @checkedArea="checkedArea5"
                 label="地址"
               />
               <van-field
@@ -181,7 +181,7 @@
                 autosize
                 placeholder="请填写具体路名、门牌地址"
               />
-              <van-field v-model="three.email" label="邮箱地址" maxlength="20" placeholder="请输入邮箱地址" />
+              <van-field v-model="three.email" label="邮箱地址" placeholder="请输入邮箱地址" />
               <van-field
                 v-model="occupation"
                 readonly
@@ -578,6 +578,7 @@ export default {
           this.TwoAddr = `${PolicyHolder.provinceValue} ${PolicyHolder.cityValue} ${PolicyHolder.districtValue}`;
           this.TwoAddrCode = `${PolicyHolder.province} ${PolicyHolder.city} ${PolicyHolder.district}`;
           this.two = PolicyHolder;
+          console.log(this.two)
         }
         if (InsuredPerson.role == "2") {
           this.ThreeAddr = `${InsuredPerson.provinceValue} ${InsuredPerson.cityValue} ${InsuredPerson.districtValue}`;
@@ -756,6 +757,7 @@ export default {
       console.log(code, city, "_----------------------------城市");
       this.city = city;
       this.cityCode = code;
+    
       var bb = this.city.split(" ");
       var aa = this.cityCode.split(" ");
       this.two.province = aa[0];

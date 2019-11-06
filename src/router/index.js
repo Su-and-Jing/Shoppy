@@ -197,6 +197,6 @@ export default new Router({
       meta: {
         title: '支付'
       }
-    }
+    },
   ]
 })

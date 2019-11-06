@@ -4,23 +4,45 @@
       <van-icon @click="backHandle" class="iconLeft" name="arrow-left" size="23px" />
       <p class="Vetit">华农统一收费</p>
     </header>
-    <div class="containt-pay" style="margin-top:38px">
-      <Head :parent-msg="this.list"></Head>
+    <div class="containt-pay" style="margin-top:38px">     
+        <div class="head-containt">
+    <div class="instr">
+      <div class="left">
+        <div class="item">
+          <span class="plate">{{plateNo}}</span>
+          <span class="name">{{name}}</span>        
+        </div>
+      </div>
+      <div class="right">
+        <div
+          class="item"
+          v-for="(item,index) in this.title"
+          :key="index"
+          style="margin-bottom:30px;"
+        >
+          <p class="insurance-type">
+            {{item.riskName=="机动车综合商业保险"?"商业险":"交强险"}}
+            <span>{{item.startDate}}-{{item.endDate}}</span>
+          </p>
+          <p style="padding-top:8px;" class="pre">
+            <span>保费：{{item.premium}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="tax">{{item.riskCode=="0507"?"车船税："+cars:''}}</span>            
+          </p>         
+        </div>
+      </div>     
+    </div>
+  </div>
       <div class="main">
         <p class="mount-wrap">
           应付金额：
           <span class="mount">{{sumPermium}}</span>元
-        </p>
-        <!-- <img class="img" src="../assets/qr.jpg" alt /> -->
+        </p>        
         <div class="home-container">
           <div class="banner-box">
             <canvas id="qrccode-canvas"></canvas>
           </div>
           <div class="btn-wrap">
             <img :src="this.bannerUrl" class="image" style="display:none" />
-
-            <!-- <img class="img" :src="this.imgUrl" alt /> -->
-            <!-- <button @click="createQrc">点击</button> -->
           </div>
         </div>
         <p class="instr">当地为支付实名制地区，请使用投保人本人账户支付</p>
@@ -48,13 +70,16 @@ export default {
   },
   props: ["data"],
   data() {
-    return {
+    return {      
       bannerUrl: "",
       orderNo: "",
-      // plateNo: "",
-      // name: "",
+      plateNo: "",
+      name: "",
+      cars:"",
       sumPermium: "",
-      list: []
+      list: [],
+      title:[],
+      riskCode:""
     };
   },
   created() {
@@ -86,8 +111,10 @@ export default {
       const data = await OfferPage(this.orderNo);
       if (data.state === "200") {
         this.sumPermium = data.data.sumPermium;
-        this.list = data.data;
-        console.log(this.list);
+        this.plateNo = data.data.car.plateNo;     
+        this.name=data.data.customer.name
+        this.cars=data.data.tax.sumTax       
+        this.title=data.data.riskList       
       } else {
         alert("失败");
       }
@@ -113,6 +140,7 @@ export default {
 </script>
 <style lang="scss" scope>
 @import "/style/head.scss";
+
 .containt-pay {
   background: #fff;
   min-height: 100vh;
@@ -176,6 +204,81 @@ export default {
       padding-top: 15px;
       font-size: 12px;
       color: #464646;
+    }
+  }
+}
+.pre {
+  position: relative;
+}
+.tax {
+  position: absolute;
+  float: left;
+  top: 35%;
+  left: 45%;
+}
+.head-containt {
+  width: 100%;
+  height: 0;
+  padding-top: 50%;
+  background: #fff url("../assets/head.png") no-repeat center;
+  background-size: 100%;
+  position: relative;
+  .instr {
+    position: absolute;
+    top: 18px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    color: #fff;
+    .left {
+      flex: 40% 0;
+      display: flex;
+      justify-content: center;
+      .item {
+        display: flex;
+        flex-direction: column;
+        .plate {
+          font-size: 20px;
+          margin-bottom: 10px;
+        }
+        .name {
+          font-size: 17px;
+        }
+      }
+    }
+    .right {
+      flex: 60% 0;
+      .item {
+        &:last-child {
+          margin-top: 15px;
+          position: relative;
+          &::before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: -15px;
+            right: 12px;
+            height: 1px;
+            background: #fff;
+            opacity: 0.5;
+          }
+        }
+        .insurance-type {
+          font-size: 15px;
+          display: flex;
+          align-items: center;
+          span {
+            margin-left: 7px;
+            font-size: 10px;
+            color: rgba(256, 256, 256, 0.7);
+          }
+        }
+        .insurance-no {
+          font-size: 12px;
+          line-height: 32px;
+        }
+      }
     }
   }
 }

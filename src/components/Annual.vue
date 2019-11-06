@@ -7,7 +7,7 @@
     <div class="content">
       <router-link
         tag="div"
-        :to="{name:'price',query:{name:item.modelname}}"
+       :to="{name:'price',query:{name:item.modelname,modelcode:item.modelcode}}"
         class="banner"
         v-for="(item,index) in CarTypeArr"
         :key="index"
@@ -20,7 +20,7 @@
             <p>{{item.caryear}}款 | {{item.seatmax}}座</p>
           </div>
         </div>
-        <div class="price">￥{{item.purchasepricetax}}</div>
+        <div class="price">￥{{item.purchaseprice}}</div>
       </router-link>
     </div>
   </div>

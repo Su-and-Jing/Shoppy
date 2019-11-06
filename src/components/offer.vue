@@ -33,7 +33,7 @@
       </div>
       <div class="item">
         <label class="label">商业险保险期：</label>
-        <span class="limit">{{this.startDate}} 至 {{this.endDate}}</span>
+        <span class="limit">{{this.startDate2}} 至 {{this.endDate2}}</span>
       </div>
     </div>
     <!-- 间隔样式 -->
@@ -136,8 +136,10 @@ export default {
       createDate: "",
       //起保日期
       startDate: "",
+      startDate2: "",
       //截止日期
       endDate: "",
+      endDate2: "",
       // 险别数组
       kindList: [],
       //不计免赔标识
@@ -232,8 +234,8 @@ export default {
         for (var i = 0; i < data.data.riskList.length; i++) {
           if (data.data.riskList[i].riskCode === "0520") {
             this.insurance = data.data.riskList[i].premium;
-            this.endDate = data.data.riskList[i].endDate;
-            this.startDate = data.data.riskList[i].startDate;
+            this.endDate2 = data.data.riskList[i].endDate;
+            this.startDate2 = data.data.riskList[i].startDate;
           } else {
             this.compulsory = data.data.riskList[i].premium;
             this.endDate = data.data.riskList[i].endDate;
@@ -295,7 +297,7 @@ export default {
         color: #999;
       }
       .limit {
-        flex: 1 0;
+        float: right;
         color: #999;
       }
     }

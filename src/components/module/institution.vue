@@ -519,6 +519,7 @@ export default {
         this.showInsitutionPopup = true;
         this.$toast(data.message);
       }
+      this.$router.go(0)
     },
     // 选择器 共用
     choosePopup(list, cod, name, b) {
