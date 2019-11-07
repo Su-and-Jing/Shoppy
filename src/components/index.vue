@@ -587,8 +587,8 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-@import "/style/index.scss";
-@import "/style/share.scss";
+@import "./style/index.scss";
+@import "./style/share.scss";
 </style>
 <style  lang="scss" scope>
 .van-checkbox__icon {

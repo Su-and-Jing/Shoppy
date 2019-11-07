@@ -281,7 +281,7 @@ export default {
 </script>
 
 <style lang="scss" scope>
-@import "/style/share.scss";
+@import "./style/share.scss";
 // .img {
 //   img {
 //     margin-top: 50px;

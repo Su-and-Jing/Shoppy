@@ -126,7 +126,7 @@ export default {
       showsc: false,
       addr: "",
       engine: "",
-      noLicenseFlag: "1",
+      noLicenseFlag: false,
       close1: false,
       close2: false,
       close3: false,
@@ -411,15 +411,14 @@ export default {
       window.sessionStorage.setItem("data", JSON.stringify(data));
       if (data.state === "200") {
         this.$router.push({
-          name: "price",
-          params: p
+          name: "price"
+          // params: p
         });
-      }
-      if (data.state === "1") {
+      } else if (data.state === "1") {
         this.$router.push({ name: "price" });
         this.$toast("请手动把信息补全");
       } else {
-        this.$toast.fail("跳转失败");
+        // this.$toast.fail("跳转失败");
       }
     },
     choosePopup(list, name) {
@@ -462,8 +461,8 @@ export default {
 };
 </script>
 <style lang="scss" scope>
-@import "/style/share.scss";
-@import "/style/head.scss";
+@import "./style/share.scss";
+@import "./style/head.scss";
 .showIcon {
   background: rgba(0, 0, 0, 0.1);
   height: 100%;

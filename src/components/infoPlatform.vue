@@ -128,7 +128,7 @@ export default {
 };
 </script>
 <style lang="scss" scope>
-@import "/style/head.scss";
+@import "./style/head.scss";
 .info-containt {
   min-height: 100vh;
   background: #f0f2f4;

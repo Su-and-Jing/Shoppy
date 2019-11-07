@@ -708,7 +708,7 @@ export default {
 };
 </script>
 <style lang="scss">
-@import "/style/head.scss";
+@import "./style/head.scss";
 .people {
   width: 90%;
   padding: 20px 20px 30px;

@@ -191,7 +191,7 @@ export default {
 };
 </script>
 <style lang="scss">
-@import "/style/head.scss";
+@import "./style/head.scss";
 .remarks {
   height: 32px;
   font-size: 12px;

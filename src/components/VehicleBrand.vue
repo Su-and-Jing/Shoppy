@@ -96,7 +96,7 @@ export default {
 </script>
 
 <style lang="scss" scope>
-@import "/style/head.scss";
+@import "./style/head.scss";
      body,html{
         width: 100%;
         height: 100%;

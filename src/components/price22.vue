@@ -2704,8 +2704,8 @@ export default {
 };
 </script>
 <style lang="scss" scope>
-@import "/style/price.scss";
-@import "/style/head.scss";
+@import "./style/price.scss";
+@import "./style/head.scss";
 // .price {
 //   margin-top: 53px;
 // }

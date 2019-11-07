@@ -269,7 +269,7 @@ export default {
 };
 </script>
 <style lang="scss">
-@import "/style/head.scss";
+@import "./style/head.scss";
 .containt {
   margin-top: 53px;
   background: #f3f3f3;

@@ -125,7 +125,7 @@ export default {
   }}
 </script> 
 <style lang="scss" scope>
-@import "/style/head.scss";
+@import "./style/head.scss";
 .title{
     margin-top: 38px;
     background: #E5EEFF;

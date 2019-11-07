@@ -105,7 +105,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "/style/head.scss";
+@import "./style/head.scss";
 .pre {
   position: relative;
 }

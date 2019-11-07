@@ -270,8 +270,8 @@ export default {
 };
 </script>
 <style lang="scss" scope>
-@import "/style/share.scss";
-@import "/style/head.scss";
+@import "./style/share.scss";
+@import "./style/head.scss";
 .containt {
   background: #fff;
   min-height: 100vh;

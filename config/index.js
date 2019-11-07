@@ -13,8 +13,8 @@ module.exports = {
     proxyTable: {},
 
     // Various Dev Server settings
-    host: '10.0.25.200', // can be overwritten by process.env.HOST
-    // host: 'localhost',
+    // host: '10.0.25.200', // can be overwritten by process.env.HOST
+    host: 'localhost',
     // host: 'test.h5.chinahuanong.com.cn',
     // hostname:url.parse( 'www.test.h5.chinahuanong.com.cn').hostname,
     port: 80, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

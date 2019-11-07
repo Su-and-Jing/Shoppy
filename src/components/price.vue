@@ -300,12 +300,7 @@
                 </van-cell>
                 <!-- 已完税 -->
                 <van-cell-group v-if="payTax==='已完税'" @changeHandle="changeHandle">
-                  <van-field
-                    v-model="documentNumber"
-                    label="完税凭证号码"
-                    @changeHandle="changeHandle"
-                    clearable
-                  />
+                  <van-field v-model="documentNumber" label="完税凭证号码" @changeHandle="changeHandle" />
                   <van-field
                     v-model="taxDepartmentCode"
                     label="税务机关代码"
@@ -338,7 +333,7 @@
                     is-link
                     v-model="deductionDue"
                     arrow-direction="down"
-                    @click="choosePopup(deductionDueList,'deductionDue')"
+                    @click="choosePopupDue(deductionDueList,'deductionDue')"
                     @changeHandle="changeHandle"
                   />
                   <van-field v-model="documentNumber" label="减免税凭证号" @changeHandle="changeHandle"></van-field>
@@ -357,16 +352,16 @@
                     is-link
                     v-model="deductionDue"
                     arrow-direction="down"
-                    @click="choosePopup(deductionDueList,'deductionDue')"
+                    @click="choosePopupDue(deductionDueList,'deductionDue')"
                     @changeHandle="changeHandle"
                   />
                   <van-cell
                     class="cityNumber"
                     title="减免税方案代码"
                     is-link
-                    v-model="deductionDueType"
+                    v-model="deductionDueName"
                     arrow-direction="down"
-                    @click="choosePopup(deductionDueTypeList,'deductionDueType')"
+                    @click="choosePopupType(deductionDueTypeList,'deductionDueName')"
                     @changeHandle="changeHandle"
                   />
                   <van-field
@@ -748,17 +743,17 @@
             <div class="insures">
               <p>
                 商业险 ￥{{bussinesNum}}
-                <span
+                <!-- <span
                   class="money"
                   v-show="this.saleDiscount!=0"
-                >{{this.saleDiscount}}折</span>
+                >{{this.saleDiscount}}折</span>-->
               </p>
               <p>交强险 ￥{{insuranceMoney}}</p>
               <p>车船税 ￥{{shipNum}}</p>
 
-              <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
+              <!-- <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon> -->
             </div>
-            <van-icon></van-icon>
+            <!-- <van-icon></van-icon> -->
           </div>
 
           <div class="offer-right">
@@ -772,11 +767,11 @@
               <div class="insures">
                 <p>
                   商业险 ￥--
-                  <span class="money" v-show="this.saleDiscount!=0">{{this.saleDiscount}}折</span>
+                  <!-- <span class="money" v-show="this.saleDiscount!=0">{{this.saleDiscount}}折</span> -->
                 </p>
                 <p>交强险 ￥--</p>
                 <p>车船税 ￥--</p>
-                <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon>
+                <!-- <van-icon name="edit" class="icon" @click="showPopupSale"></van-icon> -->
               </div>
             </div>
 
@@ -800,7 +795,7 @@
             <!-- v-show="this.aaa === true" -->
           </div>
         </div>
-        <van-popup v-model="show" class="showPopupSale">
+        <!-- <van-popup v-model="show" class="showPopupSale">
           <h2>修改商业折扣</h2>
           <p>请确保输入值在{{this.lowestDiscount}}-{{this.policyDiscount}}范围之内</p>
           <input type="text" v-model="Discount" />
@@ -812,7 +807,7 @@
           </span>
           <van-button plain color="#95c4fe" @click="cannelSale">取消</van-button>
           <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
-        </van-popup>
+        </van-popup>-->
       </div>
       <!-- <van-loading vertical v-show="loadingShow" slot="">亲，报价中...
       <!-- <img src="../assets/baijia.png" alt="">-->
@@ -827,12 +822,33 @@
           @change="changeHandle"
         />
       </van-popup>
+      <!-- 纳税地区代码 -->
       <van-popup v-model="showpopupCountry" position="bottom">
         <van-picker
           show-toolbar
           :columns="columns"
           @confirm="confirmCountry"
           @cancel="showpopupCountry = false"
+          @change="changeHandle"
+        />
+      </van-popup>
+      <!-- //免税车型 -->
+      <van-popup v-model="showpopupDeu" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="columns"
+          @confirm="confirmDeu"
+          @cancel="showpopupDeu= false"
+          @change="changeHandle"
+        />
+      </van-popup>
+      <!-- 减免方案代码 -->
+      <van-popup v-model="showpopupType" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="columns"
+          @confirm="confirmType"
+          @cancel="showpopupType= false"
           @change="changeHandle"
         />
       </van-popup>
@@ -924,7 +940,7 @@ export default {
       //总保费
       totalPremium: "",
       //折扣
-      Discount: "",
+      // Discount: "",
       //一年内过户
       open: false,
       // 往年补缴
@@ -1082,7 +1098,7 @@ export default {
       ],
 
       //减免方案
-      deductionDueType: "比例减免",
+      deductionDueName: "比例减免",
       deductionDueTypeList: [
         { code: "P", text: "比例减免" },
         { code: "A", text: "金额减免" }
@@ -1103,8 +1119,9 @@ export default {
       taxDocumentDate: "",
       //减免比例
       deductionDueProportion: "",
+      showpopupType:'',
       //纳税地区代码
-      taxLocationCode: "",
+      taxPaidAreaCode: "",
       // 税务机关代码
       taxDepartmentCode: "",
       // 税务机关名称
@@ -1394,13 +1411,13 @@ export default {
 
       isActives: false,
       // 折扣
-      secondAmount: "0",
+      // secondAmount: "0",
       // 折扣弹出层
-      show: false,
+      // show: false,
       // 商业险最低折扣
-      lowestDiscount: "",
+      // lowestDiscount: "",
       //商业险最高折扣
-      policyDiscount: "",
+      // policyDiscount: "",
       saleDiscount: "",
       // 预核保信息
       iLogPreUdwMess: "",
@@ -1426,6 +1443,8 @@ export default {
       ciSumPermium: "",
       sumPermium: "",
       loadingShow: false,
+      showpopupCountry: false,
+      showpopupDeu: false,
       // 车辆所属城市
       city: "",
       cityList: [
@@ -1500,7 +1519,23 @@ export default {
     }
   },
   methods: {
-    confirmCountry(picker,value){},
+    confirmCountry(picker, value) {
+      this.taxPaidAreaCode = picker.code;
+      this.taxLocation = picker.text;
+      this.showpopupCountry = false;
+    },
+    confirmDeu(picker, value) {
+      this.deductionDueCode = picker.code;
+
+      this.deductionDue = picker.text;
+
+      this.showpopupDeu = false;
+    },
+    confirmType(picker, value) {
+      this.deductionDueName = picker.text;
+      this.deductionDueType = picker.code;
+      this.showpopupType = false;
+    },
     country(item) {
       this.city = item;
       this.showPopupCity = false;
@@ -1515,6 +1550,7 @@ export default {
     },
     handleToast1() {
       if (this.second == "不投保") {
+        alert("34252");
         this.$toast(
           "此险为第三者责任险（主险）的附加险，请投保第三者责任险（主险）再选择此险！"
         );
@@ -1743,62 +1779,6 @@ export default {
       this.$refs.confirmSale.innerHTML = "重新算价";
       this.$refs.confirmSale.style.width = "150px";
       this.spiritMount = this.$refs.input.value;
-      // if (this.second == "不投保") {
-      //   this.$toast(
-      //     "此险为第三者责任险（主险）的附加险，请投保第三者责任险（主险）再选择此险！"
-      //   );
-      //   this.secondChecked = false;
-      // }
-      // if(this.second=="不投保"){
-      //   this.secondChecked=false
-      //   console.log(this.secondChecked)
-      // }
-      // if (this.driver == "不投保" && this.driverChecked == true) {
-      //   this.$toast(
-      //     "此险为司机座位险（主险）的附加险，请投保司机座位险（主险）再选择此险！"
-      //   );
-      //   this.driverChecked = false;
-      // }
-      // if (this.fare == "不投保" && this.fareChecked == true) {
-      //   this.$toast(
-      //     "此险为乘客座位险（主险）的附加险，请投保乘客座位险（主险）再选择此险！"
-      //   );
-      //   this.fareChecked = false;
-      // }
-      // if (this.robbingSwitch == false && this.robbingChecked == true) {
-      //   this.$toast(
-      //     "此险为全车盗抢险（主险）的附加险，请投保全车盗抢险（主险）再选择此险！"
-      //   );
-      //   this.robbingChecked = false;
-      // }
-      // if (this.scratch == "不投保" && this.scratchChecked == true) {
-      //   this.$toast(
-      //     "此险为划痕损害险（主险）的附加险，请投保划痕损害险（主险）再选择此险！"
-      //   );
-      //   this.scratchChecked = false;
-      // }
-
-      // if (this.natureSwitch == false && this.natureChecked == true) {
-      //   this.$toast(
-      //     "此险为自燃损失险（主险）的附加险，请投保自然损失险（主险）再选择此险！"
-      //   );
-      //   this.natureChecked = false;
-      // }
-      // if (this.spiritMount == "") {
-      //   if (this.spiritChecked == true) {
-      //     this.$toast(
-      //       "此险为精神损害险（主险）的附加险，请投保精神损害险（主险）再选择此险！"
-      //     );
-      //   }
-      //   this.spiritChecked = false;
-      // }
-
-      // if (this.wadeSwitch == false && this.wadeChecked == true) {
-      //   this.$toast(
-      //     "此险为涉水行驶损失险（主险）的附加险，请投保涉水行驶损失险（主险）再选择此险！"
-      //   );
-      //   this.wadeChecked = false;
-      // }      i
       if (this.spiritMount == "") {
         this.spiritChecked = false;
       }
@@ -1842,57 +1822,6 @@ export default {
           this.spiritMount = "";
         }
       }
-      // if (this.carSwitch == false) {
-      //   if (
-      //     this.damageSwitch == true ||
-      //     this.importSwitch == true ||
-      //     this.domesticSwitch == true ||
-      //     this.secondChecked == true ||
-      //     this.natureSwitch == true ||
-      //     this.wadeSwitch == true
-      //   ) {
-      //     this.$toast(
-      //       "此险为车辆损失险（主险）的附加险，请投保车辆损失险（主险）再选择此险！"
-      //     );
-      //     this.domesticSwitch = false;
-      //     this.importSwitch = false;
-      //     this.damageSwitch = false;
-      //     // this.secondChecked = false;
-      //     this.natureSwitch = false;
-      //     this.wadeSwitch = false;
-      //   }
-      // }
-      //   if (this.carSwitch == true) {
-      //   this.carChecked = true;
-      // }
-      // if (this.second !== "不投保") {
-      //   this.secondChecked = true;
-      // }
-      // if (this.driver !== "不投保") {
-      //   this.driverChecked = true;
-      // }
-
-      // if (this.fare !== "不投保") {
-      //   this.fareChecked == true;
-      // }
-      // if (this.robbingSwitch == true) {
-      //   this.robbingChecked == true;
-      // }
-      // if (this.scratch !== "不投保") {
-      //   this.scratchChecked = true;
-      // }
-      // if (this.natureSwitch == true) {
-      //   this.natureChecked == true;
-      // }
-      // if (this.natureSwitch == true) {
-      //   this.natureChecked == true;
-      // }
-      // if (this.spiritMount !== "") {
-      //   this.spiritChecked == true;
-      // }
-      // if (this.wadeSwitch == true) {
-      //   this.wadeChecked == true;
-      // }
     },
     // 车辆品牌
     CarPaiHandle() {
@@ -2005,10 +1934,10 @@ export default {
       console.log(orderNo);
     },
     //折扣弹出层
-    showPopupSale() {
-      this.show = true;
-      this.saleDiscount = "";
-    },
+    // showPopupSale() {
+    //   this.show = true;
+    //   this.saleDiscount = "";
+    // },
     //渲染页面
     //渲染页面
     handle() {
@@ -2135,9 +2064,9 @@ export default {
             //纳税地区代码
             for (var i = 0; i < this.taxLocationList.length; i++) {
               if (
-                this.taxLocationList[i].code === data.data.tax.taxLocationCode
+                this.taxLocationList[i].code === data.data.tax.taxPaidAreaCode
               ) {
-                this.taxLocationCode = this.taxLocationList[i].code;
+                this.taxPaidAreaCode = this.taxLocationList[i].code;
                 this.taxLocation = this.taxLocationList[i].text;
               }
             }
@@ -2171,7 +2100,7 @@ export default {
                 data.data.tax.deductionDueType
               ) {
                 this.deductionDueType = this.deductionDueTypeList[i].code;
-                this.deductionDueType = this.deductionDueList[i].text;
+                this.deductionDueName = this.deductionDueTypeList[i].text;
                 //减免比例
                 this.deductionDueProportion =
                   data.data.tax.deductionDueProportion;
@@ -2324,7 +2253,7 @@ export default {
       tax.taxConditionCode = this.payCode;
       tax.taxDepartment = this.taxDepartment;
       tax.taxDepartmentCode = this.taxDepartmentCode;
-      tax.taxLocationCode = this.taxLocationCode;
+      tax.taxPaidAreaCode = this.taxPaidAreaCode;
       tax.taxDocumentDate = this.taxDocumentDate;
       //险种
       var riskList = [];
@@ -2567,10 +2496,10 @@ export default {
             //纳税地区代码
             for (var i = 0; i < this.taxLocationList.length; i++) {
               if (
-                this.taxLocationList[i].code === data.data.tax.taxLocationCode
+                this.taxLocationList[i].code === data.data.tax.taxPaidAreaCode
               ) {
-                this.taxLocationCode = this.taxLocationList[i].code;
-                console.log(this.taxLocationCode);
+                this.taxPaidAreaCode = this.taxLocationList[i].code;
+                console.log(this.taxPaidAreaCode);
                 this.taxLocation = this.taxLocationList[i].text;
               }
             }
@@ -2687,7 +2616,22 @@ export default {
     },
     //纳税地区代码
     choosePopupcountry(list, name) {
+      console.log(list, name);
       this.showpopupCountry = true;
+      this.columns = list;
+      this.currentPicker = name;
+    },
+    //免税车型
+    choosePopupDue(list, name) {
+      this.showpopupDeu = true;
+      this.columns = list;
+      this.currentPicker = name;
+    },
+    //减免税方案代码
+    choosePopupType(list, name) {
+      this.showpopupType = true;
+      this.columns = list;
+      this.currentPicker = name;
     },
     choosecity() {
       this.showPopupCity = true;
@@ -2870,8 +2814,8 @@ export default {
 };
 </script>
 <style lang="scss" scope>
-@import "/style/price.scss";
-@import "/style/head.scss";
+@import "./style/price.scss";
+@import "./style/head.scss";
 // .price {
 //   margin-top: 53px;
 // }

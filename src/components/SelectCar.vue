@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scope>
-@import "/style/head.scss";
+@import "./style/head.scss";
     .contain{
         width:100%;
         //  header{
