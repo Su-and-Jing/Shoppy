@@ -10,7 +10,8 @@
           <div class="left">
             <div class="item">
               <span class="plate">{{plateNo}}</span>
-              <span class="name">{{name}}</span>             
+              <span class="name">{{name}}</span>
+              <!-- <span class="name">{{ this.parentMsg.tax.sumTax}}</span> -->
             </div>
           </div>
           <div class="right">
@@ -21,15 +22,18 @@
               style="margin-bottom:30px;"
             >
               <p class="insurance-type">
-                {{item.riskName=="机动车综合商业保险"?"商业险":"交强险"}}
+                {{item.riskName}}
                 <span>{{item.startDate}}-{{item.endDate}}</span>
               </p>
               <p style="padding-top:8px;" class="pre">
-                <span>保费：{{item.premium}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;             
-                <span v-show="item.riskCode == '0507'">车船税：{{sumTax2}}</span>
-              </p>            
+                <span>保费：{{item.premium}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <!-- <span class="tax">车船税：</span> -->
+                <span v-show="item.riskCode == '507'">车船税：{{sumTax2}}</span>
+              </p>
+              <!-- <p class="insurance-no">保单号：W20175609988</p> -->
             </div>
-          </div>        
+          </div>
+          <!-- <span class="tax2">车船税：{{this.parentMsg.tax.sumTax}}</span> -->
         </div>
       </div>
       <div class="main">
@@ -37,12 +41,16 @@
           应付金额：
           <span class="mount">{{sumPermium}}</span>元
         </p>
+        <!-- <img class="img" src="../assets/qr.jpg" alt /> -->
         <div class="home-container">
           <div class="banner-box">
             <canvas id="qrccode-canvas"></canvas>
           </div>
           <div class="btn-wrap">
             <img :src="this.bannerUrl" class="image" style="display:none" />
+
+            <!-- <img class="img" :src="this.imgUrl" alt /> -->
+            <!-- <button @click="createQrc">点击</button> -->
           </div>
         </div>
         <p class="instr">当地为支付实名制地区，请使用投保人本人账户支付</p>
@@ -78,12 +86,11 @@ export default {
       // plateNo: "",
       name: "",
       sumPermium: "",
-      res:""
+      list: []
     };
   },
   created() {
     this.res = this.$route.params.res;
-  //  console.log(this.res)
     // this.orderNo = this.$route.params.orderNo;
     // console.log(this.orderNo);
     this.bannerUrl = this.res.payUrl;

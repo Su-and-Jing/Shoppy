@@ -46,7 +46,8 @@ export default {
       times: 60,
       interval: 1000,
       token:'',
-      orderNo:''
+      orderNo:'',
+      res:''
     };
   },
   created(){
@@ -65,11 +66,11 @@ export default {
       });
       console.log(data)
       if(data.state == '200'){
-        var res = data.data;
+        this.res = data.data;
          this.$router.push({
           name: "payment2",
           params: {
-            res: res
+            res: this.res
           }
         });
       }else{
@@ -101,7 +102,6 @@ export default {
       console.log(data)
       if (data.state == "200"){
         this.setCodeInterval();
-     
       }else{
         this.$toast(data.message)
       }

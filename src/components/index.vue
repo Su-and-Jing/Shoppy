@@ -170,6 +170,27 @@
     <Login :show-login="showLoginPop" @closeLogin="closeLogin"></Login>
     <!-- 选择出单机构 -->
     <Institution :show-insitution="showInsitution"></Institution>
+    <van-popup v-model="show" :style="{width:'90%'}">
+      <div class="content">
+        <div
+          tag="div"
+          class="banner"
+          v-for="(item,index) in CarTypeArr"
+          :key="index"
+          @click="getValue(item)"
+        >
+          <div class="nav">
+            <h3>{{item.carseriesname}}</h3>
+            <P>{{item.modelname}}</P>
+            <div class="nav_box">
+              <span class="zid">{{item.transmissiontype}}</span>
+              <p>{{item.caryear==""?"":"款 | "}}{{item.seatmax}}座</p>
+            </div>
+          </div>
+          <div class="price">￥{{item.purchaseprice}}</div>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -181,6 +202,8 @@ import { price, institution } from "@/common/library/api";
 export default {
   data() {
     return {
+      CarTypeArr: "",
+      show: false,
       provinceName: "",
       certificateType2: "组织机构代码证",
       carlei: "小型汽车",
@@ -332,6 +355,12 @@ export default {
     }
   },
   methods: {
+    getValue(item) {
+      this.modeln = item.modelname;
+      this.modelc = item.modelcode;
+      console.log(this.modeln, this.modelc);
+      this.show = false;
+    },
     //选择城市
     country(item) {
       this.carPlateSimple = item;
@@ -394,6 +423,8 @@ export default {
       this.plateNo = this.carPlateSimple + this.plateNumber;
       console.log(this.plateNo);
       var car = {};
+      car.modelname = this.modeln;
+      car.modelcode = this.modelc;
       car.plateType = this.carleiCode;
       car.plateNo = this.plateNo;
       car.VIN = this.VIN;
@@ -437,13 +468,16 @@ export default {
             // data: data
           }
         });
-        this.$toast("请手动把信息补全");
-      // } else if (data.state === "3") {
-      //   // var token = window.sessionStorage.getItem("token");
-      //   // token = "";
-      //   this.$router.push({
-      //     name: "index"
-      //   });
+        this.$toast(data.message);
+        // } else if (data.state === "3") {
+        //   // var token = window.sessionStorage.getItem("token");
+        //   // token = "";
+        //   this.$router.push({
+        //     name: "index"
+        //   });
+      } else if (data.state === "2") {
+        this.show = true;
+        this.CarTypeArr = data.data;
       } else {
         this.$toast(data.message);
       }
@@ -598,6 +632,65 @@ export default {
       line-height: 30px;
       background: #fff;
       margin: 15px 0 0 11.5px;
+    }
+  }
+}
+.content {
+  width: 100%;
+  // margin-top:53px;
+  // margin-top: 65px;
+  background: #fff;
+  .banner {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    .nav {
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      & > h3:nth-child(1) {
+        font-size: 17px;
+        font-family: PingFangSC-Medium, PingFangSC;
+        color: rgba(74, 74, 74, 1);
+      }
+      & > p:nth-child(1) {
+        font-size: 30px;
+        font-family: PingFangSC-Regular, PingFangSC;
+        font-weight: 400;
+        color: rgba(51, 51, 51, 1);
+        line-height: 25px;
+      }
+      .nav_box {
+        display: flex;
+        .zid {
+          display: block;
+          padding: 3px 5px;
+          font-size: 12px;
+          height: 25px;
+          background: rgba(255, 234, 208, 1);
+          border-radius: 12.5px;
+          color: rgba(246, 137, 0, 1);
+
+          line-height: 25px;
+        }
+        & > p {
+          margin-left: 15px;
+          line-height: 25px;
+          color: #999999;
+          font-size: 12px;
+        }
+      }
+    }
+    .price {
+      line-height: 100px;
+      font-size: 16px;
+      font-family: PingFangSC-Regular, PingFangSC;
+      font-weight: 400;
+      color: rgba(246, 137, 0, 1);
     }
   }
 }

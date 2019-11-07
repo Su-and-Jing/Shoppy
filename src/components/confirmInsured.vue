@@ -72,7 +72,7 @@
           <van-cell-group class="item">
             <div class="check-wrap">
               <van-field value="同车主" label="投保人" readonly />
-              <van-switch v-model="insuredOwner" size="24px" />
+              <van-switch v-model="insuredOwner" size="24px" @click="insuredBtn"/>
             
             </div>
 
@@ -133,7 +133,7 @@
           <van-cell-group class="item">
             <div class="check-wrap">
               <van-field value="同车主" label="被保险人" readonly />
-              <van-switch v-model="assuredOwner" size="24px" />
+              <van-switch v-model="assuredOwner" size="24px" @click="assuredBtn"/>
            
             </div>
 
@@ -303,6 +303,7 @@ export default {
   },
   data() {
     return {
+      imgUrl:'',
       passShow: false,
       peopleShow: false,
       one: [],
@@ -486,6 +487,19 @@ export default {
   },
 
   methods: {
+    insuredBtn(){
+      if(this.insuredOwner == true){
+        console.log(12)
+        this.two.name = "";
+        this.two.cervalidDate = "";
+        this.two.identifyNo = "";
+      }
+    },
+    assuredBtn(){
+       if(this.assuredOwner == true){
+        this.three = ''
+      }
+    },
     backHandle() {
       if (window.history.length <= 1) {
         this.$router.push({ path: "/" });
@@ -605,7 +619,8 @@ export default {
       const data = await confirmInsured({
         customerVoList: obj,
         orderNo: orderNo,
-        expressInfo: this.mailAddr
+        expressInfo: this.mailAddr,
+        imageUrl:this.imgUrl
       });
       if (data.state === "200") {
         var statusChild = data.data.status;
@@ -703,15 +718,7 @@ export default {
           console.log(this.owner.dentifyType);
         }
       }
-      //国籍
-      for (var i = 0; i < this.chargeNationalityList.length; i++) {
-        if (this.chargeNationalityList[i].text === picker.text) {
-          this.chargeNationality = this.chargeNationalityList[i].text;
-          this.owner.countryCode = this.chargeNationalityList[i].code;
-          console.log(this.owner.countryCode);
-        }
-      }
-
+ 
       //车主性质
  
       for (var i = 0; i < this.insurancePolicyList.length; i++) {
@@ -719,6 +726,9 @@ export default {
           this.insurancePolicy = this.insurancePolicyList[i].text;
           this.mailAddr.policyType = this.insurancePolicyList[i].code;
         }
+      }
+      if (picker.text == "纸质"){
+      this.mailAddr.email = "";
       }
       for (var i = 0; i < this.distributionList.length; i++) {
         if (this.distributionList[i].text === picker.text) {
@@ -780,8 +790,9 @@ export default {
       this.three.cityValue = bb[1];
       this.three.districtValue = bb[2];
     },
-    emitImgs(list) {
+    emitImgs(list,list2) {
       this.imgs = list;
+      this.imgUrl = list2;
     }
   }
 };

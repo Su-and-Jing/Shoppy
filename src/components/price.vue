@@ -31,7 +31,7 @@
           <div class="car-msgInfo cells">
             <van-cell class="carNumber" title="车牌号码">
               <span>{{city}}</span>
-              <van-icon name="arrow-down" @click="choosePopup(cityList,'city')"></van-icon>
+              <van-icon name="arrow-down" @click="choosecity"></van-icon>
               <input
                 type="text"
                 maxlength="6"
@@ -42,6 +42,18 @@
                 @input="carnumzz(carNum)"
               />
             </van-cell>
+            <!-- 城市选择框 -->
+            <van-popup v-model="showPopupCity" position="bottom" :style="{ height: '48%' }">
+              <div class="chooseCity">
+                <p>
+                  <span>选择省份</span>
+                  <span class="wc" @click="success">完成</span>
+                </p>
+                <ul>
+                  <li v-for="(item,index) in cityList" :key="index" @click="country(item)">{{item}}</li>
+                </ul>
+              </div>
+            </van-popup>
             <div v-show="isShowCar">
               <van-cell
                 title="车辆类型"
@@ -232,7 +244,7 @@
                 label="起保日期"
                 v-model="insRegDate"
                 right-icon="notes-o"
-                @click-right-icon="dateShow('insRegDate')"
+                @click-right-icon="dateShow111('insRegDate')"
                 readonly
                 @changeHandle="changeHandle"
               >
@@ -251,7 +263,7 @@
                 label="终保日期"
                 v-model="endDate"
                 right-icon="notes-o"
-                @click-right-icon="dateShow('endDate')"
+                @click-right-icon="dateShow222('endDate')"
                 readonly
                 @changeHandle="changeHandle"
               ></van-field>
@@ -314,7 +326,7 @@
                     is-link
                     v-model="taxLocation"
                     arrow-direction="down"
-                    @click="choosePopup(taxLocationList,'taxLocation')"
+                    @click="choosePopupcountry(taxLocationList,'taxLocation')"
                     @changeHandle="changeHandle"
                   />
                 </van-cell-group>
@@ -327,21 +339,6 @@
                     v-model="deductionDue"
                     arrow-direction="down"
                     @click="choosePopup(deductionDueList,'deductionDue')"
-                    @changeHandle="changeHandle"
-                  />
-
-                  <van-cell
-                    class="deductionDueType"
-                    title="减免税方案代码"
-                    is-link
-                    v-model="deductionDueType"
-                    arrow-direction="down"
-                    @click="choosePopup(deductionDueTypeList,'deductionDueType')"
-                    @changeHandle="changeHandle"
-                  />
-                  <van-field
-                    v-model="deductionDueProportion"
-                    label="减免比例"
                     @changeHandle="changeHandle"
                   />
                   <van-field v-model="documentNumber" label="减免税凭证号" @changeHandle="changeHandle"></van-field>
@@ -411,7 +408,7 @@
                 label="起保日期"
                 v-model="busRegisterDate"
                 right-icon="notes-o"
-                @click-right-icon="dateShow('busRegisterDate')"
+                @click-right-icon="dateShow333('busRegisterDate')"
                 readonly
                 @changeHandle="changeHandle"
               >
@@ -438,7 +435,7 @@
                 label="终保日期"
                 v-model="RegDate"
                 right-icon="notes-o"
-                @click-right-icon="dateShow('RegDate')"
+                @click-right-icon="dateShow444('RegDate')"
                 readonly
                 @changeHandle="changeHandle"
               ></van-field>
@@ -461,16 +458,46 @@
                   :min-date="minDate"
                 />
               </van-popup>
-              <!-- <van-popup v-model="showPopupDate11" position="bottom">
+              <van-popup v-model="showPopupDate111" position="bottom">
                 <van-datetime-picker
-                  @cancel="showPopupDate11=false"
+                  @cancel="showPopupDate111=false"
                   v-model="currentDate"
                   type="date"
-                  @confirm="confirmDate11"
+                  @confirm="confirmDate111"
                   @change="changeHandle"
                   :min-date="minDate"
                 />
-              </van-popup>-->
+              </van-popup>
+              <van-popup v-model="showPopupDate222" position="bottom">
+                <van-datetime-picker
+                  @cancel="showPopupDate222=false"
+                  v-model="currentDate"
+                  type="date"
+                  @confirm="confirmDate222"
+                  @change="changeHandle"
+                  :min-date="minDate"
+                />
+              </van-popup>
+              <van-popup v-model="showPopupDate333" position="bottom">
+                <van-datetime-picker
+                  @cancel="showPopupDate333=false"
+                  v-model="currentDate"
+                  type="date"
+                  @confirm="confirmDate333"
+                  @change="changeHandle"
+                  :min-date="minDate"
+                />
+              </van-popup>
+              <van-popup v-model="showPopupDate444" position="bottom">
+                <van-datetime-picker
+                  @cancel="showPopupDate444=false"
+                  v-model="currentDate"
+                  type="date"
+                  @confirm="confirmDate444"
+                  @change="changeHandle"
+                  :min-date="minDate"
+                />
+              </van-popup>
               <!-- 完税凭证填发日期 -->
               <van-popup v-model="showPopupDate5" position="bottom">
                 <van-datetime-picker
@@ -611,8 +638,8 @@
               <div class="second">
                 <span class="s2" style="margin-right:35px">{{this.typesList[7].text}}</span>
                 <div class="import-btn">
-                  <span>{{import1}}</span>
-                  <van-icon name="arrow-down" @click="choosePopup(importList,'import1')"></van-icon>
+                  <span>{{import2}}</span>
+                  <van-icon name="arrow-down" @click="choosePopup(importList,'import2')"></van-icon>
                 </div>
                 <!-- 百分比 -->
                 <div class="import-btn" v-show="isShow">
@@ -800,6 +827,15 @@
           @change="changeHandle"
         />
       </van-popup>
+      <van-popup v-model="showpopupCountry" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="columns"
+          @confirm="confirmCountry"
+          @cancel="showpopupCountry = false"
+          @change="changeHandle"
+        />
+      </van-popup>
       <van-popup
         v-model="showIcon"
         class="showIcon11"
@@ -825,8 +861,12 @@ import {
 export default {
   data() {
     return {
+      showPopupCity: false,
       carNum: "",
-      showPopupDate11: false,
+      showPopupDate111: false,
+      showPopupDate222: false,
+      showPopupDate333: false,
+      showPopupDate444: false,
       count: "0",
       jf: "",
       xj: "",
@@ -1238,6 +1278,7 @@ export default {
       ],
       // 玻璃单独破碎险
       import1: "进口",
+      import2: "国产",
       percent1: "10",
       percent: "15",
       importList: [{ code: 1, text: "进口" }, { code: 1, text: "国产" }],
@@ -1386,7 +1427,7 @@ export default {
       sumPermium: "",
       loadingShow: false,
       // 车辆所属城市
-      city: "京",
+      city: "",
       cityList: [
         "京",
         "津",
@@ -1459,6 +1500,14 @@ export default {
     }
   },
   methods: {
+    confirmCountry(picker,value){},
+    country(item) {
+      this.city = item;
+      this.showPopupCity = false;
+    },
+    success() {
+      this.showPopupCity = false;
+    },
     handleinput() {
       if (this.$refs.input != "") {
         this.spiritChecked = true;
@@ -2395,7 +2444,7 @@ export default {
         kindList.push(kind9);
       }
       // 精神损害险
-      if (this.spiritMount !== "") {
+      if (this.spiritMount !== "" && this.spiritMount == "0") {
         var kind10 = {};
         kind10.kindCode = this.typesList[9].code;
         kind10.amount = this.spiritMount;
@@ -2636,6 +2685,13 @@ export default {
       this.columns = list;
       this.currentPicker = name;
     },
+    //纳税地区代码
+    choosePopupcountry(list, name) {
+      this.showpopupCountry = true;
+    },
+    choosecity() {
+      this.showPopupCity = true;
+    },
     // 确定选择
     confirmPicker(picker, values) {
       console.log(picker, values); //
@@ -2659,11 +2715,13 @@ export default {
       } else if (this[this.currentPicker] == "不征") {
         this.payCode = "6";
       }
-      if (this[this.currentPicker] == "国产") {
+      console.log(this.currentPicker);
+      if (this.currentPicker == this.import2) {
         this.isShow = false;
-      } else if (this[this.currentPicker] == "进口") {
+      } else {
         this.isShow = true;
       }
+
       if (this.second == "不投保") {
         this.secondChecked = false;
       }
@@ -2682,15 +2740,66 @@ export default {
     },
     //显示注册日期
     dateShow(name) {
-      this.showPopupDate = true;
+      this.showPopupDate11 = true;
       this.currentDateName = name;
       console.log(this.currentDateName);
     },
-    //        dateShow11(name) {
-    //       this.showPopupDate11 = true;
-    //       this.currentDateName = name;
-    //       console.log(this.currentDateName);
-    //     },
+    dateShow111(name) {
+      this.showPopupDate111 = true;
+      this.currentDateName = name;
+      console.log(this.currentDateName);
+    },
+    confirmDate111(picker) {
+      this.insRegDate = dayjs(picker).format("YYYY-MM-DD 00");
+      console.log(this.insRegDate);
+      this.endDate = dayjs(this.insRegDate)
+        .add(1, "year")
+        .format("YYYY-MM-DD HH");
+      this.endDate = dayjs(this.endDate)
+        .add(-1, "day")
+        .format("YYYY-MM-DD HH");
+      this.endDate = dayjs(this.endDate)
+        .add(1, "hour")
+        .format("YYYY-MM-DD 24");
+      this.showPopupDate111 = false;
+    },
+    confirmDate222(picker) {
+      this.endDate = dayjs(picker).format("YYYY-MM-DD 24");
+      this.showPopupDate222 = false;
+    },
+    confirmDate333(picker) {
+      this.busRegisterDate = dayjs(picker).format("YYYY-MM-DD 00");
+      console.log(this.busRegisterDate);
+      this.RegDate = dayjs(this.busRegisterDate)
+        .add(1, "year")
+        .format("YYYY-MM-DD HH");
+      this.RegDate = dayjs(this.RegDate)
+        .add(-1, "day")
+        .format("YYYY-MM-DD HH");
+      this.RegDate = dayjs(this.RegDate)
+        .add(1, "hour")
+        .format("YYYY-MM-DD 24");
+      this.showPopupDate333 = false;
+    },
+    confirmDate444(picker) {
+      this.showPopupDate444 = false;
+      this.RegDate = dayjs(picker).format("YYYY-MM-DD 24");
+    },
+    dateShow222(name) {
+      this.showPopupDate222 = true;
+      this.currentDateName = name;
+      console.log(this.currentDateName);
+    },
+    dateShow333(name) {
+      this.showPopupDate333 = true;
+      this.currentDateName = name;
+      console.log(this.currentDateName);
+    },
+    dateShow444(name) {
+      this.showPopupDate444 = true;
+      this.currentDateName = name;
+      console.log(this.currentDateName);
+    },
     dateShow2(name) {
       this.showPopupDate = true;
       this.currentDateName = name;
@@ -2710,38 +2819,37 @@ export default {
       // console.log(this.currentDateName);
     }, // 确定选择
     // 确定选择
+    // confirmDate11(picker) {
+    //   // this.showPopupDate11 = false;
+    //   let date = dayjs(picker).format("YYYY-MM-DD HH"); // this[this.currentDateName] = date; // console.log(date); // console.log(this.currentDateName);
+    //   this.showPopupDate11 = false;
+    //   this.insRegDate = dayjs(picker).format("YYYY-MM-DD 00");
+    //   this.endDate = dayjs(date)
+    //     .add(1, "year")
+    //     .format("YYYY-MM-DD HH");
+    //   this.endDate = dayjs(this.endDate)
+    //     .add(-1, "day")
+    //     .format("YYYY-MM-DD HH");
+    //   this.endDate = dayjs(this.endDate)
+    //     .add(1, "hour")
+    //     .format("YYYY-MM-DD 24");
+    //   console.log(this.endDate);
+    // },
     confirmDate(picker) {
-      // this.showPopupDate11 = false;
       let date = dayjs(picker).format("YYYY-MM-DD HH"); // this[this.currentDateName] = date; // console.log(date); // console.log(this.currentDateName);
       this.showPopupDate = false;
-      this.insRegDate = dayjs(picker).format("YYYY-MM-DD 00");
-      this.endDate = dayjs(date)
-        .add(1, "year")
-        .format("YYYY-MM-DD HH");
-      this.endDate = dayjs(this.endDate)
-        .add(-1, "day")
-        .format("YYYY-MM-DD HH");
-      this.endDate = dayjs(this.endDate)
-        .add(1, "hour")
-        .format("YYYY-MM-DD 24");
-      console.log(this.endDate);
-    },
-    confirmDate11(picker) {
-      let date = dayjs(picker).format("YYYY-MM-DD HH"); // this[this.currentDateName] = date; // console.log(date); // console.log(this.currentDateName);
-      this.showPopupDate11 = false;
-      this.busRegisterDate = dayjs(picker).format("YYYY-MM-DD 00");
+      this.busRegisterDate = dayjs(picker).format("YYYY-MM-DD 00");
       console.log(this.busRegisterDate);
       this.RegDate = dayjs(date)
         .add(1, "year")
-        .format("YYYY-MM-DD HH");
+        .format("YYYY-MM-DD HH");
       this.RegDate = dayjs(this.RegDate)
         .add(-1, "day")
-        .format("YYYY-MM-DD HH");
+        .format("YYYY-MM-DD HH");
       this.RegDate = dayjs(this.RegDate)
         .add(1, "hour")
-        .format("YYYY-MM-DD 24");
+        .format("YYYY-MM-DD 24");
     },
-
     //完税凭证填发日期
     confirmDate5(picker) {
       let date = dayjs(picker).format("YYYY-MM-DD HH");

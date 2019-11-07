@@ -149,7 +149,9 @@ export default {
   data() {
     return {
       showDemo: false,
-      imgList: this.imgs
+      imgList: this.imgs,
+      imgPath: "",
+      imgurl: []
     };
   },
   methods: {
@@ -167,13 +169,21 @@ export default {
       this.emitImgList();
       // 调用影响上传接口
       let list = [];
-      for (let i = 0; i < file.length; i++) {
-        list.push({ img: file[i].content });
+      // alert(file.length);
+      if (file.length) {
+        for (let i = 0; i < file.length; i++) {
+          list.push({ img: file[i].content });
+        }
+      } else {
+        list.push({ img: file.content });
       }
       const data = await UploadInsureImg({ imgList: list });
       console.log(data);
       if (data.state == 200) {
-        this.$toast.success("成功");
+        this.imgPath = data.data.imgPath;
+        for (var i = 0; i < this.imgPath.length; i++) {
+          this.imgurl.push(this.imgPath[i]);
+        }
       }
     },
     deleteCurrentImg(name, index) {
@@ -181,7 +191,7 @@ export default {
       this.emitImgList();
     },
     emitImgList() {
-      this.$emit("emitImgList", this.imgList);
+      this.$emit("emitImgList", this.imgList,this.imgurl);
     }
   }
 };
