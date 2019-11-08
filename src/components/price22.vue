@@ -848,7 +848,7 @@ export default {
   data() {
     return {
       showPopupDate11: false,
-      modelcode: "",
+      modelCode: "",
       carNum: "",
       count: "0",
       jf: "",
@@ -1481,7 +1481,7 @@ export default {
     },
     $route() {
       this.model = this.$route.query.name;
-      this.modelcode = this.$route.query.code;
+      this.modelCode = this.$route.query.Code;
     }
   },
   methods: {
@@ -2190,7 +2190,7 @@ export default {
       car.vin = this.VIN;
       car.plateNo = this.plateNo;
       car.model = this.model;
-      car.modelcode = this.modelcode;
+      car.modelCode = this.modelCode;
       car.motorTypeCode = this.motorTypeCode;
       car.motorUsageTypeCode = this.motorUsageTypeCode;
       car.registerDate = this.registerDate;

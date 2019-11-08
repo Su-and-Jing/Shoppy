@@ -10,53 +10,84 @@
         <van-field
           label="登记机构"
           readonly
-          v-model="registrationOrgan"
+          v-model="loginComName"
           right-icon="arrow-down"
-          @click="choosePopup(registrationOrganList,Registrationagencycode, 'registrationOrgan',a='a')"
+          @click="choosePopup1(loginList,'loginComName')"
         />
         <van-field
           label="归属机构"
           readonly
           right-icon="arrow-down"
           ref="aa"
-          v-model="ownershipInstitution"
-          @click="choosePopup(ownershipInstitutionList,ownershipInstitutionCode,'ownershipInstitution',a = 'v')"
+          v-model="comName"
+          @click="choosePopup2(comList,'comName')"
         />
         <!-- ownershipInstitutionList:所有的name，ownershipInstitutionCode：对象，ownershipInstitution：显示的name，a = 'v'：标记   -->
         <van-field
           label="渠道类型"
           readonly
           right-icon="arrow-down"
-          v-model="channelType"
-          @click="choosePopup(channelList,ownership,'channelType',a = 'c')"
+          v-model="producerName"
+          @click="choosePopup3(producerList,'producerName')"
         />
+
         <van-field
           label="代理人"
           readonly
           right-icon="arrow-down"
-          v-model="interCompany"
-          @click="choosePopup(interCompanyList,interCompanyCode,'interCompany',a = 'd')"
+          v-model="agentName"
+          @click="choosePopup4(agentList,'agentName')"
         />
-
         <van-field
           label="业务员"
           readonly
-          v-model="maintPersonnel"
+          v-model="handlerName"
           right-icon="arrow-down"
-          @click="choosePopup(maintPersonnelList,Salesman, 'maintPersonnel',a = 'e')"
+          @click="choosePopup5(handlerList,'handlerName')"
         />
         <van-field label="维护人员" v-model="salesman" />
         <span class="confirm" type="info" @click="confirm">确定</span>
       </van-cell-group>
     </van-popup>
     <!-- 下拉公共组件 -->
-    <van-popup v-model="showPopup" position="bottom" :close-on-click-overlay="false">
+    <van-popup v-model="showPopup1" position="bottom" :close-on-click-overlay="false">
       <van-picker
         show-toolbar
         :columns="columns"
-        @confirm="confirmPicker"
-        @cancel="heihie"
-        @change="onChange"
+        @confirm="confirmPicker1"
+        @cancel="showPopup1 = false"
+      />
+    </van-popup>
+    <van-popup v-model="showPopup2" position="bottom" :close-on-click-overlay="false">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @confirm="confirmPicker2"
+        @cancel="showPopup2 = false"
+      />
+    </van-popup>
+    <van-popup v-model="showPopup3" position="bottom" :close-on-click-overlay="false">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @confirm="confirmPicker3"
+        @cancel="showPopup3 = false"
+      />
+    </van-popup>
+    <van-popup v-model="showPopup4" position="bottom" :close-on-click-overlay="false">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @confirm="confirmPicker4"
+        @cancel="showPopup4= false"
+      />
+    </van-popup>
+    <van-popup v-model="showPopup5" position="bottom" :close-on-click-overlay="false">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @confirm="confirmPicker5"
+        @cancel="showPopup5= false"
       />
     </van-popup>
   </div>
@@ -73,78 +104,44 @@ export default {
   },
   data() {
     return {
+      columns: "",
       submit: "1",
-      // agentName: "永保保险代理有限公司河南分公司",
       Salesman: "",
-      interCompanyCode: "",
-      // agentName: "",
-      Registrationagencycode: "",
-      ownershipInstitutionCode: "",
+      // interCompanyCode: "",
+      // // agentName: "",
+      // Registrationagencycode: "",
+      // ownershipInstitutionCode: "",
       showPopup: false,
       showInsitutionPopup: false,
       // 登录机构\
-      // ID: "53",
-      registrationOrgan: "",
-      registrationOrganList: [],
+      loginComCode: "",
+      loginComName: "",
+      loginList: "",
+      showPopup1: false,
       // 归属机构
-      ownershipInstitution: "",
-      ownershipInstitutionList: [],
+      comList: "",
+      comCode: "",
+      comName: "",
+      showPopup2: false,
       // 渠道类型
-      channelType: "请选择",
-      channelCode: "",
-      channelList: [
-        { code: "11", text: "传统直销" },
-        { code: "12", text: "新渠道直销" },
-        { code: "13", text: "电话网络直销" },
-        { code: "521", text: "车商业务" },
-        { code: "522", text: "银行邮政代理" },
-        { code: "523", text: "个人代理" },
-        { code: "51", text: "互动业务" },
-        { code: "529", text: "其他兼业代理" },
-        { code: "53", text: "专业代理" },
-        { code: "54", text: "经纪业务" }
-      ],
-      //中介公司
-      interCompany: "",
-      interCompanyList: [],
+      producerList: "",
+      producerName: "",
+      producerCode: "",
+      showPopup3: false,
+      //代理人
+      agentList: "",
+      agentName: "",
+      agentCode: "",
+      showPopup4: false,
+      // 业务员
+      handlerList: "",
+      handlerName: "",
+      handlerCode: "",
+      showPopup5: false,
       //维护人员
       salesman: "",
-      //业务员
-      maintPersonnelCode: "",
-      maintPersonnel: "",
-      maintPersonnelList: [],
-      columns: null,
-      result: "",
-      date: null,
-      // 选择之后的code
-      code: null,
-      // 如果没有code就填他
-      ownership: null,
-      // 下面时每一个选择的code
-      // 登记机构
-      Registrationagency: "",
-      Registrationagen: "",
-      // 归属机构
-      Ownershipagency: "",
-      Ownershipagen: "",
-      //渠道类型
-      //中介公司
-      agency: "",
-      agen: "",
-      //业务员
-      Salesma: "",
-      Sales: "",
-      //维护人员
-      Maintenancepersonnel: "",
-      // 存储标记
-      storage: "",
-      // 暂时存储code
-      storagecode: "",
-      agentCode: "",
-      agreementNo: "",
-      agentPermitNo: "",
-      certificateNo: ""
-      // agentName:''
+
+      result: ""
     };
   },
   watch: {
@@ -152,172 +149,6 @@ export default {
       this.showInsitutionPopup = val;
       if (val) {
         this.Sell();
-        // this.Sell();
-      }
-    },
-    channelType: {
-      async handler(newValue, oldValue) {
-        //调用出单机构接口
-        console.log(this.Channelt);
-        if (this.showInsitutionPopup == true) {
-          const data = await institution({
-            loginComCode: this.Registrationagency,
-            comCode: this.Ownershipagency,
-            agentCode: this.agency,
-            handlerCode: this.Salesma,
-            producerCode: this.channelCode,
-            // agreementNo: this.agreementNo,
-            // agentPermitNo: this.agentPermitNo,
-            // agentName: this.interCompany,
-            // handlerName: this.maintPersonnel,
-            // producerName: this.channelType,
-            // loginComName: this.registrationOrgan,
-            // comName: this.ownershipInstitution,
-            // defendName: this.salesman
-          });
-          console.log(data);
-          if (data.state === "200") {
-            for (var i = 0; i < this.result.data.producerList.length; i++) {
-              if (this.result.data.producerList[i].isFlag == true) {
-                this.channelCode = this.result.data.producerList[
-                  i
-                ].producerCode;
-                this.channelType = this.result.data.producerList[
-                  i
-                ].producerName;
-              }
-            }
-            for (var i = 0; i < this.result.data.comList.length; i++) {
-              // console.log(this.result.data.comList[i].isFlag == true)
-              if (this.result.data.comList[i].isFlag == true) {
-                this.Ownershipagency = this.result.data.comList[i].comCode;
-                this.ownershipInstitution = this.result.data.comList[i].comName;
-              }
-            }
-            this.agentPermitNo = data.data.agentList[0].agentPermitNo;
-            // console.log(this.agentPermitNo);
-            this.certificateNo = data.data.handlerList[0].certificateNo;
-            this.agreementNo = data.data.handlerList[0].agreementNo;
-            //中介公司
-            this.interCompanyList = data.data.agentList;
-            console.log(data);
-            var inter = this.interCompanyList.map(item => {
-              return item.agentName;
-            });
-            var inte = this.interCompanyList.map(item => {
-              return item;
-            });
-            // 添加code
-            console.log(inte);
-            this.interCompanyList = inter;
-            this.interCompanyCode = inte;
-            this.interCompany = data.data.agentList[0].agentName;
-            this.agency = data.data.agentList[0].agentCode;
-            this.agen = data.data.agentList[0].agentCode;
-
-            this.Channeltyp = data.data.agentList[0].agentName;
-            this.Channelt = data.data.agentList[0].agentName;
-            console.log("==============");
-            console.log(this.Channelt);
-            //业务员
-            this.maintPersonnelList = data.data.handlerList;
-            var main = this.maintPersonnelList.map(item => {
-              return item.handlerName;
-            });
-            console.log(main);
-            this.maintPersonnelList = main;
-            this.maintPersonnel = data.data.handlerList[0].handlerName;
-            this.Salesma = data.data.handlerList[0].handlerCode;
-            this.Sales = data.data.handlerList[0].handlerCode;
-          } else {
-            this.$toast(data.message);
-            
-            // this.$toast.fail("失败");
-          }
-        }
-        for (var i = 0; i < this.channelList.length; i++) {}
-      }
-    },
-    ownershipInstitution: {
-      async handler(newValue, oldValue) {
-        //调用出单机构接口
-
-        if (this.showInsitutionPopup == true) {
-          const data = await institution({
-            loginComCode: this.Registrationagency,
-            comCode: this.Ownershipagency,
-            agentCode: this.agency,
-            handlerCode: this.Salesma,
-            producerCode: this.channelCode,
-            // agreementNo: this.agreementNo,
-            // agentPermitNo: this.agentPermitNo,
-            // agentName: this.interCompany,
-            // handlerName: this.maintPersonnel,
-            // producerName: this.channelType,
-            // loginComName: this.registrationOrgan,
-            // comName: this.ownershipInstitution,
-            // defendName: this.salesman
-          });
-          console.log(data);
-          if (data.state === "200" ) {
-            for (var i = 0; i < this.result.data.producerList.length; i++) {
-              if (this.result.data.producerList[i].isFlag == true) {
-                this.channelCode = this.result.data.producerList[
-                  i
-                ].producerCode;
-                this.channelType = this.result.data.producerList[
-                  i
-                ].producerName;
-              }
-            }
-            for (var i = 0; i < this.result.data.comList.length; i++) {
-              // console.log(this.result.data.comList[i].isFlag == true)
-              if (this.result.data.comList[i].isFlag == true) {
-                this.Ownershipagency = this.result.data.comList[i].comCode;
-                this.ownershipInstitution = this.result.data.comList[i].comName;
-              }
-            }
-            this.certificateNo = data.data.handlerList[0].certificateNo;
-            this.agentPermitNo = data.data.agentList[0].agentPermitNo;
-            console.log(this.agentPermitNo);
-            this.agreementNo = data.data.handlerList[0].agreementNo;
-            //中介公司
-            this.interCompanyList = data.data.agentList;
-            console.log(data);
-            var inter = this.interCompanyList.map(item => {
-              return item.agentName;
-            });
-            var inte = this.interCompanyList.map(item => {
-              return item;
-            });
-            // 添加code
-            console.log(inte);
-            this.interCompanyList = inter;
-            this.interCompanyCode = inte;
-            this.interCompany = data.data.agentList[0].agentName;
-            this.agency = data.data.agentList[0].agentCode;
-            this.agen = data.data.agentList[0].agentCode;
-
-            this.Channeltyp = data.data.agentList[0].agentName;
-            this.Channelt = data.data.agentList[0].agentName;
-            console.log("==============");
-            console.log(this.Channelt);
-            //业务员
-            this.maintPersonnelList = data.data.handlerList;
-            var main = this.maintPersonnelList.map(item => {
-              return item.handlerName;
-            });
-            console.log(main);
-            this.maintPersonnelList = main;
-            this.maintPersonnel = data.data.handlerList[0].handlerName;
-            this.Salesma = data.data.handlerList[0].handlerCode;
-            this.Sales = data.data.handlerList[0].handlerCode;
-          } else {
-            // this.$toast.fail("失败");
-            this.$toast(data.message);
-          }
-        }
-        for (var i = 0; i < this.channelList.length; i++) {}
       }
     }
   },
@@ -325,191 +156,154 @@ export default {
     //调用出单机构接口
     async Sell() {
       const data = await institution({
-        loginComCode: this.Registrationagency,
-        comCode: this.Ownershipagency,
-        agentCode: this.agency,
-        handlerCode: this.Salesma,
-        producerCode: this.channelCode,
-        // agreementNo: this.agreementNo,
-        // agentPermitNo: this.agentPermitNo,
-        // agentName: this.interCompany,
-        // handlerName: this.maintPersonnel,
-        // producerName: this.channelType,
-        // loginComName: this.registrationOrgan,
-        // comName: this.ownershipInstitution,
-        // defendName: this.salesman
+        loginComCode: this.loginComCode,
+        comCode: this.comCode,
+        agentCode: this.agentCode,
+        handlerCode: this.handlerCode,
+        producerCode: this.producerCode
       });
-      console.log(2);
+      // var data = JSON.stringify(data);
       if (data.state === "200") {
-        console.log(2);
-        this.showInsitutionPopup = true;
-        this.result = data;
-        console.log(data);
-        this.agreementNo = data.data.handlerList[0].agreementNo;
-        this.certificateNo = data.data.handlerList[0].certificateNo;
-        this.agentPermitNo = data.data.agentList[0].agentPermitNo;
-        // 维护人员
-        this.salesman = this.result.data.defendName;
-        for (var i = 0; i < this.result.data.producerList.length; i++) {
-          if (this.result.data.producerList[i].isFlag == true) {
-            this.channelCode = this.result.data.producerList[i].producerCode;
-            this.channelType = this.result.data.producerList[i].producerName;
+        console.log(1212121);
+        //登陆机构
+        this.loginList = data.data.loginComList;
+        if (this.loginList !== "") {
+          for (var i = 0; i < this.loginList.length; i++) {
+            if (this.loginList[i].isFlag == true) {
+              this.loginComName = this.loginList[i].loginComName;
+              this.loginComCode = this.loginList[i].loginComCode;
+            }
           }
         }
-        for (var i = 0; i < this.result.data.comList.length; i++) {
-          // console.log(this.result.data.comList[i].isFlag == true)
-          if (this.result.data.comList[i].isFlag == true) {
-            this.Ownershipagency = this.result.data.comList[i].comCode;
-            this.ownershipInstitution = this.result.data.comList[i].comName;
+        //归属机构
+        this.comList = data.data.comList;
+        if (this.comList !== "") {
+          for (var i = 0; i < this.comList.length; i++) {
+            if (this.comList[i].isFlag == true) {
+              this.comName = this.comList[i].comName;
+              this.comCode = this.comList[i].comCode;
+            }
           }
         }
-        // console.log(this.ownershipInstitution);
+        console.log(this.comList);
+        //渠道类型
+        this.producerList = data.data.producerList;
+        if (this.producerList !== "") {
+          for (var i = 0; i < this.producerList.length; i++) {
+            if (this.producerList[i].isFlag == true) {
+              this.producerName = this.producerList[i].producerName;
+              this.producerCode = this.producerList[i].producerCode;
+            }
+          }
+        }
+        console.log(this.producerList);
+        //代理人
+        this.agentList = data.data.agentList;
+
+        for (var i = 0; i < this.agentList.length; i++) {
+          if (this.agentList[i].isFlag == true) {
+            this.agentName = this.agentList[i].agentName;
+            this.agentCode = this.agentList[i].agentCode;
+          }
+        }
+
+        console.log(this.agentList);
         //业务员
-        this.maintPersonnel = data.data.handlerList[0].handlerName;
-        this.Salesma = data.data.handlerList[0].handlerCode;
-        this.Sales = data.data.handlerList[0].handlerCode;
-        //中介公司
-        for (var i = 0; i < data.data.agentList.length; i++) {
-          this.agency = data.data.agentList[0].agentCode;
-          this.interCompany = data.data.agentList[0].agentName;
+        this.handlerList = data.data.handlerList;
+        if (this.handlerList !== "") {
+          for (var i = 0; i < this.handlerList.length; i++) {
+            if (this.handlerList[i].isFlag == true) {
+              this.handlerName = this.handlerList[i].handlerName;
+              this.handlerCode = this.handlerList[i].handlerCode;
+            }
+          }
         }
-        // this.agentCode = data.data.agentList[0].agentCode;
-        //登录机构
-        this.registrationOrganList = this.result.data.loginComList;
-        var reg = this.registrationOrganList.map(item => {
-          return item.loginComName;
-        });
-        var code = this.registrationOrganList.map(item => {
-          return item;
-        });
-        // this.agentName = data.date.
-        this.Registrationagency = code[0].loginComCode;
-        this.Registrationagen = code[0].loginComCode;
-        this.registrationOrganList = reg;
-        this.Registrationagencycode = code;
-        this.registrationOrgan = this.result.data.loginComList[0].loginComName;
-        this.data = this.result.data.loginComList;
-        // ----------------------循环------------
-        let a = [];
-        for (let key in this.result.data.loginComList) {
-          a.push(this.result.data.loginComList[key].loginComName);
-        }
-        console.log(a);
-        this.$emit("closeLogin", a);
-
-        this.columns = a;
-        console.log(this.columns);
-        // --------------------------------------
-
-        // 归属机构
-        this.ownershipInstitutionList = this.result.data.comList;
-        // 获取name
-        var own = this.ownershipInstitutionList.map(item => {
-          return item.comName;
-        });
-        // 获取一个对象
-        var code = this.ownershipInstitutionList.map(item => {
-          return item;
-        });
-        console.log(code);
-        this.Ownershipagency = code[0].comCode;
-        this.Ownershipagen = code[0].comCode;
-        this.ownershipInstitutionList = own;
-        this.ownershipInstitutionCode = code;
-        this.ownershipInstitution = this.result.data.comList[0].comName;
-        this.date = this.result.data.comList;
-        // ----------------------循环------------
-        let b = [];
-        for (let key in this.result.data.comList) {
-          b.push(this.result.data.comList[key].comName);
-        }
-
-        this.columns = b;
+        this.defendName = data.data.defendName;
       } else {
         this.$toast(data.message);
-        console.log(2);
         this.showInsitutionPopup = true;
-        this.result = data;
-        console.log(data);
-        for (var i = 0; i < this.result.data.producerList.length; i++) {
-          if (this.result.data.producerList[i].isFlag == true) {
-            this.channelCode = this.result.data.producerList[i].producerCode;
-            this.channelType = this.result.data.producerList[i].producerName;
+        //登陆机构
+        this.loginList = data.data.loginComList;
+        if (this.loginList) {
+          for (var i = 0; i < this.loginList.length; i++) {
+            if (this.loginList[i].isFlag == true) {
+              this.loginComName = this.loginList[i].loginComName;
+              this.loginComCode = this.loginList[i].loginComCode;
+            }
           }
         }
-        // this.agentCode = data.data.agentList[0].agentCode;
-        //登录机构
-        this.registrationOrganList = this.result.data.loginComList;
-        var reg = this.registrationOrganList.map(item => {
-          return item.loginComName;
-        });
-        var code = this.registrationOrganList.map(item => {
-          return item;
-        });
-        // this.agentName = data.date.
-        this.Registrationagency = code[0].loginComCode;
-        this.Registrationagen = code[0].loginComCode;
-        this.registrationOrganList = reg;
-        this.Registrationagencycode = code;
-        this.registrationOrgan = this.result.data.loginComList[0].loginComName;
-        this.data = this.result.data.loginComList;
-        // ----------------------循环------------
-        let a = [];
-        for (let key in this.result.data.loginComList) {
-          a.push(this.result.data.loginComList[key].loginComName);
-        }
-        console.log(a);
-        this.$emit("closeLogin", a);
 
-        this.columns = a;
-        console.log(this.columns);
-        // --------------------------------------
-
-        // 归属机构
-        this.ownershipInstitutionList = this.result.data.comList;
-        // 获取name
-        var own = this.ownershipInstitutionList.map(item => {
-          return item.comName;
-        });
-        // 获取一个对象
-        var code = this.ownershipInstitutionList.map(item => {
-          return item;
-        });
-        console.log(code);
-        this.Ownershipagency = code[0].comCode;
-        this.Ownershipagen = code[0].comCode;
-        this.ownershipInstitutionList = own;
-        this.ownershipInstitutionCode = code;
-        this.ownershipInstitution = this.result.data.comList[0].comName;
-        this.date = this.result.data.comList;
-        // ----------------------循环------------
-        let b = [];
-        for (let key in this.result.data.comList) {
-          b.push(this.result.data.comList[key].comName);
+        //归属机构
+        this.comList = data.data.comList;
+        if (this.comList !== "" && this.comList.length > 0) {
+          for (var i = 0; i < this.comList.length; i++) {
+            if (this.comList[i].isFlag == true) {
+              this.comName = this.comList[i].comName;
+              this.comCode = this.comList[i].comCode;
+            }
+          }
+        } else {
+          this.comName = "";
+          this.comCode = "";
         }
 
-        this.columns = b;
+        //渠道类型
+        this.producerList = data.data.producerList;
+        if (this.producerList !== "" && this.producerList.length > 0) {
+          for (var i = 0; i < this.producerList.length; i++) {
+            if (this.producerList[i].isFlag == true) {
+              this.producerName = this.producerList[i].producerName;
+              this.producerCode = this.producerList[i].producerCode;
+            }
+          }
+        } else {
+          this.producerName = "";
+          this.producerCode = "";
+        }
+
+        //代理人
+        this.agentList = data.data.agentList;
+
+        if (this.agentList !== "" && this.agentList.length > 0) {
+          // alert(this.agentList);
+          for (var i = 0; i < this.agentList.length; i++) {
+            if (this.agentList[i].isFlag == true) {
+              this.agentName = this.agentList[i].agentName;
+              this.agentCode = this.agentList[i].agentCode;
+            }
+          }
+        } else {
+          this.agentName = "";
+          this.agentCode = "";
+        }
+
+        //业务员
+        this.handlerList = data.data.handlerList;
+        if (this.handlerList !== "" && this.handlerList.length > 0) {
+          // alert(2342);
+          for (var i = 0; i < this.handlerList.length; i++) {
+            if (this.handlerList[i].isFlag == true) {
+              this.handlerName = this.handlerList[i].handlerName;
+              this.handlerCode = this.handlerList[i].handlerCode;
+            }
+          }
+        } else {
+          this.handlerName = "";
+          this.handlerCode = "";
+        }
+
+        console.log(this.handlerList);
+        this.defendName = data.data.defendName;
       }
     },
-
     async confirm() {
-      // 关闭弹框
-      // this.showInsitutionPopup = false;
       // 确定
       const data = await institution({
-        loginComCode: this.Registrationagency,
-        comCode: this.Ownershipagency,
-        agentCode: this.agency,
-        handlerCode: this.Salesma,
-        producerCode: this.channelCode,
-        // agreementNo: this.agreementNo,
-        // agentPermitNo: this.agentPermitNo,
-        // agentName: this.interCompany,
-        // handlerName: this.maintPersonnel,
-        // producerName: this.channelType,
-        // loginComName: this.registrationOrgan, 
-        // comName: this.ownershipInstitution,
-        // defendName: this.salesman,
+        loginComCode: this.loginComCode,
+        comCode: this.comCode,
+        agentCode: this.agentCode,
+        handlerCode: this.handlerCode,
+        producerCode: this.producerCode,
         submit: this.submit
       });
       if (data.state === "200") {
@@ -519,97 +313,120 @@ export default {
         this.showInsitutionPopup = true;
         this.$toast(data.message);
       }
-      this.$router.go(0)
+      // this.$router.go(0);
     },
     // 选择器 共用
-    choosePopup(list, cod, name, b) {
-      this.storage = b;
-      console.log(cod);
-      this.code = cod;
-      this.showPopup = true;
+    choosePopup1(list, name) {
+      console.log(this.loginList);
+      console.log(list, name);
+      this.showPopup1 = true;
       this.columns = list;
-      this.currentPicker = name;
-      // this.Sell();
+      let bb = [];
+      for (var i = 0; i < this.columns.length; i++) {
+        let aa = {};
+        aa.code = this.columns[i].loginComCode;
+        aa.text = this.columns[i].loginComName;
+        bb.push(aa);
+        console.log(this.loginList);
+        this.currentPicker = name;
+      }
+      this.columns = bb;
     },
-
-    onChange(picker, value, index) {
-      console.log(value);
-
-      let thit = this;
-
-      function a(name, code, jh) {
-        if (thit.code != null) {
-          for (let key in thit.code) {
-            console.log(value, thit.code[key][name]);
-            if (value == thit.code[key][name]) {
-              console.log(thit.code[key][code]);
-              thit[jh] = thit.code[key][code];
-            }
-          }
-        }
+    choosePopup2(list, name) {
+      this.showPopup2 = true;
+      this.columns = list;
+      let bb = [];
+      for (var i = 0; i < this.columns.length; i++) {
+        let aa = {};
+        aa.code = this.columns[i].comCode;
+        aa.text = this.columns[i].comName;
+        bb.push(aa);
+        this.currentPicker = name;
       }
-
-      if (this.storage == "v") {
-        a("comName", "comCode", "Ownershipagency");
-      }
-
-      if (this.storage == "a") {
-        a("loginComName", "loginComCode", "Registrationagency");
-      }
-
-      if (this.storage == "d") {
-        a("agentName", "agentCode", "agency");
-      }
-
-      if (this.storage == "e") {
-        a("handlerName", "handlerCode", "Salesma");
-      }
-
-      console.log(this.Registrationagency);
-      //
-      //
-      //
-      // if (this.storage == "a") {
-      //     var name = 'loginComName';
-      //     var code = 'loginComCode';
-      // }
+      this.columns = bb;
     },
-
+    choosePopup3(list, name) {
+      this.showPopup3 = true;
+      this.columns = list;
+      let bb = [];
+      for (var i = 0; i < this.columns.length; i++) {
+        let aa = {};
+        aa.code = this.columns[i].producerCode;
+        aa.text = this.columns[i].producerName;
+        bb.push(aa);
+        this.currentPicker = name;
+      }
+      this.columns = bb;
+    },
+    choosePopup4(list, name) {
+      this.showPopup4 = true;
+      this.columns = list;
+      let bb = [];
+      for (var i = 0; i < this.columns.length; i++) {
+        let aa = {};
+        aa.code = this.columns[i].agentCode;
+        aa.text = this.columns[i].agentName;
+        bb.push(aa);
+        this.currentPicker = name;
+      }
+      this.columns = bb;
+    },
+    choosePopup5(list, name) {
+      this.showPopup5 = true;
+      this.columns = list;
+      console.log(this.columns);
+      let bb = [];
+      for (var i = 0; i < this.columns.length; i++) {
+        let aa = {};
+        aa.code = this.columns[i].handlerCode;
+        aa.text = this.columns[i].handlerName;
+        bb.push(aa);
+        this.currentPicker = name;
+      }
+      this.columns = bb;
+    },
     // 确定选择
-    confirmPicker(picker, values) {
-      // this.Sell();
-      console.log(picker, values);
-      if (picker.text) {
-        this[this.currentPicker] = picker.text;
-      } else {
-        this[this.currentPicker] = picker;
-      }
-      this.showPopup = false;
-      for (var i = 0; i < this.channelList.length; i++) {
-        if (this.channelList[i].text === picker.text) {
-          this.channelType = this.channelList[i].text;
-          this.channelCode = this.channelList[i].code;
-        }
-      }
+    confirmPicker1(picker, values) {
+      this.showPopup1 = false;
+      this.loginComCode = picker.code;
+      this.loginComName = picker.text;
+      this.Sell();
     },
-
-    heihie() {
-      if (this.storage == "a") {
-        this.Registrationagency = this.Registrationagen;
-      }
-
-      if (this.storage == "v") {
-        this.Ownershipagency = this.Ownershipagen;
-      }
-
-      if (this.storage == "d") {
-        this.agency = this.agen;
-      }
-
-      if (this.storage == "e") {
-        this.Salesma = this.Sales;
-      }
-      this.showPopup = false;
+    // 确定选择
+    confirmPicker2(picker, values) {
+      this.showPopup2 = false;
+      this.comCode = picker.code;
+      this.comName = picker.text;
+      console.log(this.comCode);
+      console.log(this.comName);
+      this.Sell();
+    },
+    // 确定选择
+    confirmPicker3(picker, values) {
+      this.showPopup3 = false;
+      this.producerCode = picker.code;
+      this.producerName = picker.text;
+      console.log(this.producerCode);
+      console.log(this.producerName);
+      this.Sell();
+    },
+    // 确定选择
+    confirmPicker4(picker, values) {
+      this.showPopup4 = false;
+      this.agentCode = picker.code;
+      this.agentName = picker.text;
+      console.log(this.agentCode);
+      console.log(this.agentName);
+      this.Sell();
+    },
+    // 确定选择
+    confirmPicker5(picker, values) {
+      this.showPopup5 = false;
+      this.handlerCode = picker.code;
+      this.handlerName = picker.text;
+      console.log(this.handlerCode);
+      console.log(this.handlerName);
+      this.Sell();
     }
   }
 };

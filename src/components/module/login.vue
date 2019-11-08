@@ -14,7 +14,14 @@
         <van-tab title="用户名登录" name="2">
           <van-cell-group class="field-group">
             <van-field v-model="username" label="用户名" clearable placeholder="请输入用户名" />
-            <van-field v-model="passwd" center clearable label="密码" placeholder="请输入密码"></van-field>
+            <van-field
+              type="password"
+              v-model="passwd"
+              center
+              clearable
+              label="密码"
+              placeholder="请输入密码"
+            ></van-field>
             <div class="submit" :class="{disabled:(!username || !passwd)}" @click="handleLogin">立即登录</div>
           </van-cell-group>
         </van-tab>
@@ -61,9 +68,9 @@ export default {
   data() {
     return {
       zhc: true,
-      username: "44000020",
-      passwd: "0000",
-      phone: "13910653201",
+      username: "",
+      passwd: "",
+      phone: "",
       sms: "",
       showPopup: this.showLogin,
       codeDisabled: false,
@@ -107,9 +114,12 @@ export default {
         window.sessionStorage.setItem("token", data.data.token);
         window.sessionStorage.setItem("carVerifyCode", data.data.carVerifyCode);
         window.sessionStorage.setItem("provinceName", data.data.provinceName);
-        window.sessionStorage.setItem("carPlateSimple", data.data.carPlateSimple);
+        window.sessionStorage.setItem(
+          "carPlateSimple",
+          data.data.carPlateSimple
+        );
       } else {
-        this.$toast.fail("手机号或验证码错误");
+        this.$toast(data.message);
       }
     },
     // 用户名登录
@@ -124,9 +134,12 @@ export default {
         window.sessionStorage.setItem("token", data.data.token);
         window.sessionStorage.setItem("carVerifyCode", data.data.carVerifyCode);
         window.sessionStorage.setItem("provinceName", data.data.provinceName);
-        window.sessionStorage.setItem("carPlateSimple", data.data.carPlateSimple);
+        window.sessionStorage.setItem(
+          "carPlateSimple",
+          data.data.carPlateSimple
+        );
       } else {
-        this.$toast.fail("用户名或密码错误");
+        this.$toast(data.message);
       }
     },
     sendVCode() {

@@ -15,6 +15,7 @@ module.exports = {
     // Various Dev Server settings
     // host: '10.0.25.200', // can be overwritten by process.env.HOST
     host: 'localhost',
+    // host: '139.224.124.196',
     // host: 'test.h5.chinahuanong.com.cn',
     // hostname:url.parse( 'www.test.h5.chinahuanong.com.cn').hostname,
     port: 80, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
@@ -46,7 +47,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: 'h5.chinahuanong.com.cn/dist/',
 
     /**
      * Source Maps

@@ -7,7 +7,7 @@
     <div class="content">
       <router-link
         tag="div"
-       :to="{name:'price',query:{name:item.modelname,modelcode:item.modelcode}}"
+       :to="{name:'price',query:{name:item.modelname,modelCode:item.modelcode}}"
         class="banner"
         v-for="(item,index) in CarTypeArr"
         :key="index"

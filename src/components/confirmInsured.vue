@@ -284,6 +284,10 @@
       <van-button plain color="#95c4fe" @click="cannelPrice">取消</van-button>
       <van-button type="info" @click="confirmSaleDiscount">确定</van-button>
       </van-popup>-->
+      <van-popup v-model="loadShow" class="showIcon" :close-on-click-overlay="false">
+      <img src="../assets/baijia.png" alt />
+      <p style="padding-top:15px">投保中...</p>
+    </van-popup>
     </div>
   </div>
 </template>
@@ -303,6 +307,7 @@ export default {
   },
   data() {
     return {
+      loadShow:false,
       imgUrl:'',
       passShow: false,
       peopleShow: false,
@@ -489,7 +494,7 @@ export default {
   methods: {
     insuredBtn(){
       if(this.insuredOwner == true){
-        console.log(12)
+    
         this.two.name = "";
         this.two.cervalidDate = "";
         this.two.identifyNo = "";
@@ -497,7 +502,9 @@ export default {
     },
     assuredBtn(){
        if(this.assuredOwner == true){
-        this.three = ''
+        this.three.name = "";
+        this.three.cervalidDate = "";
+        this.three.identifyNo = "";
       }
     },
     backHandle() {
@@ -603,6 +610,7 @@ export default {
     },
     // 调用核保接口
     async confirmInsure() {
+      this.loadShow = true;
       if (this.insuredOwner == true) {
         this.two = Object.assign({}, this.one);
         this.two.role = "1";
@@ -623,6 +631,7 @@ export default {
         imageUrl:this.imgUrl
       });
       if (data.state === "200") {
+        this.loadShow = false;
         var statusChild = data.data.status;
         if (data.data.status === "4" || data.data.status === "10") {
           this.passShow = true;
@@ -635,19 +644,23 @@ export default {
           // });
           // alert("下发修改");
         } else if (data.data.status == "3") {
+          this.loadShow = false;
           this.peopleShow = true;
           this.orderType = "1";
 
           // alert("人工核保");
         } else if (data.data.status == "5") {
+          this.loadShow = false;
           // alert("待支付");
           this.pay();
         }
       } else if (data.state === "1") {
+        this.loadShow = false;
         // this.$toast(data.message);
         this.$router.push({ path: "/price" });
       } else {
-        // this.$toast(data.message);
+        this.loadShow = false;
+        this.$toast(data.message);
       }
     },
     checkPicker(current, list) {
@@ -909,5 +922,17 @@ export default {
       flex: 1;
     }
   }
+}
+.showIcon {
+  background: rgba(0, 0, 0, 0.1);
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 140%;
+  color: #fff;
+  font-size: 16px;
+  // opacity: 0;
+  // color: #fff;
+  // opacity: ;
 }
 </style>

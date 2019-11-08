@@ -5,7 +5,7 @@
       class="notice-bar"
       color="#fff"
       background="rgba(0,0,0,0)"
-      text="足协杯战线连续第2年上演广州德比战，上赛季半决赛上恒大以两回合5-3的总比分淘汰富力。"
+      text="2019年11月8日，华农阿波罗车险耀眼问世、火力全开。首批试点广东，其他地区陆续上线中，敬请期待!"
       left-icon="volume-o"
     />
     <!-- 投保城市 -->
@@ -191,6 +191,10 @@
         </div>
       </div>
     </van-popup>
+    <van-popup v-model="loadShow" class="showIcon" :close-on-click-overlay="false">
+      <img src="../assets/baijia.png" alt />
+      <p style="padding-top:15px">报价中...</p>
+    </van-popup>
   </div>
 </template>
 
@@ -202,6 +206,8 @@ import { price, institution } from "@/common/library/api";
 export default {
   data() {
     return {
+      //加载中
+      loadShow: false,
       CarTypeArr: "",
       show: false,
       provinceName: "",
@@ -419,12 +425,13 @@ export default {
     },
     //调用报价接口
     async priceHandle() {
+      this.loadShow = true;
       window.sessionStorage.getItem("token");
       this.plateNo = this.carPlateSimple + this.plateNumber;
       console.log(this.plateNo);
       var car = {};
       car.modelname = this.modeln;
-      car.modelcode = this.modelc;
+      car.modelCode = this.modelc;
       car.plateType = this.carleiCode;
       car.plateNo = this.plateNo;
       car.VIN = this.VIN;
@@ -451,6 +458,7 @@ export default {
       });
       window.sessionStorage.setItem("data", JSON.stringify(data));
       if (data.state === "200") {
+        this.loadShow = false;
         this.$router.push({
           name: "price",
           query: {
@@ -460,7 +468,7 @@ export default {
         });
         console.log(data);
       } else if (data.state === "1") {
-        console.log(this.beneficiary);
+        this.loadShow = false;
         this.$router.push({
           name: "price",
           query: {
@@ -469,17 +477,19 @@ export default {
           }
         });
         this.$toast(data.message);
-        // } else if (data.state === "3") {
-        //   // var token = window.sessionStorage.getItem("token");
-        //   // token = "";
-        //   this.$router.push({
-        //     name: "index"
-        //   });
+      } else if (data.state === "3") {
+        // alert(window.sessionStorage(token))
+        this.loadShow  = false;
+        window.sessionStorage.clear();
+        this.$router.push({
+          name: "index",
+        });
       } else if (data.state === "2") {
         this.show = true;
         this.CarTypeArr = data.data;
       } else {
         this.$toast(data.message);
+        this.loadShow = false;
       }
     },
     chooseAddress() {
@@ -693,5 +703,14 @@ export default {
       color: rgba(246, 137, 0, 1);
     }
   }
+}
+.showIcon {
+  background: rgba(0, 0, 0, 0.1);
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 140%;
+  color: #fff;
+  font-size: 16px;
 }
 </style>

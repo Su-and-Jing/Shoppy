@@ -13,7 +13,7 @@
             <img class="img" :src="imgData" alt :onerror="errorImg01" />
           </div>
           <!-- <div >上传照片</div> -->
-          <van-uploader class="disabeld-file" :after-read="afterRead" zz />
+          <van-uploader class="disabeld-file" :after-read="afterRead" />
         </div>
         <van-cell-group class="field-group">
           <van-field v-model="name" label="姓名" placeholder="请输入姓名" />
@@ -106,18 +106,19 @@
         />
       </van-popup>
       <van-popup v-model="showsc" class="showIcon" :close-on-click-overlay="false">
+        <!-- <van-loading size="24px" vertical>报价中...</van-loading> -->
         <img src="../assets/fenlei.png" alt />
-        <!-- <p>正在上传</p> -->
+        <!-- <p>报价中</p> -->
+      </van-popup>
+      <van-popup v-model="loadShow" class="showIcon" :close-on-click-overlay="false">
+        <img src="../assets/baijia.png" alt />
+        <p style="padding-top:15px">报价中...</p>
       </van-popup>
       <!-- 显示遮罩层 -->
       <!-- <van-overlay :show="showupload">
       <div>cklsfj;lask</div>
       <img src="../assets/fenlei.png" alt="">
       </van-overlay>-->
-      <van-popup v-model="loadShow" class="showIcon" :close-on-click-overlay="false">
-        <img src="../assets/baijia.png" alt />
-        <p style="padding-top:15px">报价中...</p>
-      </van-popup>
     </div>
   </div>
 </template>
@@ -231,139 +232,9 @@ export default {
       let list = [];
       // console.log(this.imgList[0].content);
       for (let i = 0; i < this.imgList.length; i++) {
-        var picture1 = this.imgList[0].content;
-        if (this.imgList[1]) {
-          var picture2 = this.imgList[1].content;
-        }
         list.push({ img: this.imgList[i].content, imgId: i + "" });
       }
-      // console.log("~~~~~~~~~~~~~~~~~~")
-      // console.log(picture1,picture2)
-      // console.log(this.imgList.length);
-
-      let file1 = picture1;
-      let name1 = "picture" + ".png";
-      let type1 = "image/png";
-      let conversions1 = base64ToBlob1(file1, type1);
-
-      function base64ToBlob1(file1, type1) {
-        let arr = file1.split(",");
-        let mime = arr[0].match(/:(.*?);/)[1] || type1;
-        // 去掉url的头，并转化为byte
-        let bytes = window.atob(arr[1]);
-        // 处理异常,将ascii码小于0的转换为大于0
-        let ab = new ArrayBuffer(bytes.length);
-        // 生成视图（直接针对内存）：8位无符号整数，长度1个字节
-        let ia = new Uint8Array(ab);
-        for (let i = 0; i < bytes.length; i++) {
-          ia[i] = bytes.charCodeAt(i);
-        }
-        return new Blob([ab], {
-          type: mime
-        });
-      }
-      // console.log(conversions)
-      let img1 = new Image();
-      img1.src = `${file1}`;
-      let canvas1 = document.createElement("canvas");
-      let context1 = canvas1.getContext("2d");
-      img1.onload = function() {
-        //  console.log(img.width,img.height)
-        // 图片原始尺寸
-        let originWidth = this.width;
-        let originHeight = this.height;
-        console.log(originWidth, originHeight);
-        // 最大尺寸限制
-        let maxWidth = 400,
-          maxHeight = 400;
-        // 目标尺寸
-        let targetWidth = originWidth,
-          targetHeight = originHeight;
-        // 图片尺寸超过400x400的限制
-        if (originWidth > maxWidth || originHeight > maxHeight) {
-          if (originWidth / originHeight > maxWidth / maxHeight) {
-            // 更宽，按照宽度限定尺寸
-            targetWidth = maxWidth;
-            targetHeight = Math.round(maxWidth * (originHeight / originWidth));
-          } else {
-            targetHeight = maxHeight;
-            targetWidth = Math.round(maxHeight * (originWidth / originHeight));
-          }
-        }
-        // canvas对图片进行缩放
-        canvas1.width = targetWidth;
-        canvas1.height = targetHeight;
-        // 清除画布
-        context1.clearRect(0, 0, targetWidth, targetHeight);
-        // 图片压缩
-        context1.drawImage(img1, 0, 0, targetWidth, targetHeight);
-        console.log(targetWidth, targetHeight);
-      };
-
-      if (picture2) {
-        let file2 = picture2;
-        let name2 = "picture" + ".png";
-        let type2 = "image/png";
-        let conversions2 = base64ToBlob2(file2, type2);
-
-        function base64ToBlob2(file2, type2) {
-          let arr = file2.split(",");
-          let mime = arr[0].match(/:(.*?);/)[1] || type2;
-          // 去掉url的头，并转化为byte
-          let bytes = window.atob(arr[1]);
-          // 处理异常,将ascii码小于0的转换为大于0
-          let ab = new ArrayBuffer(bytes.length);
-          // 生成视图（直接针对内存）：8位无符号整数，长度1个字节
-          let ia = new Uint8Array(ab);
-          for (let i = 0; i < bytes.length; i++) {
-            ia[i] = bytes.charCodeAt(i);
-          }
-          return new Blob([ab], {
-            type: mime
-          });
-        }
-        // console.log(conversions)
-        let img2 = new Image();
-        img2.src = `${file2}`;
-        let canvas2 = document.createElement("canvas");
-        let context2 = canvas2.getContext("2d");
-        img2.onload = function() {
-          //  console.log(img.width,img.height)
-          // 图片原始尺寸
-          let originWidth = this.width;
-          let originHeight = this.height;
-          console.log(originWidth, originHeight);
-          // 最大尺寸限制
-          let maxWidth = 400,
-            maxHeight = 400;
-          // 目标尺寸
-          let targetWidth = originWidth,
-            targetHeight = originHeight;
-          // 图片尺寸超过400x400的限制
-          if (originWidth > maxWidth || originHeight > maxHeight) {
-            if (originWidth / originHeight > maxWidth / maxHeight) {
-              // 更宽，按照宽度限定尺寸
-              targetWidth = maxWidth;
-              targetHeight = Math.round(
-                maxWidth * (originHeight / originWidth)
-              );
-            } else {
-              targetHeight = maxHeight;
-              targetWidth = Math.round(
-                maxHeight * (originWidth / originHeight)
-              );
-            }
-          }
-          // canvas对图片进行缩放
-          canvas2.width = targetWidth;
-          canvas2.height = targetHeight;
-          // 清除画布
-          context2.clearRect(0, 0, targetWidth, targetHeight);
-          // 图片压缩
-          context2.drawImage(img2, 0, 0, targetWidth, targetHeight);
-          console.log(targetWidth, targetHeight);
-        };
-      }
+      console.log(this.imgList.length);
 
       const data = await UploadImg({
         imgList: list
@@ -438,66 +309,6 @@ export default {
         imgId: 0 + "",
         imgType: "1"
       });
-      // console.log(this.aaa)
-
-      let file = this.aaa;
-      let name = "picture" + ".png";
-      let type = "image/png";
-      let conversions = base64ToBlob(file, type);
-      function base64ToBlob(file, type) {
-        let arr = file.split(",");
-        let mime = arr[0].match(/:(.*?);/)[1] || type;
-        // 去掉url的头，并转化为byte
-        let bytes = window.atob(arr[1]);
-        // 处理异常,将ascii码小于0的转换为大于0
-        let ab = new ArrayBuffer(bytes.length);
-        // 生成视图（直接针对内存）：8位无符号整数，长度1个字节
-        let ia = new Uint8Array(ab);
-        for (let i = 0; i < bytes.length; i++) {
-          ia[i] = bytes.charCodeAt(i);
-        }
-        return new Blob([ab], {
-          type: mime
-        });
-      }
-      // console.log(conversions)
-      let img = new Image();
-      img.src = `${file}`;
-      let canvas = document.createElement("canvas");
-      let context = canvas.getContext("2d");
-      img.onload = function() {
-        //  console.log(img.width,img.height)
-        // 图片原始尺寸
-        let originWidth = this.width;
-        let originHeight = this.height;
-        console.log(originWidth, originHeight);
-        // 最大尺寸限制
-        let maxWidth = 400,
-          maxHeight = 400;
-        // 目标尺寸
-        let targetWidth = originWidth,
-          targetHeight = originHeight;
-        // 图片尺寸超过400x400的限制
-        if (originWidth > maxWidth || originHeight > maxHeight) {
-          if (originWidth / originHeight > maxWidth / maxHeight) {
-            // 更宽，按照宽度限定尺寸
-            targetWidth = maxWidth;
-            targetHeight = Math.round(maxWidth * (originHeight / originWidth));
-          } else {
-            targetHeight = maxHeight;
-            targetWidth = Math.round(maxHeight * (originWidth / originHeight));
-          }
-        }
-        // canvas对图片进行缩放
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        // 清除画布
-        context.clearRect(0, 0, targetWidth, targetHeight);
-        // 图片压缩
-        context.drawImage(img, 0, 0, targetWidth, targetHeight);
-        console.log(targetWidth, targetHeight);
-      };
-
       const data = await UploadImg({
         imgList: this.list1
       });
@@ -526,12 +337,6 @@ export default {
               this.imgUrl = data.data.imgList[i].imgUrl;
             }
           }
-        } else if (data.state == "3") {
-          this.$toast(data.message);
-          sessionStorage.clear();
-          this.$route.push({
-            path: "/"
-          });
         } else {
           this.errorShow = true;
           this.close3 = true;
@@ -547,63 +352,6 @@ export default {
         imgId: 0 + "",
         imgType: "2"
       });
-      let file = this.bbb;
-      let name = "picture" + ".png";
-      let type = "image/png";
-      let conversions = base64ToBlob(file, type);
-      function base64ToBlob(file, type) {
-        let arr = file.split(",");
-        let mime = arr[0].match(/:(.*?);/)[1] || type;
-        // 去掉url的头，并转化为byte
-        let bytes = window.atob(arr[1]);
-        // 处理异常,将ascii码小于0的转换为大于0
-        let ab = new ArrayBuffer(bytes.length);
-        // 生成视图（直接针对内存）：8位无符号整数，长度1个字节
-        let ia = new Uint8Array(ab);
-        for (let i = 0; i < bytes.length; i++) {
-          ia[i] = bytes.charCodeAt(i);
-        }
-        return new Blob([ab], {
-          type: mime
-        });
-      }
-      // console.log(conversions)
-      let img = new Image();
-      img.src = `${file}`;
-      let canvas = document.createElement("canvas");
-      let context = canvas.getContext("2d");
-      img.onload = function() {
-        //  console.log(img.width,img.height)
-        // 图片原始尺寸
-        let originWidth = this.width;
-        let originHeight = this.height;
-        console.log(originWidth, originHeight);
-        // 最大尺寸限制
-        let maxWidth = 400,
-          maxHeight = 400;
-        // 目标尺寸
-        let targetWidth = originWidth,
-          targetHeight = originHeight;
-        // 图片尺寸超过400x400的限制
-        if (originWidth > maxWidth || originHeight > maxHeight) {
-          if (originWidth / originHeight > maxWidth / maxHeight) {
-            // 更宽，按照宽度限定尺寸
-            targetWidth = maxWidth;
-            targetHeight = Math.round(maxWidth * (originHeight / originWidth));
-          } else {
-            targetHeight = maxHeight;
-            targetWidth = Math.round(maxHeight * (originWidth / originHeight));
-          }
-        }
-        // canvas对图片进行缩放
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        // 清除画布
-        context.clearRect(0, 0, targetWidth, targetHeight);
-        // 图片压缩
-        context.drawImage(img, 0, 0, targetWidth, targetHeight);
-        console.log(targetWidth, targetHeight);
-      };
       const data = await UploadImg({
         imgList: this.list4
       });
@@ -640,19 +388,13 @@ export default {
           this.close3 = true;
           this.errImg = data.data.imgList[0].imgUrl;
         }
-      } else if (data.state == "3") {
-        this.$toast(data.message);
-        sessionStorage.clear();
-        this.$route.push({
-          path: "/"
-        });
       } else {
         // this.$toast.fail("上传失败");
       }
     },
     async confirmHandle() {
-      this.loadShow = true;
       window.sessionStorage.getItem("token");
+      this.loadShow = true;
       var car = {};
 
       car.plateNo = this.licensePlateNumber;
@@ -738,7 +480,7 @@ export default {
   text-align: center;
   padding-top: 140%;
   // opacity: 0;
-  color: #fff;
+  // color: #fff;
   // opacity: ;
 }
 .containt {

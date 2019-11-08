@@ -40,6 +40,7 @@
                 :disabled="noLicenseFlag==true"
                 style="background:#fff"
                 @input="carnumzz(carNum)"
+                @change="changeHandle2"
               />
             </van-cell>
             <!-- 城市选择框 -->
@@ -66,7 +67,7 @@
                 v-model="VIN"
                 label="车架号"
                 maxlength="17"
-                @change="changeHandle"
+                @change="changeHandle2"
                 @input="number(VIN)"
                 @blur="tipC"
               ></van-field>
@@ -75,7 +76,7 @@
               <van-field
                 v-model="engine"
                 label="发动机号"
-                @change="changeHandle"
+                @change="changeHandle2"
                 @input="faNum(engine)"
                 @blur="tipF"
               />
@@ -85,7 +86,7 @@
                 right-icon="notes-o"
                 @click="dateShow3('registerDate')"
                 readonly
-                @change="changeHandle"
+                @change="changeHandle2"
               />
               <!-- <van-popup v-model="showPopupDate" position="bottom">
               <van-datetime-picker
@@ -102,7 +103,7 @@
                   label="品牌型号"
                   disabled
                   @click="CarPaiHandle"
-                  @changeHandle="changeHandle"
+                  @changeHandle="changeHandle2"
                 />
                 <van-icon style="position: absolute; right:17px;" size="16px" name="arrow-down" />
               </div>
@@ -117,12 +118,7 @@
               </van-popup>-->
             </div>
             <van-cell title="一年内过户">
-              <van-switch-cell
-                v-model="open"
-                class="year"
-                @change="changeHandle"
-                @changeHandle="changeHandle"
-              />
+              <van-switch-cell v-model="open" class="year" @change="changeHandle2" />
             </van-cell>
             <van-field
               v-show="open == true"
@@ -132,7 +128,7 @@
               right-icon="notes-o"
               @click="dateShow2('issueDate')"
               readonly
-              @changeHandle="changeHandle"
+              @changeHandle="changeHandle2"
             />
             <van-cell title="贷款车" value>
               <van-switch-cell v-model="loanCar" class="year" @change="changeHandle" />
@@ -144,7 +140,7 @@
                 arrow-direction="down"
                 id="loanCar"
                 @click="loanCarButton"
-                @changeHandle="changeHandle"
+                @changeHandle="changeHandle2"
               />
               <van-cell title="特约1：">{{this.beneficiaryContent}}</van-cell>
             </van-cell-group>
@@ -156,9 +152,8 @@
                 </div>
                 <div class="content">
                   <div class="title">
-                    <van-checkbox v-model="checked2" @change="changeHandle">手工历史特约内容</van-checkbox>
+                    <van-checkbox v-model="checked2" @change="changeHandle" @click="hisBtn">手工历史特约内容</van-checkbox>
                   </div>
-
                   <van-radio-group v-model="radio">
                     <van-radio
                       class="child"
@@ -168,21 +163,27 @@
                       :key="index"
                       @click="radioBtn"
                     >{{item.engageDetail}}</van-radio>
+                    <div class="title add">
+                      <van-checkbox
+                        v-model="checked11"
+                        style="padding-bottom:0"
+                        @click="sdBtn"
+                      >手工添加特约</van-checkbox>
+                      <!-- <div class="child" v-show="!addShow"> -->
+                      <p id="AddloanCar" v-show="addShow" @click="addShowInput">添加一条特约</p>
+                      <!-- </div> -->
+                    </div>
+                    <van-radio
+                      v-model="addBtn"
+                      class="child"
+                      :name="item"
+                      checked-color="#568efc"
+                      @click="radioBtn"
+                      v-show="addShow == false"
+                    >
+                      <input type="text" />
+                    </van-radio>
                   </van-radio-group>
-                  <div class="title add">
-                    <van-checkbox v-model="checked" style="padding-bottom:0">手工添加特约</van-checkbox>
-                  </div>
-                  <p id="AddloanCar" v-show="addShow" @click="addShowInput">添加一条特约</p>
-                  <div class="child" v-show="!addShow">
-                    <van-checkbox v-model="checked">
-                      <input
-                        type="text"
-                        class="addBeneficiary"
-                        placeholder="手工添加特约内容"
-                        v-model="beneficiaryContent"
-                      />
-                    </van-checkbox>
-                  </div>
                 </div>
                 <van-button type="info" @click="beneficiaryHandle">确定</van-button>
               </div>
@@ -359,16 +360,16 @@
                     class="cityNumber"
                     title="减免税方案代码"
                     is-link
-                    v-model="deductionDueName"
+                    v-model="deductionDueTypeName"
                     arrow-direction="down"
-                    @click="choosePopupType(deductionDueTypeList,'deductionDueName')"
+                    @click="choosePopupType(deductionDueTypeList,'deductionDueTypeName')"
                     @changeHandle="changeHandle"
                   />
-                  <van-field
+                  <!-- <van-field
                     v-model="deductionDueProportion"
                     label="减免比例"
                     @changeHandle="changeHandle"
-                  />
+                  />-->
                   <van-field v-model="documentNumber" label="减免税凭证号" @changeHandle="changeHandle"></van-field>
                   <van-field v-model="taxDepartment" label="税务机关名称" @changeHandle="changeHandle" />
                 </van-cell-group>
@@ -637,13 +638,14 @@
                   <van-icon name="arrow-down" @click="choosePopup(importList,'import2')"></van-icon>
                 </div>
                 <!-- 百分比 -->
-                <div class="import-btn" v-show="isShow">
-                  <span>{{percent}}%</span>
-                  <van-icon name="arrow-down" @click="choosePopup(importList1,'percent')"></van-icon>
-                </div>
-                <div class="import-btn" v-show="!isShow">
+                <!-- 百分比 -->
+                <div class="import-btn" v-show="this.import2=='国产'">
                   <span>{{percent1}}%</span>
                   <van-icon name="arrow-down" @click="choosePopup(importList2,'percent1')"></van-icon>
+                </div>
+                <div class="import-btn" v-show="this.import2=='进口'">
+                  <span>{{percent}}%</span>
+                  <van-icon name="arrow-down" @click="choosePopup(importList1,'percent')"></van-icon>
                 </div>
                 <van-switch
                   v-model="domesticSwitch"
@@ -877,6 +879,8 @@ import {
 export default {
   data() {
     return {
+      addBtn: false,
+      checked11: false,
       showPopupCity: false,
       carNum: "",
       showPopupDate111: false,
@@ -1098,7 +1102,8 @@ export default {
       ],
 
       //减免方案
-      deductionDueName: "比例减免",
+      deductionDueType: "A",
+      deductionDueTypeName: "比例减免",
       deductionDueTypeList: [
         { code: "P", text: "比例减免" },
         { code: "A", text: "金额减免" }
@@ -1119,7 +1124,7 @@ export default {
       taxDocumentDate: "",
       //减免比例
       deductionDueProportion: "",
-      showpopupType:'',
+      showpopupType: false,
       //纳税地区代码
       taxPaidAreaCode: "",
       // 税务机关代码
@@ -1515,7 +1520,7 @@ export default {
     },
     $route() {
       this.model = this.$route.query.name;
-      this.modelcode = this.$route.query.modelcode;
+      this.modelCode = this.$route.query.modelCode;
     }
   },
   methods: {
@@ -1532,8 +1537,8 @@ export default {
       this.showpopupDeu = false;
     },
     confirmType(picker, value) {
-      this.deductionDueName = picker.text;
       this.deductionDueType = picker.code;
+      this.deductionDueTypeName = picker.text;
       this.showpopupType = false;
     },
     country(item) {
@@ -1823,6 +1828,57 @@ export default {
         }
       }
     },
+    changeHandle2() {
+      this.isActives = true;
+      this.$refs.confirmSale.innerHTML = "重新算价";
+      this.$refs.confirmSale.style.width = "150px";
+      this.spiritMount = this.$refs.input.value;
+      this.carAmount = 0;
+      console.log(this.carAmount);
+      if (this.spiritMount == "") {
+        this.spiritChecked = false;
+      }
+      if (this.carSwitch == false) {
+        this.carChecked = false;
+        this.damageSwitch = false;
+        this.importSwitch = false;
+        this.domesticSwitch = false;
+        this.natureSwitch = false;
+        this.wadeSwitch = false;
+      }
+      if (this.robbingSwitch == false) {
+        this.robbingChecked = false;
+      }
+      if (this.natureSwitch == false) {
+        this.natureChecked = false;
+      }
+      if (this.wadeSwitch == false) {
+        this.wadeChecked = false;
+      }
+      if (this.second == "不投保") {
+        this.secondChecked = false;
+      }
+      if (this.driver == "不投保") {
+        this.driverChecked = false;
+      }
+      if (this.fare == "不投保") {
+        this.fareChecked = false;
+      }
+      if (this.scratch == "不投保") {
+        this.scratchChecked = false;
+      }
+      if (this.spiritMount == "") {
+        this.spiritChecked = false;
+      }
+      if (this.second == "不投保") {
+        if (this.spiritMount !== "") {
+          this.$toast(
+            "此险为第三者责任险（主险）的附加险，请投保第三者责任险（主险）再选择此险！"
+          );
+          this.spiritMount = "";
+        }
+      }
+    },
     // 车辆品牌
     CarPaiHandle() {
       this.$refs.confirmSale.innerHTML = "重新算价";
@@ -1892,13 +1948,25 @@ export default {
       }
     },
     check(index) {},
+    sdBtn() {
+      // alert(0)
+      // this.checked11 = !this.checked2;
+      this.checked2 = this.checked11;
+
+      if (this.checked11 == true) {
+        this.addShow = true;
+        this.addBtn = true;
+      } else {
+        this.addShow = false;
+      }
+    },
+    hisBtn() {
+      this.checked11 = this.checked2;
+    },
     // 显示手动添加特约框
     addShowInput() {
-      this.addShow = !this.addShow;
-      this.checked4 = true;
-      this.checked5 = true;
+      // if ()
     },
-
     // 特别约定
     async loanCarButton() {
       this.loanCarPopup = true;
@@ -1965,6 +2033,8 @@ export default {
         this.loanCar = data.data.car.loanStatus;
         this.noLicenseFlag = data.data.car.noLicenseFlag;
         this.ciSumPermium = data.data.ciSumPermium;
+        this.modelCode = data.data.car.modelCode;
+        console.log(this.modelCode);
         this.city = data.data.car.plateNo.substr(0, 1);
         this.carNum = data.data.car.plateNo.substr(1, 6);
         console.log(this.carNum);
@@ -2100,7 +2170,7 @@ export default {
                 data.data.tax.deductionDueType
               ) {
                 this.deductionDueType = this.deductionDueTypeList[i].code;
-                this.deductionDueName = this.deductionDueTypeList[i].text;
+                this.deductionDueTypeName = this.deductionDueList[i].text;
                 //减免比例
                 this.deductionDueProportion =
                   data.data.tax.deductionDueProportion;
@@ -2228,7 +2298,7 @@ export default {
       car.vin = this.VIN;
       car.plateNo = this.plateNo;
       car.model = this.model;
-      car.modelcode = this.modelcode;
+      car.modelCode = this.modelCode;
       car.motorTypeCode = this.motorTypeCode;
       car.motorUsageTypeCode = this.motorUsageTypeCode;
       car.registerDate = this.registerDate;
@@ -2255,6 +2325,7 @@ export default {
       tax.taxDepartmentCode = this.taxDepartmentCode;
       tax.taxPaidAreaCode = this.taxPaidAreaCode;
       tax.taxDocumentDate = this.taxDocumentDate;
+      tax.deductionDueType = this.deductionDueType;
       //险种
       var riskList = [];
       var risk1 = {};
@@ -2533,7 +2604,7 @@ export default {
                 data.data.tax.deductionDueType
               ) {
                 this.deductionDueType = this.deductionDueTypeList[i].code;
-                this.deductionDueType = this.deductionDueList[i].text;
+                this.deductionDueTypeName = this.deductionDueList[i].text;
                 //减免比例
                 this.deductionDueProportion =
                   data.data.tax.deductionDueProportion;
@@ -2564,12 +2635,13 @@ export default {
         // this.saleDiscount = data.data.saleDiscount;
         //总保费
         this.totalPremium = data.data.sumPermium;
-      } else if (data.state == "3") {
-        // var token = window.sessionStorage.getItem("token");
-        // token = "";
-        // this.$router.push({
-        //   path: "/"
-        // });
+      } else if (data.state === "3") {
+        // alert(window.sessionStorage(token))
+        this.loadShow = false;
+        window.sessionStorage.clear();
+        this.$router.push({
+          name: "index"
+        });
       } else {
         this.showIcon = false;
         this.$toast(data.message);
@@ -2814,8 +2886,8 @@ export default {
 };
 </script>
 <style lang="scss" scope>
-@import "./style/price.scss";
-@import "./style/head.scss";
+@import "/style/price.scss";
+@import "/style/head.scss";
 // .price {
 //   margin-top: 53px;
 // }
