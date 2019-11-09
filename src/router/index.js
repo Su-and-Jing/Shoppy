@@ -32,7 +32,7 @@ export default new Router({
       component: Index,
       meta: {
 
-        title: '首页'
+        title: '华农阿波罗车险'
       }
     },
     {
@@ -40,7 +40,7 @@ export default new Router({
       name: 'indexPc',
       component: IndexPc,
       meta: {
-        title: 'pc首页'
+        title: '华农阿波罗车险PC版'
       }
     },
     {
@@ -48,7 +48,7 @@ export default new Router({
       name: 'index',
       component: Index,
       meta: {
-        title: '首页'
+        title: '华农阿波罗车险'
       }
     },
     {
