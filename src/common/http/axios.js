@@ -25,20 +25,8 @@ instance.interceptors.request.use(
 			alert('请求超时！')
 			// return service.request(originalRequest)
 		}
-		// if (config.method.toLocaleLowerCase() === 'post'
-		// 	|| config.method.toLocaleLowerCase() === 'put'
-		// 	|| config.method.toLocaleLowerCase() === 'delete') {
-
-		// 	config.data = qs.stringify(config.data)
-		// }
 		const errorInfo = error.response
 		console.log(errorInfo)
-		// if (errorInfo) {
-		// const errorStatus = errorInfo.status // 404 403 500 ... 等
-		// router.push({
-		//   path: `/error/${errorStatus}`
-		//  })
-		// }
 		return error
 	}
 )
@@ -52,18 +40,6 @@ instance.interceptors.response.use(
 			data = response.data
 		}
 		data = JSON.parse(data)
-
-		// if (data.retcode == 2) { //未登录
-		// 	Cookies.set('phone', undefined)
-		// 	// main.$router.push('/login?isOrigin=1')
-		// }
-		// 若不是正确的返回code，且已经登录，就抛出错误
-		// const err = new Error(data.description)
-
-		// err.data = data
-		// err.response = response
-
-		// throw err
 		return data
 	},
 	err => {

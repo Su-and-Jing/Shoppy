@@ -28,7 +28,9 @@ import {
   Overlay,
   IndexBar,
   IndexAnchor,
-  Loading 
+  Loading ,
+  Grid,
+   GridItem
 } from 'vant'
 
 

@@ -8,7 +8,7 @@
       <van-cell-group class="insitution-group">
         <p class="title van-hairline--bottom">选择出单机构</p>
         <van-field
-          label="登记机构"
+          label="登录机构"
           readonly
           v-model="loginComName"
           right-icon="arrow-down"
@@ -22,7 +22,6 @@
           v-model="comName"
           @click="choosePopup2(comList,'comName')"
         />
-        <!-- ownershipInstitutionList:所有的name，ownershipInstitutionCode：对象，ownershipInstitution：显示的name，a = 'v'：标记   -->
         <van-field
           label="渠道类型"
           readonly
@@ -32,7 +31,7 @@
         />
 
         <van-field
-          label="代理人"
+          label="中介公司"
           readonly
           right-icon="arrow-down"
           v-model="agentName"
@@ -107,10 +106,6 @@ export default {
       columns: "",
       submit: "1",
       Salesman: "",
-      // interCompanyCode: "",
-      // // agentName: "",
-      // Registrationagencycode: "",
-      // ownershipInstitutionCode: "",
       showPopup: false,
       showInsitutionPopup: false,
       // 登录机构\

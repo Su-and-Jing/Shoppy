@@ -52,8 +52,6 @@
   </van-popup>
 </template>
 <script>
-import config from "../../common/http/config";
-import Cookies from "js-cookie";
 import { clearInterval } from "timers";
 import { login, institution, iphoneLogin } from "@/common/library/api";
 import { async } from "q";
@@ -68,8 +66,8 @@ export default {
   data() {
     return {
       zhc: true,
-      username: "",
-      passwd: "",
+      username: "44000020",
+      passwd: "0000",
       phone: "",
       sms: "",
       showPopup: this.showLogin,
@@ -130,7 +128,6 @@ export default {
         this.res = data;
         this.$emit("closeLogin", this.res);
         console.log(data.data);
-
         window.sessionStorage.setItem("token", data.data.token);
         window.sessionStorage.setItem("carVerifyCode", data.data.carVerifyCode);
         window.sessionStorage.setItem("provinceName", data.data.provinceName);
@@ -159,7 +156,6 @@ export default {
         return;
       }
       //手机号登录
-
       const data = iphoneLogin({
         phoneNo: this.phone,
         vCode: this.msm,
@@ -219,7 +215,7 @@ export default {
     right: 0;
     bottom: 0;
     overflow: hidden;
-    background: #3f7cf4 url("../../assets/login.png") no-repeat top center;
+    background: #3f7cf4 url("../../assets/bx.png") no-repeat top center;
     background-size: 100%;
     .login-tabs {
       position: absolute;

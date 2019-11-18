@@ -8,11 +8,9 @@ import 'vant/lib/index.css'
 import vantComponents from './common/library/vant'
 import store from './store'
 import VueCookies from 'vue-cookies'
-import vUploader from 'v-uploader'
-// import { Dialog} from 'element-ui';
-// import { Upload} from 'element-ui';
-// Vue.component(Dialog.name, Dialog);
-// Vue.component(Upload.name, Upload);
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
+Vue.use(VueAwesomeSwiper)
 vantComponents.map(n => Vue.use(n))
 
 // 根据路由设置标题
